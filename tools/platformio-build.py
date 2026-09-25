@@ -37,9 +37,9 @@ if mcu.startswith("ch32x03"):
     chip_series: str = board.get("build.series", "").upper()
 else:
     chip_series: str = board.get("build.series", "")[0:-1].upper() + "x"
-variant_h = board.get("build.arduino.openwch.variant_h")
+variant_h = board.get("build.arduino.ch32-community.variant_h")
 
-FRAMEWORK_DIR = platform.get_package_dir("framework-arduino-openwch-ch32")
+FRAMEWORK_DIR = platform.get_package_dir("framework-arduino-ch32-community")
 assert isdir(FRAMEWORK_DIR)
 
 machine_flags = [
@@ -145,16 +145,16 @@ def configure_usb_flags(cpp_defines):
     elif "PIO_FRAMEWORK_ARDUINO_USBHS" in cpp_defines:
         env.Append(CPPDEFINES=[("CFG_TUD_WCH_USBIP_USBHS", 1)])
     # in any case, add standard flags
-    # preferably use USB information from arduino.openwch section,
+    # preferably use USB information from arduino.ch32-community section,
     # but fallback to sensible values derived from other parts otherwise.
-    usb_pid = board.get("build.arduino.openwch.usb_pid",
+    usb_pid = board.get("build.arduino.ch32-community.usb_pid",
                         board.get("build.hwids", [[0, 0]])[0][1])
-    usb_vid = board.get("build.arduino.openwch.usb_vid",
+    usb_vid = board.get("build.arduino.ch32-community.usb_vid",
                         board.get("build.hwids", [[0, 0]])[0][0])
     usb_manufacturer = board.get(
-        "build.arduino.openwch.usb_manufacturer", board.get("vendor", "WCH"))
+        "build.arduino.ch32-community.usb_manufacturer", board.get("vendor", "WCH"))
     usb_product = board.get(
-        "build.arduino.openwch.usb_product", board.get("name", "CH32V"))
+        "build.arduino.ch32-community.usb_product", board.get("name", "CH32V"))
 
     env.Append(CPPDEFINES=[
         "USBCON",
@@ -193,7 +193,7 @@ configure_usb_flags(cpp_defines)
 
 libs = []
 
-variant = board.get("build.arduino.openwch.variant", board.get("build.variant", ""))
+variant = board.get("build.arduino.ch32-community.variant", board.get("build.variant", ""))
 if variant != "":
     variants_dir = join(
         "$PROJECT_DIR", board.get("build.variants_dir")) if board.get(
