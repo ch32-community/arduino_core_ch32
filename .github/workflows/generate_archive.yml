@@ -1,0 +1,31 @@
+name: release
+
+on:
+  release:
+    types: [published]
+
+env:
+  OUTPUT_ZIP_FILE_PREFIX: "ch32-community-arduino-core-"
+
+jobs:
+  upload-full-archive:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout project source code (with submodules)
+        uses: actions/checkout@v4
+        with:
+          path: project
+          submodules: recursive
+
+      - name: Package source code including submodules
+        uses: qmonnet/git-archive-all-action@v1
+        with:
+          output-files: ${{ env.OUTPUT_ZIP_FILE_PREFIX }}${{ github.ref_name }}.zip
+          base-repo: project
+
+      - name: Upload archives to the triggering release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ${{ env.OUTPUT_ZIP_FILE_PREFIX }}*
