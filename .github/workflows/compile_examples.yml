@@ -9,44 +9,40 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
+    continue-on-error: true
     steps:
       - name: Checkout Custom Core
         uses: actions/checkout@v4
+        continue-on-error: false
         with:
           path: arduino_core_ch32
 
       - name: Setup Arduino CLI
+        continue-on-error: false
         uses: arduino/setup-arduino-cli@v2
 
       - name: Install arduino_core_ch32
+        continue-on-error: false
         run: |
           arduino-cli core install ch32-community:ch32v --additional-urls https://github.com/ch32-community/board_manager_files/raw/main/package_ch32v_index.json
 
       - name: CH32L10x - Compile Sketches 
-        continue-on-error: true
         run: python3 ./arduino_core_ch32/tools/build_examples.py CH32L10x
 
       - name: CH32V00x - Compile Sketches
-        continue-on-error: true
         run: python3 ./arduino_core_ch32/tools/build_examples.py CH32V00x
 
       - name: CH32V10x - Compile Sketches
-        continue-on-error: true
         run: python3 ./arduino_core_ch32/tools/build_examples.py CH32V10x
 
       - name: CH32V20x - Compile Sketches
-        continue-on-error: true
         run: python3 ./arduino_core_ch32/tools/build_examples.py CH32V20x
 
       - name: CH32V30x - Compile Sketches
-        continue-on-error: true
         run: python3 ./arduino_core_ch32/tools/build_examples.py CH32V30x
 
       - name: CH32VM00X - Compile Sketches
-        continue-on-error: true
         run: python3 ./arduino_core_ch32/tools/build_examples.py CH32VM00X
 
       - name: CH32X035 - Compile Sketches
-        continue-on-error: true
         run: python3 ./arduino_core_ch32/tools/build_examples.py CH32X035
