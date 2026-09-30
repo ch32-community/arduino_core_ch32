@@ -103,7 +103,7 @@ if __name__ == '__main__':
     else:
         build_boards = all_boards
 
-    all_examples = list(glob.iglob('./arduino_core_ch32/libraries/**/examples/**/*.ino', recursive=True))
+    all_examples = list(glob.iglob('**/examples/**/*.ino', recursive=True))
     all_examples.sort()
 
     total_time = time.monotonic()
