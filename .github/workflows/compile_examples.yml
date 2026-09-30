@@ -14,14 +14,18 @@ jobs:
       - name: Checkout Custom Core
         uses: actions/checkout@v4
         with:
-          path: arduino/hardware/ch32-community/ch32v
+          path: arduino_core_ch32
 
       - name: Setup Arduino CLI
         uses: arduino/setup-arduino-cli@v2
+
+      - name: Install arduino_core_ch32
+        run: |
+          arduino-cli core install ch32-community:ch32v --additional-urls https://github.com/ch32-community/board_manager_files/raw/main/package_ch32v_index.json
 
       - name: Compile Sketch
         run: |
           arduino-cli compile \
             --config-file <(echo "directories: { user: $GITHUB_WORKSPACE/arduino }") \
             --fqbn ch32-community:ch32v:CH32V20x_EVT \
-            ./arduino/hardware/ch32-community/ch32v/libraries/EEPROM/examples/eeprom_counter
+            ./arduino_core_ch32/libraries/EEPROM/examples/eeprom_counter
