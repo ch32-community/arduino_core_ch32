@@ -16,13 +16,13 @@ build_separator = '-' * 59
 
 # ci-arduino naming, fqbn
 all_boards = [
-    ['CH32L10x' , 'ch32-community:ch32v:CH32L10x_EVT' ]
-    ['CH32V00x' , 'ch32-community:ch32v:CH32V00x_EVT' ]
-    ['CH32V10x' , 'ch32-community:ch32v:CH32V10x_EVT' ]
-    ['CH32V20x' , 'ch32-community:ch32v:CH32V20x_EVT' ]
-    ['CH32V30x' , 'ch32-community:ch32v:CH32V30x_EVT' ]
-    ['CH32VM00X', 'ch32-community:ch32v:CH32VM00X_EVT']
-    ['CH32X035' , 'ch32-community:ch32v:CH32X035_EVT' ]
+    ['CH32L10x' , 'ch32-community:ch32v:CH32L10x_EVT' ],
+    ['CH32V00x' , 'ch32-community:ch32v:CH32V00x_EVT' ],
+    ['CH32V10x' , 'ch32-community:ch32v:CH32V10x_EVT' ],
+    ['CH32V20x' , 'ch32-community:ch32v:CH32V20x_EVT' ],
+    ['CH32V30x' , 'ch32-community:ch32v:CH32V30x_EVT' ],
+    ['CH32VM00X', 'ch32-community:ch32v:CH32VM00X_EVT'],
+    ['CH32X035' , 'ch32-community:ch32v:CH32X035_EVT' ],
 ]
 
 
@@ -115,7 +115,6 @@ if __name__ == '__main__':
     # Build Summary
     total_time = time.monotonic() - total_time
     print(build_separator)
-    print("Build Summary: {} {}, {} {}, {} {} and took {:.2f}s".format(total_result[0], SUCCEEDED, total_result[1],
-                                                                       FAILED, total_result[2], SKIPPED, total_time))
+    print(F"Build Summary: {total_result[0]} {SUCCEEDED}, {total_result[1]} {FAILED}, {total_result[2]} {SKIPPED} and took {total_time:.2f}s")
     print(build_separator)
     sys.exit(total_result[1])
