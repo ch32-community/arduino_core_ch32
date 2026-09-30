@@ -14,7 +14,7 @@ jobs:
       - name: Checkout Custom Core
         uses: actions/checkout@v4
         with:
-          path: .
+          path: arduino_core_ch32
 
       - name: Setup Arduino CLI
         uses: arduino/setup-arduino-cli@v2
@@ -24,4 +24,4 @@ jobs:
           arduino-cli core install ch32-community:ch32v --additional-urls https://github.com/ch32-community/board_manager_files/raw/main/package_ch32v_index.json
 
       - name: Compile Sketches
-        run: python3 tools/build_platform.py ${{ matrix.arduino-platform }}
+        run: python3 arduino_core_ch32/tools/build_platform.py ${{ matrix.arduino-platform }}
