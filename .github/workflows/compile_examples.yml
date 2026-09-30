@@ -1,0 +1,27 @@
+name: Compile Library Examples with arduino_core_ch32
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Custom Core
+        uses: actions/checkout@v4
+        with:
+          path: arduino/hardware/ch32-community/ch32v
+
+      - name: Setup Arduino CLI
+        uses: arduino/setup-arduino-cli@v2
+
+      - name: Compile Sketch
+        run: |
+          arduino-cli compile \
+            --config-file <(echo "directories: { user: $GITHUB_WORKSPACE/arduino }") \
+            --fqbn ch32-community:ch32v:CH32V20x_EVT \
+            ./arduino/hardware/ch32-community/ch32v/libraries/EEPROM/examples/eeprom_counter
