@@ -145,7 +145,7 @@ void HardwareTimer::setup(TIM_TypeDef *instance)
   _timerObj.__this = (void *)this;
   _timerObj.preemptPriority = TIM_IRQ_PRIO;   
   _timerObj.subPriority = TIM_IRQ_SUBPRIO;
-  _timerObj.handle.Init={0}; 
+  _timerObj.handle.Init={}; 
   /* Enable timer clock. Even if it is also done in HAL_TIM_Base_MspInit(),
      it is done there so that it is possible to write registers right now */
   enableTimerClock(&(_timerObj.handle));
