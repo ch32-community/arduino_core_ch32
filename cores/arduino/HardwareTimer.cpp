@@ -145,7 +145,7 @@ void HardwareTimer::setup(TIM_TypeDef *instance)
   _timerObj.__this = (void *)this;
   _timerObj.preemptPriority = TIM_IRQ_PRIO;   
   _timerObj.subPriority = TIM_IRQ_SUBPRIO;
-  _timerObj.handle.Init={0}; 
+  _timerObj.handle.Init={}; 
   /* Enable timer clock. Even if it is also done in HAL_TIM_Base_MspInit(),
      it is done there so that it is possible to write registers right now */
   enableTimerClock(&(_timerObj.handle));
@@ -774,8 +774,8 @@ void HardwareTimer::setMode(uint32_t channel, TimerModes_t mode, PinName pin)
 {
   int timChannel = getChannel(channel);  //get arduino channel-->timer channel
   int timAssociatedInputChannel;      
-  TIM_OCInitTypeDef channelOC={0};
-  TIM_ICInitTypeDef channelIC={0};
+  TIM_OCInitTypeDef channelOC={};
+  TIM_ICInitTypeDef channelIC={};
 
   if (timChannel == -1) {
     Error_Handler();
@@ -1038,10 +1038,10 @@ void HardwareTimer::setCaptureCompare(uint32_t channel, uint32_t compare, TimerC
 uint32_t HardwareTimer::getCaptureCompare(uint32_t channel,  TimerCompareFormat_t format)
 {
 
-  int timChannel;
-  uint32_t return_value;
-  uint32_t CCR_RegisterValue;
-  uint32_t Prescalerfactor;
+  int timChannel = 0;
+  uint32_t return_value = 0;
+  uint32_t CCR_RegisterValue = 0;
+  uint32_t Prescalerfactor = 0;
 
   timChannel = getChannel(channel);
   Prescalerfactor = TIM_GetPrescaler(_timerObj.handle.Instance) + 1;
@@ -1326,7 +1326,7 @@ void HardwareTimer::captureCompareCallback(TIM_HandleTypeDef *htim)
     Error_Handler();
   }
 
- uint32_t channel ;
+ uint32_t channel = 0;
 
 if( (htim->Instance->DMAINTENR & TIM_IT_CC1) || (htim->Instance->DMAINTENR & TIM_IT_CC2) \
  || (htim->Instance->DMAINTENR & TIM_IT_CC3) || (htim->Instance->DMAINTENR & TIM_IT_CC4) )
@@ -1354,7 +1354,7 @@ if( (htim->Instance->DMAINTENR & TIM_IT_CC1) || (htim->Instance->DMAINTENR & TIM
 
   timerObj_t *obj = get_timer_obj(htim);
   HardwareTimer *HT = (HardwareTimer *)(obj->__this);
-  if (HT->callbacks[channel]) {
+  if (HT->callbacks[channel]) { // TODO: This looks interesting (make sure 1-4 are valid inputs, seems fishy that 0 is not used)
     HT->callbacks[channel]();
   }
 }
@@ -1405,6 +1405,7 @@ bool HardwareTimer::isRunningChannel(uint32_t channel)
   */
 void HardwareTimer::updateRegistersIfNotRunning(TIM_TypeDef *TIMx)
 {
+  (void)TIMx;   // TODO: Figure out why TIMx is unused
   if (!isRunning()) {
     if (_timerObj.handle.Instance->DMAINTENR & TIM_IT_Update) 
     {

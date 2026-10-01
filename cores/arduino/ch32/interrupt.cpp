@@ -131,8 +131,8 @@ static uint8_t get_pin_id(uint16_t pin)
 
 void ch32_interrupt_enable(GPIO_TypeDef *port, GPIOMode_TypeDef io_mode,uint16_t pin, void (*callback)(void), EXTIMode_TypeDef it_mode, EXTITrigger_TypeDef trigger_mode)
 {
-    GPIO_InitTypeDef GPIO_InitStruct={0};
-    EXTI_InitTypeDef EXTI_InitStruct={0};
+    GPIO_InitTypeDef GPIO_InitStruct={};
+    EXTI_InitTypeDef EXTI_InitStruct={};
     // RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO,ENABLE);
     uint8_t id = get_pin_id(pin);
     uint8_t gpio_port_souce=0;
@@ -192,6 +192,7 @@ void ch32_interrupt_enable(GPIO_TypeDef *port, GPIOMode_TypeDef io_mode,uint16_t
   */
 void ch32_interrupt_disable(GPIO_TypeDef *port, uint16_t pin)
 {
+  (void)port; // TODO: See if port can be omitted from the function arguments (Port is not needed as the Interrupts are related to the pin number after initiliaztion)
   uint8_t id = get_pin_id(pin);
   gpio_irq_conf[id].callback = NULL;
 

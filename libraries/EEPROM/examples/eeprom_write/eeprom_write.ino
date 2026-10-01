@@ -9,7 +9,7 @@
 #include <EEPROM.h>
 
 /** the current address in the EEPROM (i.e. which byte we're going to write to next) **/
-int addr = 0;
+size_t addr = 0;
 
 void setup() {
   // initialize EEPROM object

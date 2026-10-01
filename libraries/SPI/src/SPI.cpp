@@ -404,7 +404,7 @@ void SPIClass::transfer(byte _pin, void *_bufout, void *_bufin, size_t _count, S
   */
 void SPIClass::usingInterrupt(uint8_t interruptNumber)
 {
-  // UNUSED(interruptNumber);
+  (void)interruptNumber;  // TODO: Implement usingInterrupt
 }
 
 /**

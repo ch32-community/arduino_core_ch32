@@ -547,7 +547,7 @@ void GPIO_EXTILineConfig(uint8_t GPIO_PortSource, uint8_t GPIO_PinSource)
  */
 void GPIO_IPD_Unused(void)
 {
-    GPIO_InitTypeDef GPIO_InitStructure = {0};
+    GPIO_InitTypeDef GPIO_InitStructure = {};
     uint32_t chip = 0;
     RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA | RCC_APB2Periph_GPIOB | RCC_APB2Periph_GPIOC | RCC_APB2Periph_GPIOD, ENABLE);
     chip =  *( uint32_t * )0x1FFFF884 ;

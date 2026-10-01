@@ -104,7 +104,7 @@ bool pin_in_pinmap(PinName pin, const PinMap *map)
 void pin_function(PinName pin, int function)
 {
   /* Get the pin information */
-   GPIO_InitTypeDef GPIO_InitStructure = {0};
+   GPIO_InitTypeDef GPIO_InitStructure = {};
    
   uint32_t mode  = CH_PIN_MODE(function);
   uint32_t cnf   = CH_PIN_CNF(function); 

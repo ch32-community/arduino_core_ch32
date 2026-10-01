@@ -431,7 +431,6 @@ void uart_debug_init(void)
   */
 size_t uart_debug_write(uint8_t *data, uint32_t size)
 {
-  int i;
   uint32_t tickstart = GetTick();
   serial_t *obj = NULL;
 
@@ -477,7 +476,7 @@ size_t uart_debug_write(uint8_t *data, uint32_t size)
     }
   }
 
-  for ( i = 0; i < size; i++)
+  for (uint32_t i = 0; i < size; i++)
   {
     while (serial_tx_active(obj)) ;
     USART_SendData(uart_handlers[serial_debug.index]->Instance,*data++);

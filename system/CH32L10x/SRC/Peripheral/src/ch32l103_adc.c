@@ -1343,20 +1343,20 @@ int16_t Get_CalibrationValue(ADC_TypeDef *ADCx)
 
     *(vu32*)0x4002202C |= (1<<9);
     (*(vu32*)0x40022034) |= (1<<29);  //lock
-    while((*(vu32*)0x40022034) & (1<<29) == 0); //wait lock
-    ADC1->CTLR2|=(7<<17);
-    ADC_Cmd(ADC1, ENABLE);
-    ADC_FIFO_Cmd(ADC1, ENABLE);
-    ADC_ResetCalibration(ADC1);
-    while(ADC_GetResetCalibrationStatus(ADC1));
-    ADC_StartCalibration(ADC1);
-    while(ADC_GetCalibrationStatus(ADC1));
-    ADC_RegularChannelConfig(ADC1, ADC_Channel_CalInternal, 1, ADC_SampleTime_CyclesMode0);
+    while(((*(vu32*)0x40022034) & (1<<29)) == 0); //wait lock
+    ADCx->CTLR2|=(7<<17);
+    ADC_Cmd(ADCx, ENABLE);
+    ADC_FIFO_Cmd(ADCx, ENABLE);
+    ADC_ResetCalibration(ADCx);
+    while(ADC_GetResetCalibrationStatus(ADCx));
+    ADC_StartCalibration(ADCx);
+    while(ADC_GetCalibrationStatus(ADCx));
+    ADC_RegularChannelConfig(ADCx, ADC_Channel_CalInternal, 1, ADC_SampleTime_CyclesMode0);
     for(i = 0; i < 10; i++)
     {
-        ADC_SoftwareStartConvCmd(ADC1, ENABLE);
-        while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));
-        buf[i] = ADC_GetConversionValue(ADC1);
+        ADC_SoftwareStartConvCmd(ADCx, ENABLE);
+        while(!ADC_GetFlagStatus(ADCx, ADC_FLAG_EOC));
+        buf[i] = ADC_GetConversionValue(ADCx);
     }
     for(i = 0; i < 10; i++)
     {
@@ -1377,8 +1377,6 @@ int16_t Get_CalibrationValue(ADC_TypeDef *ADCx)
         t += buf[i + 2];
     }
     t = (t / 6) + ((t % 6) / 3);
-    ADC_Cmd(ADC1, DISABLE);
+    ADC_Cmd(ADCx, DISABLE);
     return (int16_t)(2048 - (int16_t)t);
 }
-
-

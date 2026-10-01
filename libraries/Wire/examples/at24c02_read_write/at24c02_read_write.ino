@@ -68,4 +68,5 @@ uint8_t deviceReadOneByte(uint8_t addr)
   {
     return Wire.read();
   }
+  return 0; // Should not get here
 }

@@ -57,7 +57,7 @@ void EEPROMClass::begin(void)
     uint16_t *ob16p=(uint16_t *)OB_BASE;
     _data[0]=(uint8_t)ob16p[2];   // simple cast ignores the inversed second half-word
     _data[1]=(uint8_t)ob16p[3];   // simple cast ignores the inversed second half-word
-    for(int i=2; i<_size; i++)
+    for(size_t i=2; i<_size; i++)
       _data[i]=(uint8_t)ob16p[OB_AVAIL_DATA_START+(i-2)];
   }
   _dirty = false;
@@ -88,7 +88,7 @@ void EEPROMClass::write( int const idx, uint8_t  const val ) {
 
 void EEPROMClass::erase(void) {
   _dirty = true;
-  for (int i=0;i<_size; i++)
+  for (size_t i=0;i<_size; i++)
     _data[i]=0xFF;
 }
 
@@ -132,7 +132,7 @@ bool EEPROMClass::commit()
   // Write the held values back one-by-one
   FLASH->CTLR |= CR_OPTPG_Set;   			// OBG  RW Perform user-selected word programming
   uint16_t *ob16p=(uint16_t *)OB_BASE;
-  for (int i=0;i<sizeof(hold)/sizeof(hold[0]); i++) {
+  for (size_t i=0;i<sizeof(hold)/sizeof(hold[0]); i++) {
     ob16p[i]=hold[i];
     while (FLASH->STATR & FLASH_BUSY);	// Wait for flash operation to be done
   }
@@ -142,7 +142,7 @@ bool EEPROMClass::commit()
   if(_data && _size)
   {
     uint16_t *ob16p=(uint16_t *)OB_BASE;
-    for (int i=2;i<_size; i++) {
+    for (size_t i=2;i<_size; i++) {
       if(_data[i]!=0xFF) {
         ob16p[OB_AVAIL_DATA_START+(i-2)]=_data[i];
         while (FLASH->STATR & FLASH_BUSY);	// Wait for flash operation to be done
