@@ -24,7 +24,10 @@ extern "C" {
 #if (defined(ADC_MODULE_ENABLED) && !defined(ADC_MODULE_ONLY)) ||\
     (defined(DAC_MODULE_ENABLED) && !defined(DAC_MODULE_ONLY))
 static PinName g_current_pin = NC;
-static int calibration_value = 0;
+
+#if defined(ADC_CTLR_ADCAL)
+  static int calibration_value = 0;
+#endif
 #endif
 
 
@@ -621,7 +624,6 @@ uint16_t adc_read_value(PinName pin, uint32_t resolution)
   __IO uint16_t uhADCxConvertedValue = 0;
   uint32_t samplingTime = ADC_SAMPLINGTIME;
   uint32_t channel = 0;
-  uint32_t bank = 0;
 
   if ((pin & PADC_BASE) && (pin < ANA_START))  //internal channle 
   {
