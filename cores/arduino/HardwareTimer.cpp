@@ -774,8 +774,8 @@ void HardwareTimer::setMode(uint32_t channel, TimerModes_t mode, PinName pin)
 {
   int timChannel = getChannel(channel);  //get arduino channel-->timer channel
   int timAssociatedInputChannel;      
-  TIM_OCInitTypeDef channelOC={0};
-  TIM_ICInitTypeDef channelIC={0};
+  TIM_OCInitTypeDef channelOC={};
+  TIM_ICInitTypeDef channelIC={};
 
   if (timChannel == -1) {
     Error_Handler();
@@ -1038,10 +1038,10 @@ void HardwareTimer::setCaptureCompare(uint32_t channel, uint32_t compare, TimerC
 uint32_t HardwareTimer::getCaptureCompare(uint32_t channel,  TimerCompareFormat_t format)
 {
 
-  int timChannel;
-  uint32_t return_value;
-  uint32_t CCR_RegisterValue;
-  uint32_t Prescalerfactor;
+  int timChannel = 0;
+  uint32_t return_value = 0;
+  uint32_t CCR_RegisterValue = 0;
+  uint32_t Prescalerfactor = 0;
 
   timChannel = getChannel(channel);
   Prescalerfactor = TIM_GetPrescaler(_timerObj.handle.Instance) + 1;
