@@ -44,6 +44,8 @@
 extern "C" {
 #endif
 
+extern uint64_t GetTick(void);
+
 /* Private Defines */
 
 /// @brief I2C timeout in tick unit
@@ -82,6 +84,7 @@ required I2C clock.
 */
 static uint32_t i2c_getTiming(i2c_t *obj, uint32_t frequency)
 {
+  (void)obj; // TODO: See why the i2c_t obj is unused and if it can be removed from the function args
   uint32_t ret = 0;
   uint32_t i2c_speed = 0;
   if (frequency <= 100000) {
