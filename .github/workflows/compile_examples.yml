@@ -26,16 +26,9 @@ jobs:
       - name: Replace installed core with PR checkout (as 0.0.0)
         run: |
           CORE_DIR="$HOME/.arduino15/packages/ch32-community/hardware/ch32v"
-          echo "Installed core dir: $CORE_DIR"
-          ls "$CORE_DIR"
-
-          # Remove every installed version (this includes all of their libraries)
-          rm -rf "$CORE_DIR"/*
-
-          # Recreate as 0.0.0 from the PR checkout
-          mkdir -p "$CORE_DIR/0.0.0"
+          rm -rf "$CORE_DIR"/*        # Remove every installed version (this includes all of their libraries)
+          mkdir -p "$CORE_DIR/0.0.0"  # Recreate as 0.0.0 from the PR checkout
           rsync -a --exclude='.git' arduino_core_ch32/ "$CORE_DIR/0.0.0/"
-          ls "$CORE_DIR/0.0.0/"
 
       - name: CH32L10x - Compile Sketches
         if: '!cancelled()'
