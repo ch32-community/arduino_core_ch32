@@ -162,6 +162,8 @@ void usbpd_sink_init(void)
 
 void usbpd_sink_phy_send_data(uint8_t* pBuf, uint8_t length, uint8_t sop)
 {
+    (void)pBuf; // TODO: Figure out why it is unused and if pBuf can be removed from the function signature
+
     // pdControl_g.cc_SourceGoodCRCOver = 0;
     USBPD->CONFIG |= IE_TX_END ;
 

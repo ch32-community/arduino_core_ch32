@@ -4,7 +4,7 @@
 #define KEY_INPUT  A10     //PC0
 
 uint8_t myIndex = 0;
-uint8_t setVoltage = REQUEST_5v;
+Request_voltage_t setVoltage = REQUEST_5v;
 
 void setup() {
   // put your setup code here, to run once:
