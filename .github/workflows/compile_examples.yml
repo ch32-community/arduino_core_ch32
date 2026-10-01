@@ -1,6 +1,7 @@
 name: Compile Library Examples with arduino_core_ch32
 
 on:
+  workflow_dispatch: # Enables the manual "Run workflow" button
   push:
     branches:
       - main
