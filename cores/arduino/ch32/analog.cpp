@@ -459,10 +459,11 @@ uint32_t get_dac_channel(PinName pin)
   */
 void DAC_Clock_EN(DAC_TypeDef *dac)
 {
-    /* DAC Periph clock enable */
-    RCC_APB1PeriphClockCmd(RCC_APB1Periph_DAC, ENABLE);
-    /* Configure DAC GPIO pins */
-    pinmap_pinout(g_current_pin, PinMap_DAC);
+  (void)dac; // TODO: Figure out if dac can be removed (I assume there is only 1 dac so they didn't need to know which one)
+  /* DAC Periph clock enable */
+  RCC_APB1PeriphClockCmd(RCC_APB1Periph_DAC, ENABLE);
+  /* Configure DAC GPIO pins */
+  pinmap_pinout(g_current_pin, PinMap_DAC);
 }
 
 
