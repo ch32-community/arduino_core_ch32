@@ -19,24 +19,44 @@
 #define                         SPI_MODULE_ENABLED
 #define                         I2C_MODULE_ENABLED
 #define                         TIM_MODULE_ENABLED
-#endif  //  IDE_MENU_PERIPHERALS  
+#endif
 
-/* CH32V006K8 Pins */
-#define PA0                     0
+/* CH32V002F4 Pins - same as CH32V003F4 TSSOP20 (18x GPIO, 8+3 ADC, 1xSER, no OPA */
 #define PA1                     PIN_A1
 #define PA2                     PIN_A0
-#define PA3                     3
-#define PA4                     4 
-#define PA5                     5
-#define PA6                     6
-#define PA7                     7 
-#define PB0                     8    
-#define PB1                     9
-#define PB2                     10
-#define PB3                     11 
-#define PB4                     12 
-#define PB5                     13
-#define PB6                     14 
+#define PC0                     2
+#define PC1                     3
+#define PC2                     4
+#define PC3                     5 
+#define PC4                     PIN_A2
+#define PC5                     7
+#define PC6                     8
+#define PC7                     9
+#define PD0                     10
+#define PD1                     11
+#define PD2                     PIN_A3
+#define PD3                     PIN_A4 
+#define PD4                     PIN_A7
+#define PD5                     PIN_A5
+#define PD6                     PIN_A6 
+#define PD7                     17
+
+/*
+#define PA0                     0         // N/A
+#define PA1                     PIN_A1
+#define PA2                     PIN_A0
+#define PA3                     3         // N/A
+#define PA4                     4          // N/A
+#define PA5                     5         // N/A
+#define PA6                     6         // N/A
+#define PA7                     7          // N/A
+#define PB0                     8             // N/A
+#define PB1                     9         // N/A
+#define PB2                     10         // N/A
+#define PB3                     11          // N/A
+#define PB4                     12          // N/A
+#define PB5                     13         // N/A
+#define PB6                     14          // N/A
 #define PC0                     15
 #define PC1                     16
 #define PC2                     17
@@ -53,13 +73,14 @@
 #define PD5                     PIN_A5
 #define PD6                     PIN_A6 
 #define PD7                     30
+*/
 
 // Alternate pins number
 #define PD5_ALT1                (PD5  | ALT1)
 #define PD6_ALT1                (PD6  | ALT1)
 
 
-#define NUM_DIGITAL_PINS        31
+#define NUM_DIGITAL_PINS        18
 #define NUM_ANALOG_INPUTS       8
 
 // #define ADC_CTLR_ADCAL          
@@ -118,6 +139,7 @@
   #define PIN_WIRE_SCL          PC2
 #endif
 
+// Timer Definitions
 #ifndef TIMER_TONE
   #define TIMER_TONE            TIM2
 #endif
