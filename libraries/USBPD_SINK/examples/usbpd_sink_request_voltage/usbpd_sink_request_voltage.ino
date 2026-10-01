@@ -1,7 +1,11 @@
 #include <usbpd_def.h>
 #include <usbpd_sink.h>
 
-#define KEY_INPUT  A10     //PC0
+#if defined(CH32L10x)
+    #define KEY_INPUT A0
+#else
+    #define KEY_INPUT A10     //PC0
+#endif
 
 uint8_t myIndex = 0;
 Request_voltage_t setVoltage = REQUEST_5v;
