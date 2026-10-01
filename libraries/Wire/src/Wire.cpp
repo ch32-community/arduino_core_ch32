@@ -131,6 +131,7 @@ void TwoWire::setClock(uint32_t frequency)
 
 uint8_t TwoWire::requestFrom(uint8_t address, uint8_t quantity, uint32_t iaddress, uint8_t isize, uint8_t sendStop)
 {
+  (void)sendStop;   // TODO: Implement the ability to send a stop bit or allow re-starting I2C
   uint8_t read = 0;
 
   if (_i2c.isMaster == 1) {

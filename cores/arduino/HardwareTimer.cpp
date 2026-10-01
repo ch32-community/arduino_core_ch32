@@ -1326,7 +1326,7 @@ void HardwareTimer::captureCompareCallback(TIM_HandleTypeDef *htim)
     Error_Handler();
   }
 
- uint32_t channel ;
+ uint32_t channel = 0;
 
 if( (htim->Instance->DMAINTENR & TIM_IT_CC1) || (htim->Instance->DMAINTENR & TIM_IT_CC2) \
  || (htim->Instance->DMAINTENR & TIM_IT_CC3) || (htim->Instance->DMAINTENR & TIM_IT_CC4) )
@@ -1354,7 +1354,7 @@ if( (htim->Instance->DMAINTENR & TIM_IT_CC1) || (htim->Instance->DMAINTENR & TIM
 
   timerObj_t *obj = get_timer_obj(htim);
   HardwareTimer *HT = (HardwareTimer *)(obj->__this);
-  if (HT->callbacks[channel]) {
+  if (HT->callbacks[channel]) { // TODO: This looks interesting (make sure 1-4 are valid inputs, seems fishy that 0 is not used)
     HT->callbacks[channel]();
   }
 }
@@ -1405,6 +1405,7 @@ bool HardwareTimer::isRunningChannel(uint32_t channel)
   */
 void HardwareTimer::updateRegistersIfNotRunning(TIM_TypeDef *TIMx)
 {
+  (void)TIMx;   // TODO: Figure out why TIMx is unused
   if (!isRunning()) {
     if (_timerObj.handle.Instance->DMAINTENR & TIM_IT_Update) 
     {

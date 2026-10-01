@@ -192,6 +192,7 @@ void ch32_interrupt_enable(GPIO_TypeDef *port, GPIOMode_TypeDef io_mode,uint16_t
   */
 void ch32_interrupt_disable(GPIO_TypeDef *port, uint16_t pin)
 {
+  (void)port; // TODO: See if port can be omitted from the function arguments (Port is not needed as the Interrupts are related to the pin number after initiliaztion)
   uint8_t id = get_pin_id(pin);
   gpio_irq_conf[id].callback = NULL;
 
