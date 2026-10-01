@@ -92,8 +92,9 @@ void IWDG_ReloadCounter(void)
 void IWDG_Enable(void)
 {
     IWDG->CTLR = CTLR_KEY_Enable;
-	while((RCC->RSTSCKR | 0x02) != SET)
-		;
+
+    const uint32_t LSIRDY = 0x0001;
+	while((RCC->RSTSCKR & LSIRDY) != LSIRDY){}  // Ensure the Internal low-sped clock (LSI) is stabilized
 }
 
 /*********************************************************************
