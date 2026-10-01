@@ -85,7 +85,11 @@ void timer3_init(uint16_t arr, uint16_t psc)
 {
     TIM_TimeBaseInitTypeDef TIM_TimeBaseInitStructure;
 
-    RCC_APB1PeriphClockCmd( RCC_APB1Periph_TIM3, ENABLE );
+    #if defined (CH32L10x)
+        RCC_PB1PeriphClockCmd(RCC_PB1Periph_TIM3, ENABLE);
+    #else
+        RCC_APB1PeriphClockCmd( RCC_APB1Periph_TIM3, ENABLE );
+    #endif
 
     TIM_TimeBaseInitStructure.TIM_Period = arr;
     TIM_TimeBaseInitStructure.TIM_Prescaler = psc;
@@ -142,15 +146,27 @@ void usbpd_sink_init(void)
 {
     GPIO_InitTypeDef GPIO_InitStructure = {};
 
-    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC, ENABLE);               //enable PD I/O clock, AFIO clock and PD clock
-    RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO, ENABLE);
-    RCC_AHBPeriphClockCmd(RCC_AHBPeriph_USBPD, ENABLE);
+    /* enable PD I/O clock, AFIO clock and PD clock */
+    #if defined(CH32L10x)
+        RCC_PB2PeriphClockCmd(RCC_PB2Periph_GPIOC, ENABLE);
+        RCC_PB2PeriphClockCmd(RCC_PB2Periph_AFIO, ENABLE);
+        RCC_HBPeriphClockCmd(RCC_HBPeriph_USBPD, ENABLE);
+    #else
+        RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC, ENABLE);
+        RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO, ENABLE);
+        RCC_AHBPeriphClockCmd(RCC_AHBPeriph_USBPD, ENABLE);
+    #endif
+
     GPIO_InitStructure.GPIO_Pin = GPIO_Pin_14 | GPIO_Pin_15;
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
     GPIO_Init(GPIOC, &GPIO_InitStructure);
 
-    AFIO->CTLR |= USBPD_IN_HVT | USBPD_PHY_V33;
+    #if defined(CH32L10x)
+        AFIO->CR |= USBPD_IN_HVT;
+    #else
+        AFIO->CTLR |= USBPD_IN_HVT | USBPD_PHY_V33;
+    #endif
 
     USBPD->CONFIG = PD_DMA_EN;
     USBPD->STATUS = BUF_ERR | IF_RX_BIT | IF_RX_BYTE | IF_RX_ACT | IF_RX_RESET | IF_TX_END;// Clear all interrupt flags
