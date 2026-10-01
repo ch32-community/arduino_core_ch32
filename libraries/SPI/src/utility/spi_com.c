@@ -58,7 +58,7 @@ extern "C" {
 uint32_t spi_getClkFreqInst(SPI_TypeDef *spi_inst)
 {
   uint32_t spi_freq = SystemCoreClock;
-  RCC_ClocksTypeDef rcc_clocks={0};
+  RCC_ClocksTypeDef rcc_clocks={};
   if (spi_inst != NP) 
   {
     RCC_GetClocksFreq( &rcc_clocks);

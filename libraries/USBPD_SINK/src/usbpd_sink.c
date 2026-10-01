@@ -140,7 +140,7 @@ void usbpd_sink_reset(void)
 
 void usbpd_sink_init(void)
 {
-    GPIO_InitTypeDef GPIO_InitStructure = {0};
+    GPIO_InitTypeDef GPIO_InitStructure = {};
 
     RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC, ENABLE);               //enable PD I/O clock, AFIO clock and PD clock
     RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO, ENABLE);

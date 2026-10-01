@@ -474,7 +474,7 @@ void DAC_Clock_EN(DAC_TypeDef *dac)
 void dac_write_value(PinName pin, uint32_t value, uint8_t do_init)
 {
   DAC_TypeDef *pdac=NULL;
-  DAC_InitTypeDef  DAC_InitType = {0};
+  DAC_InitTypeDef  DAC_InitType = {};
 
   uint32_t dacChannel;
 
@@ -616,7 +616,7 @@ uint16_t adc_read_value(PinName pin, uint32_t resolution)
 {
 
   ADC_TypeDef *padc ;
-  ADC_InitTypeDef ADC_InitStructure={0};
+  ADC_InitTypeDef ADC_InitStructure={};
 
   __IO uint16_t uhADCxConvertedValue = 0;
   uint32_t samplingTime = ADC_SAMPLINGTIME;
