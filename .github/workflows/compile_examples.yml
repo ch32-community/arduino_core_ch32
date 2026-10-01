@@ -19,9 +19,17 @@ jobs:
       - name: Setup Arduino CLI
         uses: arduino/setup-arduino-cli@v2
 
-      - name: Install arduino_core_ch32
+      - name: Install arduino_core_ch32 (for toolchain and tools)
         run: |
           arduino-cli core install ch32-community:ch32v --additional-urls https://github.com/ch32-community/board_manager_files/raw/main/package_ch32v_index.json
+
+      - name: Replace installed core with PR checkout
+        run: |
+          CORE_DIR=$(find "$HOME/.arduino15/packages/ch32-community/hardware/ch32v" -mindepth 1 -maxdepth 1 -type d | head -n 1)
+          echo "Installed core dir: $CORE_DIR"
+          rm -rf "$CORE_DIR"/*
+          rsync -a --exclude='.git' arduino_core_ch32/ "$CORE_DIR"/
+          ls "$CORE_DIR"
 
       - name: CH32L10x - Compile Sketches
         if: '!cancelled()'
