@@ -362,7 +362,7 @@ i2c_status_e i2c_slave_write_IT(i2c_t *obj, uint8_t *data, uint16_t size)
   (void)obj;
   (void)data;
   (void)size;
-  return I2C_ERROR;
+  return I2C_ERROR; // TODO: Check if this function can be removed
 }
 #endif // #if OPT_I2C_SLAVE
 
@@ -592,7 +592,7 @@ i2c_status_e i2c_IsDeviceReady(i2c_t *obj, uint8_t devAddr, uint32_t trials)
   (void)obj;
   (void)devAddr;
   (void)trials;
-  return I2C_ERROR;
+  return I2C_ERROR; // TODO: Check if this function can be removed
 }
 
 /* Aim of the function is to get i2c_s pointer using hi2c pointer */
