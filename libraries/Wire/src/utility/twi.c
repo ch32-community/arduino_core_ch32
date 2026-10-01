@@ -144,7 +144,7 @@ void i2c_custom_init(i2c_t *obj, uint32_t timing, uint32_t addressingMode, uint3
         // Enable I2C1 clock if not done
         if (obj->i2c == I2C1) 
         {
-          #if defined(CH32L10x)
+          #if defined(CH32L10x) || defined(CH32VM00X)
             RCC_PB1PeriphResetCmd(RCC_PB1Periph_I2C1, ENABLE);
             RCC_PB1PeriphResetCmd(RCC_PB1Periph_I2C1, DISABLE);
             RCC_PB1PeriphClockCmd(RCC_PB1Periph_I2C1, ENABLE);
@@ -163,7 +163,7 @@ void i2c_custom_init(i2c_t *obj, uint32_t timing, uint32_t addressingMode, uint3
         // Enable I2C2 clock if not done
         if (obj->i2c == I2C2) 
         {
-          #if defined(CH32L10x)
+          #if defined(CH32L10x) || defined(CH32VM00X)
             RCC_PB1PeriphResetCmd(RCC_PB1Periph_I2C2, ENABLE);
             RCC_PB1PeriphResetCmd(RCC_PB1Periph_I2C2, DISABLE);
             RCC_PB1PeriphClockCmd(RCC_PB1Periph_I2C2, ENABLE );

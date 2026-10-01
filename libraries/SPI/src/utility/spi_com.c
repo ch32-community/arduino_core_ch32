@@ -239,7 +239,7 @@ void spi_init(spi_t *obj, uint32_t speed, spi_mode_e mode, uint8_t msb)
   // Enable SPI clock
   if (handle->Instance == SPI1) 
   {
-    #if defined(CH32L10x)
+    #if defined(CH32L10x) || defined(CH32VM00X)
     RCC_PB2PeriphResetCmd(RCC_PB2Periph_SPI1, ENABLE);
     RCC_PB2PeriphResetCmd(RCC_PB2Periph_SPI1, DISABLE);
     RCC_PB2PeriphClockCmd(RCC_PB2Periph_SPI1, ENABLE );
@@ -306,7 +306,7 @@ void spi_deinit(spi_t *obj)
   // Reset SPI and disable clock
   if (handle->Instance == SPI1) 
   {
-    #if defined(CH32L10x)
+    #if defined(CH32L10x) || defined(CH32VM00X)
     RCC_PB2PeriphResetCmd(RCC_PB2Periph_SPI1, ENABLE);
     RCC_PB2PeriphResetCmd(RCC_PB2Periph_SPI1, DISABLE);
     RCC_PB2PeriphClockCmd(RCC_PB2Periph_SPI1, DISABLE);
