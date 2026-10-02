@@ -5,7 +5,7 @@
 # https://arduino.github.io/arduino-cli/latest/platform-specification/
 
 name=CH32 Community Core
-version=1.0.0
+version=1.0.1
 
 # Compile variables
 # ----------------------
@@ -162,7 +162,7 @@ recipe.size.regex.data=^(?:\.data|\.bss|\.noinit)\s+([0-9]+).*
 
 # Uploader tool
 ## WCH-LinkE
-tools.WCH_linkE.path={runtime.tools.openocd-1.0.0.path}/bin/
+tools.WCH_linkE.path={runtime.tools.openocd-2.12.path}/bin/
 tools.WCH_linkE.cmd=openocd
 tools.WCH_linkE.upload.params.verbose=
 tools.WCH_linkE.upload.params.quiet=
@@ -190,6 +190,6 @@ debug.toolchain.prefix=riscv-none-embed
 debug.toolchain.path={compiler.path}
 
 debug.server=openocd
-debug.server.openocd.path={runtime.tools.openocd-1.0.0.path}/bin/openocd
+debug.server.openocd.path={runtime.tools.openocd-2.12.path}/bin/openocd
 debug.server.openocd.scripts_dir={debug.toolchain.path}/scripts
 debug.server.openocd.script={runtime.tools.openocd.path}/bin/wch-riscv.cfg
