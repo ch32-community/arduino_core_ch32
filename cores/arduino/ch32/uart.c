@@ -499,7 +499,7 @@ size_t uart_write(serial_t *obj, const uint8_t *data, uint32_t size)
   for(size_t i = 0; i < size; i++){
     uint32_t tick_start = GetTick();
     while(serial_tx_active(obj)){
-      if((GetTick() - tickstart) >= TX_TIMEOUT)
+      if((GetTick() - tick_start) >= TX_TIMEOUT)
         return i;
     }
     USART_SendData(uart_handlers[obj->index]->Instance, data[i]);
