@@ -10,7 +10,6 @@
 #endif
 
 #if defined(UART_MODULE_ENABLED) && !defined(UART_MODULE_ONLY)
-
   #if !defined(HWSERIAL_NONE) && defined(SERIAL_UART_INSTANCE)
 
     #if SERIAL_UART_INSTANCE == 1
@@ -67,7 +66,6 @@
       #endif
 
     #endif /* SERIAL_UART_INSTANCE == x */
-
   #endif /* !HWSERIAL_NONE && SERIAL_UART_INSTANCE */
 
   #if !defined(HWSERIAL_NONE)
@@ -97,7 +95,6 @@
     #endif
   #endif /* !defined(HWSERIAL_NONE) */
 
-  #endif /* !defined(HWSERIAL_NONE)*/
   #if defined(ENABLE_HWSERIAL1)
     #if defined(USART1_BASE)
       #define HAVE_HWSERIAL1
@@ -138,7 +135,6 @@
       #define HAVE_HWSERIAL8
     #endif
   #endif
-
 #endif
 
 #endif /* WIRING_SERIAL_H */
