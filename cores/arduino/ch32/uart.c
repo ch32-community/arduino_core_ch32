@@ -485,6 +485,30 @@ size_t uart_debug_write(uint8_t *data, uint32_t size)
 }
 
 /**
+  * @brief  write the data on the uart: used by printf for debug only (syscalls)
+  * @param  obj  : serial object
+  * @param  data : bytes to write
+  * @param  size : number of data to write
+  * @retval The number of bytes written
+  */
+size_t uart_write(serial_t *obj, const uint8_t *data, uint32_t size)
+{
+  if(!obj || !data || !uart_handlers[obj->index] || obj->index >= UART_NUM)
+    return 0;
+
+  for(size_t i = 0; i < size; i+){
+    uint32_t tick_start = GetTick();
+    while(serial_tx_active(obj)){
+      if((GetTick() - tickstart) >= TX_TIMEOUT)
+        return i;
+    }
+    USART_SendData(uart_handlers[obj->index]->Instance, data[i]);
+  }
+
+  return size;
+}
+
+/**
  * Attempts to determine if the serial peripheral is already in use for RX
  *
  * @param obj The serial object

@@ -396,7 +396,7 @@ int HardwareSerial::read(void)
 
 size_t HardwareSerial::write(const uint8_t *buffer, size_t size)
 {
-    return  uart_debug_write((uint8_t *)buffer, size);
+  return uart_write(&_serial, buffer, size);
 }
 
 size_t HardwareSerial::write(uint8_t c)
