@@ -70,7 +70,34 @@
 
   #endif /* !HWSERIAL_NONE && SERIAL_UART_INSTANCE */
 
+  #if !defined(HWSERIAL_NONE)
+    #if defined(USART1_BASE) && !defined(ENABLE_HWSERIAL1)
+      #define ENABLE_HWSERIAL1
+    #endif
+    #if defined(USART2_BASE) && !defined(ENABLE_HWSERIAL2)
+      #define ENABLE_HWSERIAL2
+    #endif
+    #if defined(USART3_BASE) && !defined(ENABLE_HWSERIAL3)
+      #define ENABLE_HWSERIAL3
+    #endif
+    #if (defined(USART4_BASE) || defined(UART4_BASE)) && !defined(ENABLE_HWSERIAL4)
+      #define ENABLE_HWSERIAL4
+    #endif
+    #if defined(USART5_BASE) && !defined(ENABLE_HWSERIAL5)
+      #define ENABLE_HWSERIAL5
+    #endif
+    #if defined(USART6_BASE) && !defined(ENABLE_HWSERIAL6)
+      #define ENABLE_HWSERIAL6
+    #endif
+    #if defined(USART7_BASE) && !defined(ENABLE_HWSERIAL7)
+      #define ENABLE_HWSERIAL7
+    #endif
+    #if defined(USART8_BASE) && !defined(ENABLE_HWSERIAL8)
+      #define ENABLE_HWSERIAL8
+    #endif
+  #endif /* !defined(HWSERIAL_NONE) */
 
+  #endif /* !defined(HWSERIAL_NONE)*/
   #if defined(ENABLE_HWSERIAL1)
     #if defined(USART1_BASE)
       #define HAVE_HWSERIAL1
