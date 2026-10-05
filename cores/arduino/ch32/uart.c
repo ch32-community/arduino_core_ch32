@@ -496,7 +496,7 @@ size_t uart_write(serial_t *obj, const uint8_t *data, uint32_t size)
   if(!obj || !data || !uart_handlers[obj->index] || obj->index >= UART_NUM)
     return 0;
 
-  for(size_t i = 0; i < size; i+){
+  for(size_t i = 0; i < size; i++){
     uint32_t tick_start = GetTick();
     while(serial_tx_active(obj)){
       if((GetTick() - tickstart) >= TX_TIMEOUT)
