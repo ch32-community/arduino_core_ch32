@@ -85,6 +85,8 @@ void timer3_init(uint16_t arr, uint16_t psc)
 {
 #if defined(TIM_MODULE_ENABLED)
     // Init of HardwareTimer is done in main sketch
+	(void)arr;
+	(void)psc;
 #else
     // keep original bypass of CH32 core API
     TIM_TimeBaseInitTypeDef TIM_TimeBaseInitStructure;
@@ -111,8 +113,6 @@ void timer3_init(uint16_t arr, uint16_t psc)
     TIM_Cmd( TIM3, ENABLE );
 #endif // defined(TIM_MODULE_ENABLED)
 }
-
-
 
 void usbpd_sink_rx_mode(void)
 {
@@ -177,9 +177,7 @@ void usbpd_sink_init(void)
     USBPD->CONFIG = PD_DMA_EN;
     USBPD->STATUS = BUF_ERR | IF_RX_BIT | IF_RX_BYTE | IF_RX_ACT | IF_RX_RESET | IF_TX_END;// Clear all interrupt flags
 
-
     timer3_init(5000-1,48-1); // 5ms
-
 }
 
 void usbpd_sink_phy_send_data(uint8_t* pBuf, uint8_t length, uint8_t sop)
@@ -209,7 +207,6 @@ void usbpd_sink_phy_send_data(uint8_t* pBuf, uint8_t length, uint8_t sop)
     USBPD->CONTROL |= BMC_START ;                               //BMC_START
 }
 
-
 uint8_t usbpd_sink_check_cc_connect(void)
 {
     uint8_t ccLine = USBPD_CCNONE;
@@ -221,7 +218,6 @@ uint8_t usbpd_sink_check_cc_connect(void)
     {
         ccLine = USBPD_CC1;
     }
-
 
     USBPD->PORT_CC2 &= ~( CC_CE | PA_CC_AI );
     USBPD->PORT_CC2 |= CC_CMP_22;
@@ -247,8 +243,6 @@ void usbpd_sink_pdo_analyse(uint8_t* pdoData, pd_control_t* pdControl)
             pdControl->cc_PPSSourceCap[pdControl->cc_SourcePPSNum].MaxVoltage = POWER_DECODE_100MV(test.SourcePPSPDO.MaxVlotageIn100mVincrements);
             pdControl->cc_PPSSourceCap[pdControl->cc_SourcePPSNum].MinVoltage = POWER_DECODE_100MV(test.SourcePPSPDO.MinVlotageIn100mVincrements);
             pdControl->cc_PPSSourceCap[pdControl->cc_SourcePPSNum].Current = POWER_DECODE_50MA(test.SourcePPSPDO.MaxCurrentIn50mAincrements);
-
-
             pdControl->cc_SourcePPSNum++;
         }
         else // fixed
@@ -324,7 +318,6 @@ void usbpd_sink_pps_pdo_request(PPSSourceCap_t* sourceCap, uint8_t pdoNum, uint1
 
 }
 
-
 void usbpd_sink_process(void)
 {
     
@@ -391,7 +384,6 @@ void usbpd_sink_process(void)
                 pdControl_g.cc_State = CC_WAIT_ACCEPT;
                 
             }
-
             break;
         }
 
@@ -432,12 +424,10 @@ void usbpd_sink_process(void)
 
                 pdControl_g.cc_State = CC_GET_SOURCE_CAP+1;
             }
-            
             break;
         }
 
         default:
-            
             break;
     }
     
@@ -491,7 +481,6 @@ void usbpd_sink_protocol_analysis(USBPD_MessageHeader_t* messageHeader, pd_contr
                     // pdControl->cc_PD_Version = messageHeader->MessageHeader.SpecificationRevision;
                     memcpy(storageSourceCap,&usbpdRxBuffer[2],28);
                     // debug_log("cc source cap\r\n");
-                    
                     break;
                 }
 
@@ -572,7 +561,6 @@ void TIM3_IRQHandler(void)
 
     uint8_t ccLine = usbpd_sink_check_cc_connect();
 
-
     pdControl_g.cc_WaitTime++;
 
     if(pdControl_g.cc_State == CC_CHECK_CONNECT) // check connect
@@ -627,8 +615,5 @@ void TIM3_IRQHandler(void)
             pdControl_g.cc_NoneTimes = 0;
         }       
     }
-
     usbpd_sink_process();
 }
-
-
