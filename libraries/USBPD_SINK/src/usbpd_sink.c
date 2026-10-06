@@ -83,6 +83,10 @@ bool usbpd_sink_set_request_fixed_voltage(Request_voltage_t requestVoltage)
 
 void timer3_init(uint16_t arr, uint16_t psc)
 {
+#if defined(TIM_MODULE_ENABLED)
+    // Init of HardwareTimer is done in main sketch
+#else
+    // keep original bypass of CH32 core API
     TIM_TimeBaseInitTypeDef TIM_TimeBaseInitStructure;
 
     #if defined (CH32L10x)
@@ -105,7 +109,9 @@ void timer3_init(uint16_t arr, uint16_t psc)
     NVIC_EnableIRQ(TIM3_IRQn);
 
     TIM_Cmd( TIM3, ENABLE );
+#endif // defined(TIM_MODULE_ENABLED)
 }
+
 
 
 void usbpd_sink_rx_mode(void)
@@ -328,7 +334,7 @@ void usbpd_sink_process(void)
     {
         case CC_IDLE:
         {
-            NVIC_DisableIRQ( USBPD_IRQn );  
+            NVIC_DisableIRQ( USBPD_IRQn );
             usbpd_sink_reset();
                
             pdControl_g.cc_State = CC_CHECK_CONNECT;
@@ -359,6 +365,7 @@ void usbpd_sink_process(void)
                 NVIC_DisableIRQ( USBPD_IRQn );
                 usbpd_sink_pdo_analyse(storageSourceCap, &pdControl_g);
                 NVIC_EnableIRQ( USBPD_IRQn );
+
 
                 pdControl_g.cc_State = CC_SEND_REQUEST;
             }
@@ -547,11 +554,22 @@ void USBPD_IRQHandler(void)
 
 }
 
+#if defined(TIM_MODULE_ENABLED)
+    // Use of HardwareTimer in main sketch. All we have here is the callback that does all things needed
+void USBPD_Timer_Callback(void)
+#else
+    #warning TIM_MODULE_ENABLED is not defined. Please enable HardwareTimer module.
+    // keep original bypass of CH32 core API
 void TIM3_IRQHandler(void) __attribute__((interrupt("WCH-Interrupt-fast")));
 void TIM3_IRQHandler(void)
+#endif // defined(TIM_MODULE_ENABLED)
 { 
-    
+#if defined(TIM_MODULE_ENABLED)
+    // C++ HardwareTimer management is in main sketch; it calls timer to resume after handling this
+#else
     TIM_ClearITPendingBit(TIM3, TIM_IT_Update);
+#endif // defined(TIM_MODULE_ENABLED)
+
     uint8_t ccLine = usbpd_sink_check_cc_connect();
 
 
@@ -612,4 +630,5 @@ void TIM3_IRQHandler(void)
 
     usbpd_sink_process();
 }
+
 
