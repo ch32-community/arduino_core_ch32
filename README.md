@@ -66,15 +66,21 @@ If your board variant doesn't define `LED_BUILTIN`, substitute a GPIO pin that h
 
 ## 🧩 Supported boards
 
-All listed boards are working. The **Release** column shows the first core version that supported the board or peripheral.
+| Family | Tested Board | ADC | DAC | USART | GPIO | EXTI |SysTick | SPI (Master) | SPI (Slave) | I2C (Master) | I2C (Slave) |
+| :-- | :-- | :-: | :-: | :-: | :-: | :-: | :-: | :-: | :-: | :-: | :-: |
+| CH32V00x | CH32V003F4P        | ✅ | ❌ | ✅ | ✅ | ✅ | ✅ | ✅ | | ✅ | |
+| CH32V10x | CH32V103R8T6_BLACK | ✅ | ❌ | ✅ | ✅ | ✅ | ✅ | ✅ | | ✅ | |
+| CH32V20x | CH32V203G8U        | ✅ | ❌ | ✅ | ✅ | ✅ | ✅ | ✅ | | ✅ | |
+| CH32V30x | CH32V307VCT6_BLACK | ✅ |   | ✅ | ✅ | ✅ | ✅ | ✅ | | ✅ | |
+| CH32X035 | CH32X035G8U        | ✅ | ❌ | ✅ | ✅ | ✅ | ✅ | ✅ | | ✅ | |
 
-| Family | Board | Peripherals | Release | Notes |
-| :-- | :-- | :-- | :-: | :-- |
-| CH32V00x | CH32V003F4P | ADC, DAC, USART, GPIO, EXTI, SysTick | 1.0.0 | SPI and I2C master since 1.0.2 |
-| CH32V10x | CH32V103R8T6_BLACK | ADC, DAC, USART, GPIO, EXTI, SysTick, SPI, I2C master | 1.0.3 | |
-| CH32V20x | CH32V203G8U | ADC, DAC, USART, GPIO, EXTI, SysTick | 1.0.0 | SPI and I2C master since 1.0.2 |
-| CH32V30x | CH32V307VCT6_BLACK | ADC, DAC, USART, GPIO, EXTI, SysTick, SPI, I2C master | 1.0.3 | |
-| CH32X035 | CH32X035G8U | ADC, DAC, USART, GPIO, EXTI, SysTick | 1.0.1 | SPI and I2C master since 1.0.2 |
+
+| Family | Board |
+| :-: | :-- |
+| ✅ | Supported|
+| 🟡 | Partial support |
+| ❌ | Not supported by hardware|
+| \[empty\] | Unknown |
 
 Missing your chip? [Open an issue](https://github.com/ch32-community/arduino_core_ch32/issues/new) or send a pull request. New variants are very welcome.
 
