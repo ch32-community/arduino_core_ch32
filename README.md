@@ -68,7 +68,8 @@ If your board variant doesn't define `LED_BUILTIN`, substitute a GPIO pin that h
 
 | Family | Tested Board | ADC | DAC | USART | GPIO | EXTI |SysTick | SPI (Master) | SPI (Slave) | I2C (Master) | I2C (Slave) |
 | :-- | :-- | :-: | :-: | :-: | :-: | :-: | :-: | :-: | :-: | :-: | :-: |
-| CH32V00x | CH32V003F4P        | ✅ | ❌ | ✅ | ✅ | ✅ | ✅ | ✅ | | ✅ | |
+| CH32V00x | CH32V003F4P        | ✅ | ❌ | ✅ | ✅ | ✅ | ✅ | ✅ | | ✅ | ✅ |
+| CH32VM00X | CH32V006K8        | ✅ | ❌ | ✅ | ✅ | ✅ | ✅ | ✅ | | ✅ | |
 | CH32V10x | CH32V103R8T6_BLACK | ✅ | ❌ | ✅ | ✅ | ✅ | ✅ | ✅ | | ✅ | |
 | CH32V20x | CH32V203G8U        | ✅ | ❌ | ✅ | ✅ | ✅ | ✅ | ✅ | | ✅ | |
 | CH32V30x | CH32V307VCT6_BLACK | ✅ |   | ✅ | ✅ | ✅ | ✅ | ✅ | | ✅ | |
