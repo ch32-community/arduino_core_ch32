@@ -153,7 +153,9 @@ void USART_Printf_Init(uint32_t baudrate)
  * @return  size: Data length
  */
 
-#if 1
+#if 0
+// MxRD: changed to "#if 0" because other family members also have this disabled. 
+// V20x says it's not needed for Arduino and it gave a warning for unused parameter fd,
 __attribute__((used)) int _write(int fd, char *buf, int size)
 {
     int i;
