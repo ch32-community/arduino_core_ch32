@@ -522,9 +522,12 @@ int uart_getc(serial_t *obj, unsigned char *c)
     return -1; 
   }
 
+/* // MxRD: this is redundant since serial_rx_active(obj) already checked the same flag. 
+   // It returned false to indicate that USART_FLAG_RXNE was not RESET.
   if (!USART_GetFlagStatus(uart_handlers[obj->index]->Instance, USART_FLAG_RXNE)){
     return -1;
   }
+*/ 
 
   *c = (unsigned char)USART_ReceiveData(uart_handlers[obj->index]->Instance);
 
