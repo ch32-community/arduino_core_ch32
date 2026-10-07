@@ -11,47 +11,45 @@
   SCL -------------- SCL(MCU)
   SDA ---------------SDA(MCU)
 
-  created 30 Jurn 2023 
-  by TempersLee
-
- */
+  Created 30 June 2023 by TempersLee
+*/
 
 #include <Wire.h>
-
 
 #define AT24C02_ADDR  0x50   //will left shift 1 bits in library
 void setup()
 {
   uint16_t i=0;
   Serial.begin(115200);
-  Serial.printf("%s  Chip ID: 0x%08x\r\n", "Hello CH32duino!", DBGMCU_GetDEVID());
+  Serial.print("Hello CH32duino!  ");
+  Serial.print("Chip ID: ");
+  Serial.println(DBGMCU_GetDEVID(), HEX);
+  
   Wire.begin();  // join i2c bus (address optional for master)
 
-  Serial.printf("Write AT24C02:\r\n");
+  Serial.println("Write AT24C02...");
   for(i=0;i<256;i++)
   {
       deviceWriteOneByte(i,i);
-      delay(5);  
+      delay(5);
   }
-  Serial.printf("Write Finish!\r\n");
+  Serial.println("Write Finish!");
 
-  Serial.printf("Read AT24C02:\r\n");
+  Serial.println("Read AT24C02:");
   for(i=0;i<256;i++)
   {
-    if(i%16 == 0 && i!=0)Serial.printf("\n");
-    Serial.printf("%02x ",deviceReadOneByte(i));     
+    if(i%16 == 0 && i!=0)Serial.println("");
+    Serial.print(deviceReadOneByte(i), HEX);
+    Serial.print(" ");
   }
 
-  Serial.printf("\r\nEND!\r\n");
+  Serial.println("\r\nEND!");
 }
-
 
 void loop()
 {
   
 }
-
-
 
 void deviceWriteOneByte(uint8_t addr, uint8_t data)
 {
@@ -68,4 +66,5 @@ uint8_t deviceReadOneByte(uint8_t addr)
   {
     return Wire.read();
   }
+  return 0; // Should not get here
 }

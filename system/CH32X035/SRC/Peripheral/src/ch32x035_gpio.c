@@ -574,7 +574,7 @@ void GPIO_EXTILineConfig(uint8_t GPIO_PortSource, uint16_t GPIO_PinSource)
  */
 void GPIO_IPD_Unused(void)
 {
-    GPIO_InitTypeDef GPIO_InitStructure = {0};
+    GPIO_InitTypeDef GPIO_InitStructure = {};
 
     /* All pull-up */
     RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA | RCC_APB2Periph_GPIOB | RCC_APB2Periph_GPIOC | RCC_APB2Periph_AFIO, ENABLE);

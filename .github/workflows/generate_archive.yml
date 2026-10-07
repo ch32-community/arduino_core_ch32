@@ -1,0 +1,62 @@
+name: release
+
+on:
+  release:
+    types: [published]
+
+env:
+  OUTPUT_ZIP_FILE: "ch32-community-arduino-core-${{ github.ref_name }}.zip"
+
+jobs:
+  upload-full-archive:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout project source code (with submodules)
+        uses: actions/checkout@v4
+        with:
+          path: project
+          submodules: recursive
+
+      - name: Package source code including submodules
+        uses: qmonnet/git-archive-all-action@v1
+        with:
+          output-files: ${{ env.OUTPUT_ZIP_FILE }}
+          base-repo: project
+
+      - name: Compute SHA-256 and size
+        id: hash
+        run: |
+          ZIP="${{ env.OUTPUT_ZIP_FILE }}"
+          SHA=$(sha256sum "$ZIP" | cut -d' ' -f1)
+          SIZE=$(stat -c%s "$ZIP")
+          URL="https://github.com/${{ github.repository }}/releases/download/${{ github.ref_name }}/$ZIP"
+
+          echo "File:     $ZIP"
+          echo "SHA-256:  $SHA"
+          echo "Size:     $SIZE bytes"
+          echo "URL:      $URL"
+
+          # Save a checksum file to upload alongside the archives
+          sha256sum "$ZIP" > "$ZIP.sha256"
+
+          # Expose as step outputs for later steps
+          echo "sha=$SHA"   >> "$GITHUB_OUTPUT"
+          echo "size=$SIZE" >> "$GITHUB_OUTPUT"
+
+          # Paste-ready snippet in the job summary
+          {
+            echo "### package_index.json values"
+            echo '```json'
+            echo "\"archiveFileName\": \"$ZIP\","
+            echo "\"url\": \"$URL\","
+            echo "\"checksum\": \"SHA-256:$SHA\","
+            echo "\"size\": \"$SIZE\""
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload archives to the triggering release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ${{ env.OUTPUT_ZIP_FILE }}

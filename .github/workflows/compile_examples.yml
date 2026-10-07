@@ -1,0 +1,59 @@
+name: Compile Library Examples with arduino_core_ch32
+
+on:
+  workflow_dispatch: # Enables the manual "Run workflow" button
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Custom Core
+        uses: actions/checkout@v7
+        with:
+          path: arduino_core_ch32
+
+      - name: Setup Arduino CLI
+        uses: arduino/setup-arduino-cli@v2
+
+      - name: Install arduino_core_ch32 (for toolchain and tools)
+        run: |
+          arduino-cli core install ch32-community:ch32v --additional-urls https://github.com/ch32-community/board_manager_files/raw/main/package_ch32v_index.json
+
+      - name: Replace installed core with PR checkout (as 0.0.0)
+        run: |
+          CORE_DIR="$HOME/.arduino15/packages/ch32-community/hardware/ch32v"
+          rm -rf "$CORE_DIR"/*        # Remove every installed version (this includes all of their libraries)
+          mkdir -p "$CORE_DIR/0.0.0"  # Recreate as 0.0.0 from the PR checkout
+          rsync -a --exclude='.git' arduino_core_ch32/ "$CORE_DIR/0.0.0/"
+
+      - name: CH32L10x - Compile Sketches
+        if: '!cancelled()'
+        run: python3 ./arduino_core_ch32/tools/build_examples.py CH32L10x
+
+      - name: CH32V00x - Compile Sketches
+        if: '!cancelled()'
+        run: python3 ./arduino_core_ch32/tools/build_examples.py CH32V00x
+
+      - name: CH32V10x - Compile Sketches
+        if: '!cancelled()'
+        run: python3 ./arduino_core_ch32/tools/build_examples.py CH32V10x
+
+      - name: CH32V20x - Compile Sketches
+        if: '!cancelled()'
+        run: python3 ./arduino_core_ch32/tools/build_examples.py CH32V20x
+
+      - name: CH32V30x - Compile Sketches
+        if: '!cancelled()'
+        run: python3 ./arduino_core_ch32/tools/build_examples.py CH32V30x
+
+      - name: CH32VM00X - Compile Sketches
+        if: '!cancelled()'
+        run: python3 ./arduino_core_ch32/tools/build_examples.py CH32VM00X
+
+      - name: CH32X035 - Compile Sketches
+        if: '!cancelled()'
+        run: python3 ./arduino_core_ch32/tools/build_examples.py CH32X035

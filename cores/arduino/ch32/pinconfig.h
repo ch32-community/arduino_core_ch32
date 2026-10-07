@@ -29,7 +29,7 @@ static inline void pin_DisconnectDebug(PinName pin)
 
 static inline void pin_PullConfig(GPIO_TypeDef *gpio, uint32_t pin, uint32_t pull_config)
 {
-    GPIO_InitTypeDef init={0} ;
+    GPIO_InitTypeDef init={} ;
     switch (pull_config)
     {
     case GPIO_PULLUP:

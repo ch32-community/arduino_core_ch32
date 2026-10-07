@@ -44,6 +44,8 @@
 extern "C" {
 #endif
 
+extern uint64_t GetTick(void);
+
 /* Private Defines */
 
 /// @brief I2C timeout in tick unit
@@ -82,6 +84,7 @@ required I2C clock.
 */
 static uint32_t i2c_getTiming(i2c_t *obj, uint32_t frequency)
 {
+  (void)obj; // TODO: See why the i2c_t obj is unused and if it can be removed from the function args
   uint32_t ret = 0;
   uint32_t i2c_speed = 0;
   if (frequency <= 100000) {
@@ -141,9 +144,15 @@ void i2c_custom_init(i2c_t *obj, uint32_t timing, uint32_t addressingMode, uint3
         // Enable I2C1 clock if not done
         if (obj->i2c == I2C1) 
         {
-          RCC_APB1PeriphResetCmd(RCC_APB1Periph_I2C1, ENABLE);
-          RCC_APB1PeriphResetCmd(RCC_APB1Periph_I2C1, DISABLE);
-          RCC_APB1PeriphClockCmd(RCC_APB1Periph_I2C1, ENABLE );
+          #if defined(CH32L10x) || defined(CH32VM00X)
+            RCC_PB1PeriphResetCmd(RCC_PB1Periph_I2C1, ENABLE);
+            RCC_PB1PeriphResetCmd(RCC_PB1Periph_I2C1, DISABLE);
+            RCC_PB1PeriphClockCmd(RCC_PB1Periph_I2C1, ENABLE);
+          #else
+            RCC_APB1PeriphResetCmd(RCC_APB1Periph_I2C1, ENABLE);
+            RCC_APB1PeriphResetCmd(RCC_APB1Periph_I2C1, DISABLE);
+            RCC_APB1PeriphClockCmd(RCC_APB1Periph_I2C1, ENABLE);
+          #endif
 
           obj->irq = I2C1_EV_IRQn;
           obj->irqER = I2C1_ER_IRQn;
@@ -154,9 +163,15 @@ void i2c_custom_init(i2c_t *obj, uint32_t timing, uint32_t addressingMode, uint3
         // Enable I2C2 clock if not done
         if (obj->i2c == I2C2) 
         {
-          RCC_APB1PeriphResetCmd(RCC_APB1Periph_I2C2, ENABLE);
-          RCC_APB1PeriphResetCmd(RCC_APB1Periph_I2C2, DISABLE);
-          RCC_APB1PeriphClockCmd(RCC_APB1Periph_I2C2, ENABLE );
+          #if defined(CH32L10x) || defined(CH32VM00X)
+            RCC_PB1PeriphResetCmd(RCC_PB1Periph_I2C2, ENABLE);
+            RCC_PB1PeriphResetCmd(RCC_PB1Periph_I2C2, DISABLE);
+            RCC_PB1PeriphClockCmd(RCC_PB1Periph_I2C2, ENABLE );
+          #else
+            RCC_APB1PeriphResetCmd(RCC_APB1Periph_I2C2, ENABLE);
+            RCC_APB1PeriphResetCmd(RCC_APB1Periph_I2C2, DISABLE);
+            RCC_APB1PeriphClockCmd(RCC_APB1Periph_I2C2, ENABLE );
+          #endif
 
           obj->irq = I2C2_EV_IRQn;
           obj->irqER = I2C2_ER_IRQn;
@@ -359,8 +374,10 @@ if(size)
 #if OPT_I2C_SLAVE
 i2c_status_e i2c_slave_write_IT(i2c_t *obj, uint8_t *data, uint16_t size)
 {
- 
-
+  (void)obj;
+  (void)data;
+  (void)size;
+  return I2C_ERROR; // TODO: Check if this function can be removed
 }
 #endif // #if OPT_I2C_SLAVE
 
@@ -587,7 +604,10 @@ i2c_status_e i2c_slave_read(i2c_t *obj, uint8_t *data, uint16_t size)
   */
 i2c_status_e i2c_IsDeviceReady(i2c_t *obj, uint8_t devAddr, uint32_t trials)
 {
- 
+  (void)obj;
+  (void)devAddr;
+  (void)trials;
+  return I2C_ERROR; // TODO: Check if this function can be removed
 }
 
 /* Aim of the function is to get i2c_s pointer using hi2c pointer */

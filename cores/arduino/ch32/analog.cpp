@@ -24,7 +24,10 @@ extern "C" {
 #if (defined(ADC_MODULE_ENABLED) && !defined(ADC_MODULE_ONLY)) ||\
     (defined(DAC_MODULE_ENABLED) && !defined(DAC_MODULE_ONLY))
 static PinName g_current_pin = NC;
-static int calibration_value = 0;
+
+#if defined(ADC_CTLR_ADCAL)
+  static int calibration_value = 0;
+#endif
 #endif
 
 
@@ -456,10 +459,11 @@ uint32_t get_dac_channel(PinName pin)
   */
 void DAC_Clock_EN(DAC_TypeDef *dac)
 {
-    /* DAC Periph clock enable */
-    RCC_APB1PeriphClockCmd(RCC_APB1Periph_DAC, ENABLE);
-    /* Configure DAC GPIO pins */
-    pinmap_pinout(g_current_pin, PinMap_DAC);
+  (void)dac; // TODO: Figure out if dac can be removed (I assume there is only 1 dac so they didn't need to know which one)
+  /* DAC Periph clock enable */
+  RCC_APB1PeriphClockCmd(RCC_APB1Periph_DAC, ENABLE);
+  /* Configure DAC GPIO pins */
+  pinmap_pinout(g_current_pin, PinMap_DAC);
 }
 
 
@@ -474,7 +478,7 @@ void DAC_Clock_EN(DAC_TypeDef *dac)
 void dac_write_value(PinName pin, uint32_t value, uint8_t do_init)
 {
   DAC_TypeDef *pdac=NULL;
-  DAC_InitTypeDef  DAC_InitType = {0};
+  DAC_InitTypeDef  DAC_InitType = {};
 
   uint32_t dacChannel;
 
@@ -616,12 +620,11 @@ uint16_t adc_read_value(PinName pin, uint32_t resolution)
 {
 
   ADC_TypeDef *padc ;
-  ADC_InitTypeDef ADC_InitStructure={0};
+  ADC_InitTypeDef ADC_InitStructure={};
 
   __IO uint16_t uhADCxConvertedValue = 0;
   uint32_t samplingTime = ADC_SAMPLINGTIME;
   uint32_t channel = 0;
-  uint32_t bank = 0;
 
   if ((pin & PADC_BASE) && (pin < ANA_START))  //internal channle 
   {

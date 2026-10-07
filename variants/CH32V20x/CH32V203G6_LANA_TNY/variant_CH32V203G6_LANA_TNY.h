@@ -15,65 +15,38 @@
 /* ENABLE Peripherals */
 #define                         ADC_MODULE_ENABLED
 #define                         UART_MODULE_ENABLED
-#define                         SPI_MODULE_ENABLED
+#define                         SPI_MODULE_ENABLED  
 #define                         I2C_MODULE_ENABLED
 #define                         TIM_MODULE_ENABLED
 
-/* CH32V103R8T6 Pins */
-
-#define PA0                     0   // D0/A0
-#define PA1                     1   // D1/A1
-#define PA2                     2   // D2/A2
-#define PA3                     3   // D3/A3
-#define PA4                     4   // D4/A4
-#define PA5                     5   // D5/A5
+/* CH32V203G6 Pins */
+#define PA0                     0
+#define PA1                     1
+#define PA2                     2
+#define PA3                     3
+#define PA4                     4
+#define PA5                     5
 #define PA6                     6
 #define PA7                     7
-#define PA8                     8
-#define PA9                     9   // USART1_TX
-#define PA10                    10  // USART1_RX
-#define PA11                    11
-#define PA12                    12
-#define PA13                    13
-#define PA14                    14
-#define PA15                    15
-#define PB0                     16
-#define PB1                     17
-#define PB2                     18
-#define PB3                     19
-#define PB4                     20
-#define PB5                     21
-#define PB6                     22
-#define PB7                     23
-#define PB8                     24
-#define PB9                     25
-#define PB10                    26  // I2C2_SCL USART3_TX
-#define PB11                    27  // I2C2_SDA USART3_RX
-#define PB12                    28  // SPI2_NSS
-#define PB13                    29  // SPI2_SCK
-#define PB14                    30  // SPI2_MISO
-#define PB15                    31  // SPI2_MOSI
-#define PC0                     32
-#define PC1                     33
-#define PC2                     34
-#define PC3                     35
-#define PC4                     36
-#define PC5                     37
-#define PC6                     38
-#define PC7                     39
-#define PC8                     40
-#define PC9                     41
-#define PC10                    42
-#define PC11                    43
-#define PC12                    44
-#define PC13                    45
-#define PC14                    46
-#define PC15                    47
-#define PD0                     48
-#define PD1                     49
-#define PD2                     50
-
-
+#define PA8                     PNUM_NOT_DEFINED
+#define PA9                     8
+#define PA10                    PNUM_NOT_DEFINED
+#define PA11                    PNUM_NOT_DEFINED
+#define PA12                    PNUM_NOT_DEFINED
+#define PA13                    9
+#define PA14                    10
+#define PA15                    11
+#define PB0                     12
+#define PB1                     13
+#define PB2                     PNUM_NOT_DEFINED
+#define PB3                     14
+#define PB4                     15
+#define PB5                     16
+#define PB6                     17
+#define PB7                     18
+#define PB8                     19
+#define PD0                     20
+#define PD1                     21
 
 // Alternate pins number
 #define PA0_ALT1                (PA0  | ALT1)
@@ -82,15 +55,24 @@
 #define PA3_ALT1                (PA3  | ALT1)
 #define PA4_ALT1                (PA4  | ALT1)
 #define PA5_ALT1                (PA5  | ALT1)
+#define PA6_ALT1                (PA6  | ALT1)
+#define PA7_ALT1                (PA7  | ALT1)
+#define PA8_ALT1                (PA8  | ALT1)
+#define PA9_ALT1                (PA9  | ALT1)
+#define PA10_ALT1               (PA10 | ALT1)
+#define PA11_ALT1               (PA11 | ALT1)
+#define PA15_ALT1               (PA15 | ALT1)
+#define PB0_ALT1                (PB0  | ALT1)
+#define PB0_ALT2                (PB0  | ALT2)
+#define PB1_ALT1                (PB1  | ALT1)
+#define PB1_ALT2                (PB1  | ALT2)
+#define PB3_ALT1                (PB3  | ALT1)
+#define PB10_ALT1               (PB10 | ALT1)
+#define PB11_ALT1               (PB11 | ALT1)
 
-
-
-
-
-
-#define NUM_DIGITAL_PINS        51
-#define NUM_ANALOG_INPUTS       6
-// #define ADC_CTLR_ADCAL
+#define NUM_DIGITAL_PINS        22
+#define NUM_ANALOG_INPUTS       10
+// #define ADC_CTLR_ADCAL          
 #define ADC_RESOLUTION          12
 
 
@@ -99,16 +81,19 @@
   #define LED_BUILTIN           PNUM_NOT_DEFINED
 #endif
 
-
+// On-board NEOPIXEL pin number
+#ifndef PIN_NEOPIXEL
+  #define PIN_NEOPIXEL          PD0
+#endif
 
 // On-board user button
 #ifndef USER_BTN
-  #define USER_BTN              PNUM_NOT_DEFINED
+  #define USER_BTN              PB8
 #endif
 
 // SPI definitions
 #ifndef PIN_SPI_SS
-  #define PIN_SPI_SS            PA4
+  #define PIN_SPI_SS            PNUM_NOT_DEFINED
 #endif
 #ifndef PIN_SPI_SS1
   #define PIN_SPI_SS1           PNUM_NOT_DEFINED
@@ -131,10 +116,15 @@
 #endif
 
 // I2C definitions
-  #define PIN_WIRE_SDA          PB11
-  #define PIN_WIRE_SCL          PB10
+#ifndef PIN_WIRE_SDA
+  #define PIN_WIRE_SDA          PB7
+#endif
+#ifndef PIN_WIRE_SCL
+  #define PIN_WIRE_SCL          PB6
+#endif
 
 // Timer Definitions
+// Use TIM6/TIM7 when possible as servo and tone don't need GPIO output pin
 #ifndef TIMER_TONE
   #define TIMER_TONE            TIM3
 #endif
@@ -145,15 +135,15 @@
 
 // UART Definitions
 #ifndef SERIAL_UART_INSTANCE
-  #define SERIAL_UART_INSTANCE  1
+  #define SERIAL_UART_INSTANCE  2
 #endif
 // Default pin used for generic 'Serial' instance
 // Mandatory for Firmata
 #ifndef PIN_SERIAL_RX
-  #define PIN_SERIAL_RX         PA10
+  #define PIN_SERIAL_RX         PA3
 #endif
 #ifndef PIN_SERIAL_TX
-  #define PIN_SERIAL_TX         PA9
+  #define PIN_SERIAL_TX         PA2
 #endif
 
 /*----------------------------------------------------------------------------

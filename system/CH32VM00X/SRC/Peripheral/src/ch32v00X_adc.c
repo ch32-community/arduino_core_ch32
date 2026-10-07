@@ -112,8 +112,11 @@
  */
 void ADC_DeInit(ADC_TypeDef *ADCx)
 {
-    RCC_PB2PeriphResetCmd(RCC_PB2Periph_ADC1, ENABLE);
-    RCC_PB2PeriphResetCmd(RCC_PB2Periph_ADC1, DISABLE);
+    if(ADCx == ADC1)
+    {
+        RCC_PB2PeriphResetCmd(RCC_PB2Periph_ADC1, ENABLE);
+        RCC_PB2PeriphResetCmd(RCC_PB2Periph_ADC1, DISABLE);
+    }
 }
 
 /*********************************************************************

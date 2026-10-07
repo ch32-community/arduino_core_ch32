@@ -589,7 +589,7 @@ void GPIO_EXTILineConfig(uint8_t GPIO_PortSource, uint8_t GPIO_PinSource)
  */
 void GPIO_IPD_Unused(void)
 {
-    GPIO_InitTypeDef GPIO_InitStructure = {0};
+    GPIO_InitTypeDef GPIO_InitStructure = {};
     uint32_t chip = 0;
 
     OPA_Trim = (((*(uint32_t *)OPA_TRIM_BASE & 0x0000001F) << 25) | (((*(uint32_t *)OPA_TRIM_BASE & 0x00008000)^0x00008000) << 9)) \
