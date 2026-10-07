@@ -240,8 +240,8 @@ void usbpd_sink_pdo_analyse(uint8_t* pdoData, pd_control_t* pdControl)
         test.d32 = *(uint32_t*)(&pdoData[i*4]);
         if((test.SourcePPSPDO.AugmentedPowerDataObject==3u) && (test.SourcePPSPDO.SPRprogrammablePowerSupply==0)) //PPS
         {
-            pdControl->cc_PPSSourceCap[pdControl->cc_SourcePPSNum].MaxVoltage = POWER_DECODE_100MV(test.SourcePPSPDO.MaxVlotageIn100mVincrements);
-            pdControl->cc_PPSSourceCap[pdControl->cc_SourcePPSNum].MinVoltage = POWER_DECODE_100MV(test.SourcePPSPDO.MinVlotageIn100mVincrements);
+            pdControl->cc_PPSSourceCap[pdControl->cc_SourcePPSNum].MaxVoltage = POWER_DECODE_100MV(test.SourcePPSPDO.MaxVoltageIn100mVincrements);
+            pdControl->cc_PPSSourceCap[pdControl->cc_SourcePPSNum].MinVoltage = POWER_DECODE_100MV(test.SourcePPSPDO.MinVoltageIn100mVincrements);
             pdControl->cc_PPSSourceCap[pdControl->cc_SourcePPSNum].Current = POWER_DECODE_50MA(test.SourcePPSPDO.MaxCurrentIn50mAincrements);
             pdControl->cc_SourcePPSNum++;
         }
