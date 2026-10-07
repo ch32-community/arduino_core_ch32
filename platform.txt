@@ -7,6 +7,10 @@
 name=CH32 Community Core
 version=1.0.1
 
+# OpenOCD & Compiler Path (Update version when updated)
+toolchain_dir={runtime.tools.riscv-none-embed-gcc-8.2.0.path}
+openocd_dir={runtime.tools.openocd-2.12.path}
+
 # Compile variables
 # ----------------------
 compiler.ch.extra_include="-I{build.source.path}" "-I{build.core.path}" "-I{build.core.path}/avr/" "-I{build.core.path}/ch32/" "-I{build.core.path}/ch32/lib/" "-I{build.system.path}/{build.series}/USER/" "-I{build.system.path}/{build.series}/SRC/Core/" "-I{build.system.path}/{build.series}/SRC/Debug/" "-I{build.system.path}/{build.series}/SRC/Startup/" "-I{build.system.path}/{build.series}/SRC/Peripheral/inc/" "-I{build.system.path}/{build.series}/SRC/Peripheral/src/"
@@ -19,7 +23,7 @@ compiler.warning_flags.more=-Wall
 compiler.warning_flags.all=-Wall -Wextra -Wno-comment
 
 #---compiler.cmd
-compiler.path={runtime.tools.riscv-none-embed-gcc-8.2.0.path}/bin/
+compiler.path={toolchain_dir}/bin/
 
 compiler.S.cmd=riscv-none-embed-gcc
 compiler.c.cmd=riscv-none-embed-gcc
@@ -162,7 +166,7 @@ recipe.size.regex.data=^(?:\.data|\.bss|\.noinit)\s+([0-9]+).*
 
 # Uploader tool
 ## WCH-LinkE
-tools.WCH_linkE.path={runtime.tools.openocd-2.12.path}/bin/
+tools.WCH_linkE.path={openocd_dir}/bin/
 tools.WCH_linkE.cmd=openocd
 tools.WCH_linkE.upload.params.verbose=
 tools.WCH_linkE.upload.params.quiet=
@@ -190,6 +194,6 @@ debug.toolchain.prefix=riscv-none-embed
 debug.toolchain.path={compiler.path}
 
 debug.server=openocd
-debug.server.openocd.path={runtime.tools.openocd-2.12.path}/bin/openocd
-debug.server.openocd.scripts_dir={debug.toolchain.path}/scripts
-debug.server.openocd.script={runtime.tools.openocd.path}/bin/wch-riscv.cfg
+debug.server.openocd.path={openocd_dir}/bin/openocd
+debug.server.openocd.scripts_dir={openocd_dir}/scripts
+debug.server.openocd.script={openocd_dir}/bin/wch-riscv.cfg
