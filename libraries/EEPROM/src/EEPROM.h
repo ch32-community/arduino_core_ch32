@@ -70,6 +70,7 @@ class EEPROMClass {
 
     uint8_t read( int const idx );
     void write( int const idx, uint8_t const val);     // requires commit() to make data stick
+    void update( int const idx, uint8_t const val) { write(idx, val); };     // alias for write. added for compatibility
     void erase(void);     // requires commit() to make data stick
 
     bool commit(void);

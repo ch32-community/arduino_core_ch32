@@ -26,7 +26,7 @@ void setup()
 
   // Show the contents of the entire EEPROM memory
   Serial.print("EEPROM contents:");
-  for(size_t n=0; n<EEPROM.length(); n++)
+  for(int n=0; n<EEPROM.length(); n++)
   {
     if(n%8==0) Serial.println("");
 	  Serial.printf("%02X ", EEPROM[n]);
