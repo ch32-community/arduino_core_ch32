@@ -248,7 +248,7 @@ void usbpd_sink_pdo_analyse(uint8_t* pdoData, pd_control_t* pdControl)
         else // fixed
         {
             pdControl->cc_FixedSourceCap[i].Current = POWER_DECODE_10MA(test.SourceFixedPDO.MaxCurrentIn10mAunits);
-            pdControl->cc_FixedSourceCap[i].Voltage = POWER_DECODE_50MV(test.SourceFixedPDO.VolatageIn50mVunits);
+            pdControl->cc_FixedSourceCap[i].Voltage = POWER_DECODE_50MV(test.SourceFixedPDO.VoltageIn50mVunits);
         }
         
     }
