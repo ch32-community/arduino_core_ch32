@@ -107,6 +107,10 @@
 
 
 // UART Definitions
+// CH32X033 (TSSOP20):
+//    RX: PA11=RX1=SDA, PA3=RX2, PC19=RX3=SWCLK, PB1=RX4
+//    TX: PA10=TX1=SCL, PA2=TX2, PC18=TX3=SWDIO, PB0=TX4=MOSI=PA7
+// For CH32X033F8P6 serial pins RX2=PA3/TX2=PA2 or alternative RX1_1=PA11/TX1_1=PA10
 #ifndef SERIAL_UART_INSTANCES
   // Define the number of UART instances that can be used.
   // For CH32X033F8P6 SSOP20 the supported maximum is currently two.
@@ -131,7 +135,6 @@
 
 // Default pin used for generic 'Serial' instance
 // Mandatory for Firmata
-// For CH32X033F8P6 serial pins RX2=PA3/TX2=PA2 or alternative RX1_1=PA11/TX1_1=PA10
 
 // Pins used for Serial2 instance (used by HardwareSerial constructor)
 #if (SERIAL_UART_INSTANCES==1)
@@ -151,6 +154,23 @@
     #endif
     #ifndef PIN_SERIAL_TX
       #define PIN_SERIAL_TX         PA2
+    #endif
+  #endif
+  #elif (SERIAL_UART_INSTANCE==3)
+    // Don't Use UART3 on PC18/PC19, they are SWDIO/SWCLK. Just define unavailable UART3 pins: RX2/TX2 (PB4/PB2)
+    #ifndef PIN_SERIAL_RX
+      #define PIN_SERIAL_RX         PB4
+    #endif
+    #ifndef PIN_SERIAL_TX
+      #define PIN_SERIAL_TX         PB3
+    #endif
+  #elif (SERIAL_UART_INSTANCE==4)
+    // Use UART4 RX2/TX2 PB1=RX4, PB0=TX4=MOSI=PA7 
+    #ifndef PIN_SERIAL_RX
+      #define PIN_SERIAL_RX         PB1
+    #endif
+    #ifndef PIN_SERIAL_TX
+      #define PIN_SERIAL_TX         PB0
     #endif
   #endif
 #else
