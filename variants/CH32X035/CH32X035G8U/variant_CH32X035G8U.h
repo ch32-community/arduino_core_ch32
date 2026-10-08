@@ -113,16 +113,43 @@
 
 
 // UART Definitions
+// CH32X035:
+//    RX: PB11=RX1, PA3=RX2, PB4=RX3, PB1=RX4
+//    TX: PB10=TX1, PA2=TX2, PB3=TX3, PB0=TX4
 #ifndef SERIAL_UART_INSTANCE
   #define SERIAL_UART_INSTANCE  1
 #endif
+
 // Default pin used for generic 'Serial' instance
 // Mandatory for Firmata
-#ifndef PIN_SERIAL_RX
-  #define PIN_SERIAL_RX         PB11
-#endif
-#ifndef PIN_SERIAL_TX
-  #define PIN_SERIAL_TX         PB10
+#if SERIAL_UART_INSTANCE==1
+    #ifndef PIN_SERIAL_RX
+        #define PIN_SERIAL_RX         PB11
+    #endif
+    #ifndef PIN_SERIAL_TX
+        #define PIN_SERIAL_TX         PB10
+    #endif
+#elif  SERIAL_UART_INSTANCE==2
+    #ifndef PIN_SERIAL_RX
+      #define PIN_SERIAL_RX         PA3
+    #endif
+    #ifndef PIN_SERIAL_TX
+      #define PIN_SERIAL_TX         PA2
+    #endif
+#elif  SERIAL_UART_INSTANCE==3
+    #ifndef PIN_SERIAL_RX
+      #define PIN_SERIAL_RX         PB4
+    #endif
+    #ifndef PIN_SERIAL_TX
+      #define PIN_SERIAL_TX         PB3
+    #endif
+#elif  SERIAL_UART_INSTANCE==4
+    #ifndef PIN_SERIAL_RX
+      #define PIN_SERIAL_RX         PB1
+    #endif
+    #ifndef PIN_SERIAL_TX
+      #define PIN_SERIAL_TX         PB0
+    #endif
 #endif
 
 /*----------------------------------------------------------------------------
