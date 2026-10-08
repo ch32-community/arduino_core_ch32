@@ -353,7 +353,7 @@ CH32X035_EVT.menu.xserial.serialMulti.build.serial_flags=-DSERIAL_UART_INSTANCES
 # USB support
 CH32X035_EVT.menu.usb.none=None
 CH32X035_EVT.menu.usb.none.build.usb_flags=
-CH32X035_EVT.menu.usb.usbcdc=USB CDC Serial for CH32X033/35
+CH32X035_EVT.menu.usb.usbcdc=USB CDC Serial for CH32X033/35 (TODO)
 CH32X035_EVT.menu.usb.usbcdc.build.usb_flags=-DUSBCON -DUSE_TINYUSB -DCFG_TUD_WCH_USBIP_FSDEV=1 "-I{runtime.platform.path}/libraries/Adafruit_TinyUSB_Arduino/src/arduino"
 
 
@@ -468,7 +468,7 @@ CH32V10x_EVT.menu.xserial.serial1=Serial1 (default)
 CH32V10x_EVT.menu.xserial.serial1.build.serial_flags=-DSERIAL_UART_INSTANCE=1
 CH32V10x_EVT.menu.xserial.serial2=Serial2
 CH32V10x_EVT.menu.xserial.serial2.build.serial_flags=-DSERIAL_UART_INSTANCE=2
-CH32V10x_EVT.menu.xserial.serial3=Serial3 (X035 only)
+CH32V10x_EVT.menu.xserial.serial3=Serial3
 CH32V10x_EVT.menu.xserial.serial3.build.serial_flags=-DSERIAL_UART_INSTANCE=3
 CH32V10x_EVT.menu.xserial.serialMulti=Multiple (Serial1-SerialN)
 CH32V10x_EVT.menu.xserial.serialMulti.build.serial_flags=-DSERIAL_UART_INSTANCES=4
