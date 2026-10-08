@@ -42,7 +42,10 @@ MOSI/A8/TX4 D7  2-+PA7=PB0   PA4+-19  D4~ CS/A4
 - Any signal on A0 seems to show on other ADC pins when disconnected.
 - A3, PADC_VREF and I2C don't work on CH32X033F8P6 0-series (lot number with the penultimate bit 5 being 0).
 - To counter missing I2C on the 0-series, the [Software_I2C library](https://github.com/Seeed-Studio/Arduino_Software_I2C) by Seeed Studio is a good alternative, although it needs some changes to improve compatibility in I2C scanning. (TODO: publish modified library).
-- The [CH32X035 CDC Serial library](https://github.com/jobitjoseph/CH32X035_USBSerial) also works on CH32X033F8P6. Although limited to only USB Serial, that library is very easy to use. I tested the USB UART Passthrough example. For that example make sure to have `Serial.available()` fixed by PR https://github.com/openwch/arduino_core_ch32/pull/201. 
+- The [CH32X035 CDC Serial library](https://github.com/jobitjoseph/CH32X035_USBSerial) also works on CH32X033F8P6. Although limited to only USB Serial, that library is very easy to use. I tested the USB UART Passthrough example. For that example make sure to have `Serial.available()` fixed by PR https://github.com/openwch/arduino_core_ch32/pull/201.
+- 4 x USART is limited to available pins:
+  - TX: PA10=TX1=SCL, PA2=TX2, PC18=TX3, PB0=TX4=MOSI=PA7
+  - RX: PA11=RX1=SDA, PA3=RX2, PC19=N/A, PB1=RX4
 
 ### References ###
 - [datasheet](https://www.wch.cn/downloads/CH32X035DS0_PDF.html)
