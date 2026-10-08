@@ -101,8 +101,9 @@ HardwareSerial::HardwareSerial(void *peripheral)
 {
   setHandler(peripheral);
 
-  setRx(PIN_SERIAL_RX);
-  setTx(PIN_SERIAL_TX);
+  // MxRD: find the first pin in the map, instead of predefined values, to support multiple simultaneous serial ports.
+  setRx(pinmap_pin(peripheral, PinMap_UART_RX));
+  setTx(pinmap_pin(peripheral, PinMap_UART_TX));
   
 #if ENABLE_RX_BUFFER
   // Initialize buffer pointers for all CH32 series MCUs
