@@ -150,7 +150,6 @@
     #ifndef PIN_SERIAL_TX
       #define PIN_SERIAL_TX         PA2
     #endif
-  #endif
 #elif SERIAL_UART_INSTANCE==3
     // Don't Use UART3 on PC18/PC19, they are SWDIO/SWCLK. Just define unavailable UART3 pins: RX2/TX2 (PB4/PB3)
     #ifndef PIN_SERIAL_RX
