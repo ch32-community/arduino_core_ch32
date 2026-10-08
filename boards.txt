@@ -2,7 +2,7 @@
 
 menu.pnum=Board Select
 menu.clock=Clock Select
-menu.xserial=U(S)ART support
+menu.xserial=U(S)ART Serial=
 menu.usb=USB support (if available)
 menu.xusb=USB speed (if available)
 menu.virtio=Virtual serial support
@@ -266,6 +266,7 @@ CH32X035_EVT.menu.pnum.CH32X033F8P.build.math_lib_gcc=-lm
 CH32X035_EVT.menu.pnum.CH32X033F8P.build.IQ_math_RV32=
 CH32X035_EVT.menu.pnum.CH32X033F8P.build.ch_extra_lib=-lprintf
 
+
 # Upload menu
 CH32X035_EVT.menu.upload_method.swdMethod=WCH-SWD
 CH32X035_EVT.menu.upload_method.swdMethod.upload.protocol=
@@ -337,6 +338,21 @@ CH32X035_EVT.menu.rtlib.full=Newlib Standard
 CH32X035_EVT.menu.rtlib.full.build.flags.ldflags=--specs=nosys.specs
 
 
+# SERIAL_UART_INSTANCE
+CH32X035_EVT.menu.xserial.serial1=Serial1 (default)
+CH32X035_EVT.menu.xserial.serial1.build.serial_flags=-DSERIAL_UART_INSTANCE=1
+CH32X035_EVT.menu.xserial.serial2=Serial2
+CH32X035_EVT.menu.xserial.serial2.build.serial_flags=-DSERIAL_UART_INSTANCE=2
+CH32X035_EVT.menu.xserial.serial3=Serial3 (X035 only)
+CH32X035_EVT.menu.xserial.serial3.build.serial_flags=-DSERIAL_UART_INSTANCE=3
+CH32X035_EVT.menu.xserial.serial4=Serial4
+CH32X035_EVT.menu.xserial.serial4.build.serial_flags=-DSERIAL_UART_INSTANCE=4
+
+# USB support
+CH32X035_EVT.menu.usb.none=None
+CH32X035_EVT.menu.usb.none.build.usb_flags=
+CH32X035_EVT.menu.usb.usbcdc=USB CDC Serial for CH32X033/35
+CH32X035_EVT.menu.usb.usbcdc.build.usb_flags=-DUSBCON -DUSE_TINYUSB -DCFG_TUD_WCH_USBIP_FSDEV=1 "-I{runtime.platform.path}/libraries/Adafruit_TinyUSB_Arduino/src/arduino"
 
 
 ##############################################################################
