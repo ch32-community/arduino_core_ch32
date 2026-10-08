@@ -111,17 +111,30 @@
   #define TIMER_SERVO           TIM2
 #endif
 
-
 // UART Definitions
 // CH32X035:
 //    RX: PB11=RX1, PA3=RX2, PB4=RX3, PB1=RX4
 //    TX: PB10=TX1, PA2=TX2, PB3=TX3, PB0=TX4
-#ifndef SERIAL_UART_INSTANCE
-  #define SERIAL_UART_INSTANCE  1
+#ifndef SERIAL_UART_INSTANCES
+  #define SERIAL_UART_INSTANCES 1
+#endif
+
+#if ((SERIAL_UART_INSTANCES == 1) && !defined(SERIAL_UART_INSTANCE))
+  #define SERIAL_UART_INSTANCE 1   // use Serial1 as default for Serial
+#else
+  // Using multple Serial ports
+  // CH32X033/035 has 4 UARTS,    // UART3 not usable on X033, only on X035
+  // When having multiple Serial instances SERIAL_UART_INSTANCE cannot be defined as it will skip defining the other ports.
+  #undef SERIAL_UART_INSTANCE
+  #define ENABLE_HWSERIAL1 1
+  #define ENABLE_HWSERIAL2 1
+  #define ENABLE_HWSERIAL3 1
+  #define ENABLE_HWSERIAL4 1
+  #define Serial Serial1
 #endif
 
 // Default pin used for generic 'Serial' instance
-// Mandatory for Firmata
+// Mandatory for Firmata, no longer used by HardwareSerial.
 #if SERIAL_UART_INSTANCE==1
     #ifndef PIN_SERIAL_RX
         #define PIN_SERIAL_RX         PB11
