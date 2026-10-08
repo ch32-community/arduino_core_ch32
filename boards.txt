@@ -2,7 +2,7 @@
 
 menu.pnum=Board Select
 menu.clock=Clock Select
-menu.xserial=U(S)ART Serial=
+menu.xserial=U(S)ART Serial
 menu.usb=USB support (if available)
 menu.xusb=USB speed (if available)
 menu.virtio=Virtual serial support
@@ -347,6 +347,8 @@ CH32X035_EVT.menu.xserial.serial3=Serial3 (X035 only)
 CH32X035_EVT.menu.xserial.serial3.build.serial_flags=-DSERIAL_UART_INSTANCE=3
 CH32X035_EVT.menu.xserial.serial4=Serial4
 CH32X035_EVT.menu.xserial.serial4.build.serial_flags=-DSERIAL_UART_INSTANCE=4
+CH32X035_EVT.menu.xserial.serialMulti=Multiple (Serial1-SerialN)
+CH32X035_EVT.menu.xserial.serialMulti.build.serial_flags=-DSERIAL_UART_INSTANCES=4
 
 # USB support
 CH32X035_EVT.menu.usb.none=None
@@ -461,6 +463,15 @@ CH32V10x_EVT.menu.rtlib.full=Newlib Standard
 CH32V10x_EVT.menu.rtlib.full.build.flags.ldflags=--specs=nosys.specs
 
 
+# SERIAL_UART_INSTANCE
+CH32V10x_EVT.menu.xserial.serial1=Serial1 (default)
+CH32V10x_EVT.menu.xserial.serial1.build.serial_flags=-DSERIAL_UART_INSTANCE=1
+CH32V10x_EVT.menu.xserial.serial2=Serial2
+CH32V10x_EVT.menu.xserial.serial2.build.serial_flags=-DSERIAL_UART_INSTANCE=2
+CH32V10x_EVT.menu.xserial.serial3=Serial3 (X035 only)
+CH32V10x_EVT.menu.xserial.serial3.build.serial_flags=-DSERIAL_UART_INSTANCE=3
+CH32V10x_EVT.menu.xserial.serialMulti=Multiple (Serial1-SerialN)
+CH32V10x_EVT.menu.xserial.serialMulti.build.serial_flags=-DSERIAL_UART_INSTANCES=4
 
 
 ##############################################################################
