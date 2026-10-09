@@ -1,0 +1,8 @@
+# .coderabbit.yaml
+version: "2"
+reviews:
+  enabled: true
+  profile: "assertive" # Options: "chill", "assertive" (default)
+  # Use a regex wildcard to match every possible base branch
+  base_branches:
+    - ".*"
