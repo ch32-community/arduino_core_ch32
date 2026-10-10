@@ -1,8 +1,12 @@
-# .coderabbit.yaml
-version: "2"
+# yaml-language-server: $schema=https://www.coderabbit.ai/integrations/schema.v2.json
+language: "en-US"
+
 reviews:
-  enabled: true
-  profile: "assertive" # Options: "chill", "assertive" (default)
-  # Use a regex wildcard to match every possible base branch
-  base_branches:
-    - ".*"
+  profile: "assertive" # Options: chill, balanced, assertive
+  request_changes_workflow: true
+  
+  auto_review:
+    enabled: true
+    drafts: false
+    base_branches:
+      - "main"
