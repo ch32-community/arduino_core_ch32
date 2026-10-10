@@ -151,9 +151,11 @@
   #define SERIAL_UART_INSTANCES 1
 #endif
 
-#if ((SERIAL_UART_INSTANCES == 1) && !defined(SERIAL_UART_INSTANCE))
-  //  Using only Serial1
-  #define SERIAL_UART_INSTANCE 1   // use Serial1 as default for Serial
+#if (SERIAL_UART_INSTANCES == 1)
+  //  Using only one Serial port
+  #ifndef SERIAL_UART_INSTANCE
+    #define SERIAL_UART_INSTANCE 1   // use Serial1 as default for Serial
+  #endif
 #else
   // Using multple Serial ports
   // When having multiple Serial instances SERIAL_UART_INSTANCE cannot be defined as it will skip defining the other ports.
