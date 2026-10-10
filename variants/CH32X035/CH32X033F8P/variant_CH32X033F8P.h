@@ -117,9 +117,11 @@
   #define SERIAL_UART_INSTANCES 1
 #endif
 
-#if ((SERIAL_UART_INSTANCES == 1) && !defined(SERIAL_UART_INSTANCE))
-  //  Using only Serial2
-  #define SERIAL_UART_INSTANCE 2   // use Serial2 as default for Serial - UART2: PA2=TX2, PA3=RX2
+#if (SERIAL_UART_INSTANCES == 1)
+  //  Using only one Serial port
+  #ifndef SERIAL_UART_INSTANCE
+    #define SERIAL_UART_INSTANCE 2   // use Serial2 as default for Serial - UART2: PA2=TX2, PA3=RX2
+  #endif
 #else
   // Use multiple instances.
   // CH32X033/035 has 4 UARTS,    // UART3 not usable on X033, only on X035
