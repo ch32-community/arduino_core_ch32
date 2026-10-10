@@ -2,7 +2,7 @@
 language: "en-US"
 
 reviews:
-  profile: "assertive" # Options: chill, balanced, assertive
+  profile: "chill" # Options: chill, balanced, assertive
   request_changes_workflow: true
   
   auto_review:
