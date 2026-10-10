@@ -2,11 +2,11 @@
 language: "en-US"
 
 reviews:
-  profile: "chill" # Options: chill, balanced, assertive
-  request_changes_workflow: true
+  profile: "chill" # Options: chill, quiet, assertive
+  request_changes_workflow: false    # default is false, not sure how intrusive true would be
   
   auto_review:
     enabled: true
     drafts: false
     base_branches:
-      - "main"
+      - ".*"   # reviews for every target branch
