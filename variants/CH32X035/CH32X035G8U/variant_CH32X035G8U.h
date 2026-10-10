@@ -119,8 +119,11 @@
   #define SERIAL_UART_INSTANCES 1
 #endif
 
-#if ((SERIAL_UART_INSTANCES == 1) && !defined(SERIAL_UART_INSTANCE))
-  #define SERIAL_UART_INSTANCE 1   // use Serial1 as default for Serial
+#if (SERIAL_UART_INSTANCES == 1)
+  //  Using only one Serial port
+  #ifndef SERIAL_UART_INSTANCE
+    #define SERIAL_UART_INSTANCE 1   // use Serial1 as default for Serial
+  #endif
 #else
   // Using multple Serial ports
   // CH32X033/035 has 4 UARTS,    // UART3 not usable on X033, only on X035
@@ -130,7 +133,7 @@
   #define ENABLE_HWSERIAL2 1
   #define ENABLE_HWSERIAL3 1
   #define ENABLE_HWSERIAL4 1
-  #define Serial Serial1
+  #define Serial Serial1   // Serial should be redefined in sketch if other port is preferred
 #endif
 
 // Default pin used for generic 'Serial' instance
