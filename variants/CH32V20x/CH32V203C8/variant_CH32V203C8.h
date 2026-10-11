@@ -165,7 +165,7 @@
 
 // Default pin used for generic 'Serial' instance
 // Mandatory for Firmata, no longer used by HardwareSerial.
-#if SERIAL_UART_INSTANCE==1
+#if SERIAL_UART_INSTANCE==1 || SERIAL_UART_INSTANCES>1
     #ifndef PIN_SERIAL_RX
         #define PIN_SERIAL_RX     PA10
     #endif
