@@ -144,7 +144,7 @@
     #ifndef PIN_SERIAL_TX
       #define PIN_SERIAL_TX         PA10
     #endif
-#elif SERIAL_UART_INSTANCE==2
+#elif SERIAL_UART_INSTANCE==2 || SERIAL_UART_INSTANCES>1
     // Use UART2 RX2/TX2 (PA3/PA2)
     #ifndef PIN_SERIAL_RX
       #define PIN_SERIAL_RX         PA3
