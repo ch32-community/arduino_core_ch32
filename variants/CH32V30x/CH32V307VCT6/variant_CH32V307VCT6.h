@@ -169,10 +169,10 @@
     #endif
 #elif  SERIAL_UART_INSTANCE==4
     #ifndef PIN_SERIAL_RX
-      #define PIN_SERIAL_RX       PB1
+      #define PIN_SERIAL_RX       PC11
     #endif
     #ifndef PIN_SERIAL_TX
-      #define PIN_SERIAL_TX       PB0
+      #define PIN_SERIAL_TX       PC10
     #endif
 #elif  SERIAL_UART_INSTANCE==5
     #ifndef PIN_SERIAL_RX
