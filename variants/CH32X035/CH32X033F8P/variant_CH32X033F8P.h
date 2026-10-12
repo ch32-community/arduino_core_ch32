@@ -153,13 +153,8 @@
       #define PIN_SERIAL_TX         PA2
     #endif
 #elif SERIAL_UART_INSTANCE==3
-    // Don't Use UART3 on PC18/PC19, they are SWDIO/SWCLK. Just define unavailable UART3 pins: RX2/TX2 (PB4/PB3)
-    #ifndef PIN_SERIAL_RX
-      #define PIN_SERIAL_RX         PB4
-    #endif
-    #ifndef PIN_SERIAL_TX
-      #define PIN_SERIAL_TX         PB3
-    #endif
+    // Don't Use UART3 on PC18/PC19, they are SWDIO/SWCLK.
+    #error No Serial3 on CH32X033F8P
 #elif SERIAL_UART_INSTANCE==4
     // Use UART4 RX2/TX2 PB1=RX4, PB0=TX4=MOSI=PA7 
     #ifndef PIN_SERIAL_RX
@@ -199,5 +194,3 @@
     #define SERIAL_PORT_HARDWARE  Serial
   #endif
 #endif
-
-
