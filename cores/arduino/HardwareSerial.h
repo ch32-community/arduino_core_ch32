@@ -183,13 +183,13 @@ public:
 #if defined(USART3)
   extern HardwareSerial Serial3;
 #endif
-#if defined(UART4) || defined(USART4)
+#if defined(UART4) || defined(USART4)   // note: some have USART4, V30x has UART4
   extern HardwareSerial Serial4;
 #endif
-#if defined(UART5) || defined(USART5)
+#if defined(UART5) || defined(USART5)   // note: V30x has UART 4-8, no USART5-8 in supported series (even though mentioned in various GPIO/remap sources)
   extern HardwareSerial Serial5;
 #endif
-#if defined(USART6)
+#if defined(UART6) || defined(USART6)
   extern HardwareSerial Serial6;
 #endif
 #if defined(UART7) || defined(USART7)
