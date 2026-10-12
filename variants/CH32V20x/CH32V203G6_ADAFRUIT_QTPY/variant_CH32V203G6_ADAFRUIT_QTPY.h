@@ -131,7 +131,9 @@
 // V203G6U6 (QFN28): 2xUSART - RX/TX/RTS/CTS/CK: USART2:PA3/PA2/PA1/PA0/PA4 USART1: PA10/PA9/PA12/PA11/PA8
 //    RX: PA10=RX1, PA3=RX2, PB11=RX3, PB1=RX4
 //    TX: PA9=TX1, PA2=TX2, PB10=TX3, PB0=TX4
-// TODO: Is there also a G* LANA TNY?. This pinout shows UART1/2/4: https://learn.adafruit.com/phyx-lana-tny-ch32v203/pinouts
+// The QTPY is a very small board with only few pins: https://learn.adafruit.com/adafruit-qt-py-ch32v203/pinouts
+// TODO: It only exposes UART2 and UART4. These don't match V203G6 datasheet which shows USART1 and USART2.
+// V203G6 LANA also shows UART4: TX4=PB0, RX4=PB1. Correct pinout should be confirmed!
 #ifndef SERIAL_UART_INSTANCES
   #define SERIAL_UART_INSTANCES 1
 #endif
