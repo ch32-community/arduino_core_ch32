@@ -59,7 +59,11 @@
 
 
 
-
+// MxRD 261012: TODO: the number of pins below and the definitions above are very much incomplete!
+// Most CH32V30x variants have more than 22 pins (ranging from 17 for V305FB to 80 for 303VC/307VC packages).
+// See also V10x issue openwch#210, resolved by PR #22 (openwch#211), which was very much the same thing.
+// These numbers/definitions were not updated since the first release in 2023. 
+// Probably there are more variants suffering from the same issue. TODO: need to check those!
 #define NUM_DIGITAL_PINS        22
 #define NUM_ANALOG_INPUTS       6
 // #define ADC_CTLR_ADCAL          
