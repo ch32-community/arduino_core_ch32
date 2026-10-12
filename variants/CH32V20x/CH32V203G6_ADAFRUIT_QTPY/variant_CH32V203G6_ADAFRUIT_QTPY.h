@@ -152,7 +152,7 @@
   #define ENABLE_HWSERIAL2 1
   #undef SERIAL_UART_INSTANCES
   #define SERIAL_UART_INSTANCES 2
-  #define Serial Serial1
+  #define Serial Serial2
 #endif
 
 // Default pin used for generic 'Serial' instance
