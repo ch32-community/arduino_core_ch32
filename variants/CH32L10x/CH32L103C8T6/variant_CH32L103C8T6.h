@@ -116,20 +116,6 @@
 
 
 // UART Definitions
-#ifndef SERIAL_UART_INSTANCE
-  #define SERIAL_UART_INSTANCE  1
-#endif
-// Default pin used for generic 'Serial' instance
-// Mandatory for Firmata
-#ifndef PIN_SERIAL_RX
-  #define PIN_SERIAL_RX         PA10
-#endif
-#ifndef PIN_SERIAL_TX
-  #define PIN_SERIAL_TX         PA9
-#endif
-
-
-// UART Definitions
 // CH32L103: 
 //    RX: PA10=RX1, PA3=RX2, PB11=RX3, PB1=RX4
 //    TX: PA9=TX1, PA2=TX2, PB10=TX3, PB0=TX4
@@ -213,5 +199,3 @@
     #define SERIAL_PORT_HARDWARE  Serial
   #endif
 #endif
-
-
