@@ -2,7 +2,7 @@
 
 
 ### QSOP24 PINOUT ###
-Arduino pin numbers D0-D20, A0-A7.
+Arduino pin numbers D0-D20, A1-A7 (A0 is unavailable because PA2 is occupied by LO2).
 
 CH32M007E8R6 QSOP24 PINOUT - 6-24V
 ```
