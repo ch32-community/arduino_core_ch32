@@ -26,8 +26,8 @@ CH32M007E8R6 QSOP24 PINOUT - 6-24V
 ### MAIN FEATURES/LIMITATIONS ###
 
  - Max 15 I/O pins, PWM/ADC/I2C/2xUART/SPI
- - SPI is assigned using pin mapping SPI_2
- - UART2 is assigned using pin mapping UART2_1
- - SPI pins MOSI/MISO are shared with serial TX/RX pins when I2C is enabled
- - TX'/RX' - when I2C is enabled, TX/RX=PD5/PD6, when not enabled TX/RX=PC0/PC1
+ - I2C uses SDA/SCL=PC1/PC2
+ - SPI uses pin mapping SPI_2: MOSI/MISO/SCK/SS are PD3/PB3/PD2/PC4
+ - Serial1 (USART1) uses: TX/RX=PD5/PD6
+ - Serial2 (USART2) uses pin mapping UART2_1: TX2/RX2=PA4/PA5
  - Requires updated core and tools. See [these notes](../README.md#known-issues--limitations)
