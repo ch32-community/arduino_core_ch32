@@ -26,6 +26,7 @@
 #endif
 
 /* CH32M007E Pins */
+#define PA0                     7
 #define PA1                     PIN_A1
 #define PA2                     PIN_A0
 #define PA3                     6
