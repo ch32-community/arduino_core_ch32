@@ -195,7 +195,8 @@ WEAK const PinMap PinMap_SPI_SCLK[] = {
 WEAK const PinMap PinMap_SPI_SSEL[] = {
   {PA_4,  SPI1, CH_PIN_DATA(CH_MODE_OUTPUT_50MHz, CH_CNF_OUTPUT_AFPP, 0, AFIO_NONE)},
   {PB_12, SPI2, CH_PIN_DATA(CH_MODE_OUTPUT_50MHz, CH_CNF_OUTPUT_AFPP, 0, AFIO_NONE)},
-  {PA_15, SPI3, CH_PIN_DATA(CH_MODE_OUTPUT_50MHz, CH_CNF_OUTPUT_AFPP, 0, AFIO_NONE)},
+  {NC, SPI3, CH_PIN_DATA(CH_MODE_OUTPUT_50MHz, CH_CNF_OUTPUT_AFPP, 0, AFIO_NONE)},  // was unsupported PA_15
+// CodeRabbit says: The CH32V307 reference manual states that SPI3_NSS does not support hardware function. Use a GPIO-managed CS instead.
   {NC,    NP,   0}
 };
 #endif
