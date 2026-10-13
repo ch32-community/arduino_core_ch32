@@ -68,27 +68,52 @@
 #endif
 
 
-
 // On-board user button
 #ifndef USER_BTN
   #define USER_BTN              PNUM_NOT_DEFINED
 #endif
 
 
-
-
 // UART Definitions
-// TODO: M007 QSOP24 UART2 has RX/TX as alternative functions UARt2_1 U2RX_/U2TX_ on pins PA4/PA5)
-#ifndef SERIAL_UART_INSTANCE
-  #define SERIAL_UART_INSTANCE  1
+// TODO: M007E8R6 QSOP24 UART2 has no PA7 pin. It has RX/TX as alternative functions UART2_1 U2RX_/U2TX_ on pins PA4/PA5)
+// CH32V007:
+//    RX: PD6=RX1, PB3=RX2, PA5=RX2_1
+//    TX: PD5=TX1, PA7=TX2, PA4=TX2_1
+
+#ifndef SERIAL_UART_INSTANCES
+  #define SERIAL_UART_INSTANCES 1
 #endif
+
+#if (SERIAL_UART_INSTANCES == 1)
+  //  Using only one Serial port
+  #ifndef SERIAL_UART_INSTANCE
+    #define SERIAL_UART_INSTANCE 1   // use Serial1 as default for Serial
+  #endif
+#else
+  // Using multple Serial ports
+  // When having multiple Serial instances SERIAL_UART_INSTANCE cannot be defined as it will skip defining the other ports.
+  #undef SERIAL_UART_INSTANCE
+  #define ENABLE_HWSERIAL1 1
+  #define ENABLE_HWSERIAL2 1
+  #define Serial Serial1
+#endif
+
 // Default pin used for generic 'Serial' instance
-// Mandatory for Firmata
-#ifndef PIN_SERIAL_RX
-  #define PIN_SERIAL_RX         PD6
-#endif
-#ifndef PIN_SERIAL_TX
-  #define PIN_SERIAL_TX         PD5
+// Mandatory for Firmata, no longer used by HardwareSerial.
+#if SERIAL_UART_INSTANCE==1 || SERIAL_UART_INSTANCES>1
+    #ifndef PIN_SERIAL_RX
+        #define PIN_SERIAL_RX     PD6
+    #endif
+    #ifndef PIN_SERIAL_TX
+        #define PIN_SERIAL_TX     PD5
+    #endif
+#elif  SERIAL_UART_INSTANCE==2
+    #ifndef PIN_SERIAL_RX
+      #define PIN_SERIAL_RX       PA5
+    #endif
+    #ifndef PIN_SERIAL_TX
+      #define PIN_SERIAL_TX       PA4
+    #endif
 #endif
 
 
