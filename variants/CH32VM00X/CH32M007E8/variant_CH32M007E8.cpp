@@ -77,7 +77,7 @@ const PinName digitalPin[] = {
 
 // Analog (Ax) pin number array
 const uint32_t analogInputPin[] = {
-  9,   // A0/PA2 (A0 cannot be used, PA2 occupied by LO2)
+  NC,   // A0/PA2 (was 9, but A0 cannot be used, PA2 is occupied by LO2)
   17,  // A1/PA1
   15,  // A2/PC4
   19,  // A3/PD2
