@@ -1,6 +1,6 @@
 ### CH32V006F8P6 TSSOP20 PINOUT ###
 Arduino pin numbers D0-D17, A0-A7.
-Pinout for CH32V006F8P6 (same layout as CH32V003F4P6 / CH32V002F4P6)
+Pinout for CH32V006F8P6 (same layout as CH32V003F4P6 / CH32V002F4P6).
 Extra pins for Serial2
 ```
                 +-----v-----+
@@ -10,15 +10,17 @@ Extra pins for Serial2
      RST/D17~ 4-+PD7*    PC7+-17 D9/MISO
        A1/D0~ 5-+PA1     PC6+-16 D8/MOSI
        A0/D1  6-+PA2     PC5+-15 D7/SCK
-         GND  7-+VSS     PC4+-14 D6~/A2/SS
+         GND  7-+VSS    'PC4+-14 D6~/A2/SS (software CS)
          D10  8-+PD0     PC3+-13 D5~
          VCC  9-+VDD     PC2+-12 D4/SCL
-         D2~ 10-+PC0     PC1+-11 D3/SDA
+         D2~ 10-+PC0    'PC1+-11 D3/SDA/NSS (hardware SSEL)
                 +-----------+    
 ```
-*Note On V006F8 PD7 is shorted to PA4
+- Note *: On V006F8 PD7 is shorted to PA4
+- Note ': PC4 is the default software chip-select pin (PIN_SPI_SS). Control this pin as a GPIO. Hardware SPI NSS/SSEL uses PC1, which is also the default I2C SDA pin. These two peripheral functions cannot use PC1 at the same time. Do not pass PC4 as the hardware SSEL argument to SPIClass.
+Using alternative pin mappings now requires changing PeripheralPins.c, but may get core API support in a future release. See issue #61. 
 
-Alternate pins for V006 F8
+Alternate pins for V006F8:
 
 ```
 SPI           _1  _2  _3  _4  _5  _6
@@ -26,7 +28,8 @@ SPI_NSS  PC1 PC0 PC4 PB0 PD3 PC1 PC4
 SPI_SCK  PC5 PC5 PD2 PB1 PD4 PA1 PB5
 SPI_MISO PC7 PC7 PB3 PB2 PD5 PB5 PC7
 SPI_MOSI PC6 PC6 PD3 PC0 PD6 PA2 PB4 
-No port B on V006F8 ==> SPI_1 or SPI_4 as alternatives
+No port B on V006F8 ==> SPI_1 or SPI_4 as alternatives.
+
 
 USART     _1  _2  _3  _4  _5  _6  _7  _8  _9
 TX1  PD5 PD6 PD0 PC0 PD1 PB3 PC5 PB5 PA0 PA0 
