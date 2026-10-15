@@ -16,26 +16,37 @@ Pinout for CH32V006E8R6.
             GND  5-+VSS     PD0+-20 ~D13 
             VCC  6-+VDD     PA2+-19 ~D12 A0 
         RST D21  7-+PC5     PA0+-18  D11  
-      SS/A2 D1~  8-+PC4     PA1+-17  D10* A1  
+      SS/A2 D1~  8-+PC4    *PA1+-17  D10 A1  
      SCK/A3 D2~  9-+PD2     PA5+-16  D9  RX2
     MOSI/A4 D3~ 10-+PD3     PA4+-15  D8  TX2
          A7 D4  11-+PD4     PD7+-14 ~D7
       TX/A5 D5  12-+PD5     PD6+-13  D6 RX/A6
                    +-----------+        
 ```
-*Note: on CH32V006E8R6 (and CH32V005E6R6) pins PA1 and PA6 are shorted => pin 17 not usable as output pin?
-        _1  _2  _3  _4 _5 _6  ==> use SPI_2 on MISO=24/MOSI=10/SCK=9/SS=8
-MISO  x  x  24   x  12  x  x    
-MOSI  x  x  10   2  13 19  x
-SCK   7  7   9  23  11 17* x
-SS    3  2   8  22  10  3  8
+*Note: on CH32V006E8R6 (and CH32V005E6R6) pins PA1 and PA6 are shorted => pin 17 only usable as output pin when PA6 is unassigned or set as input.
 
-        _1  _2  _3  _4 _5 _6 _7 _8 _9
-TX1  12 13  20   2   1 24  7  x 18 18
-RX1  13 12   1   3  24  1  x  x 17  8
-TX2   x 15  19   9  22  8 17*
-RX2  24 16  21  10  23  1 16
+Alternate pins for V006 F8
+```
+SPI           _1  _2  _3  _4  _5  _6
+SPI_NSS  PC1 PC0 PC4 PB0 PD3 PC1 PC4
+SPI_SCK  PC5 PC5 PD2 PB1 PD4 PA1 PB5
+SPI_MISO PC7 PC7 PB3 PB2 PD5 PB5 PC7
+SPI_MOSI PC6 PC6 PD3 PC0 PD6 PA2 PB4 
+Only B0/1/3, no PC6/7 ==> use SPI_2 on MISO=24/MOSI=10/SCK=9/SS=8 (_4 clashes with UART1)
 
-        _1  _2  _3  _4
-SDA  3  20   x   x   1
-SCL  4   1   7   x  24
+USART     _1  _2  _3  _4  _5  _6  _7  _8  _9
+TX1  PD5 PD6 PD0 PC0 PD1 PB3 PC5 PB5 PA0 PA0 
+RX1  PD6 PD5 PD1 PC1 PB3 PD1 PC6 PB6 PA1 PC4 
+CTS1 PD3 PC6 PC3 PC6 PD7 PD7 PC7 PC7 PD2 PD5 
+RTS1 PC2 PC7 PC2 PC7 PA5 PA5 PB4 PB4 PD3 PD4 
+TX2  PA7 PA4 PA2 PD2 PB0 PC4 PA6 ... ... ... 
+RX2  PB3 PA5 PA3 PD3 PB1 PD1 PA5 ... ... ... 
+CTS2 PA4 PA7 PA0 PA0 PB6 PA4 PA7 ... ... ... 
+RTS2 PA5 PB3 PA1 PA1 PA1 PA1 PB3 ... ... ... 
+Only B0/1/3, no PC6/7 or PA6/7 ==> USART1_2/4/5/8/9 and USART2_2/3/5 as alternatives
+
+I2C          _1  _2  _3  _4
+I2C_SCL PC2 PD1 PC5 PB5 PB3
+I2C_SDA PC1 PD0 PC6 PB6 PD1
+Only B0/1/3, no PC6/7 => I2C_1/4 as alternatives
+```
