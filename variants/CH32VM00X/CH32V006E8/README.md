@@ -1,11 +1,13 @@
 
 
-### QSOP24 PINOUT ###
-Arduino pin numbers D0-D20, A0-A7.
-(extra pins 
-TSSOP20: PA1/2, PC0-7, PD0-7
-QSOP24: PA0-5, PB0/1/3, PC0-2/4/5, PD0-7
-Pinout for CH32V006E8R6. 
+### CH32V006E8R6 QSOP24 PINOUT ###
+Arduino pin numbers D0-D21, A0-A7.
+
+The E8 (QSOP24) package has more pins than F8 (QFN20/TSSOP20), but also some other pin-differences: 
+- F8: PA1/2, PC0-7, PD0-7
+- E8: PA0-5, PB0/1/3, PC0-2/4/5, PD0-7
+
+Pinout for CH32V006E8R6 QSOP24:
 
 ```
                    +-----v-----+
