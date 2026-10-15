@@ -27,7 +27,7 @@ Pinout for CH32V006E8R6 QSOP24:
 ```
 *Note: on CH32V006E8R6 (and CH32V005E6R6) pins PA1 and PA6 are shorted => pin 17 only usable as output pin when PA6 is unassigned or set as input.
 
-Alternate pins for V006 F8
+Alternate pins for V006E8:
 ```
 SPI           _1  _2  _3  _4  _5  _6
 SPI_NSS  PC1 PC0 PC4 PB0 PD3 PC1 PC4
