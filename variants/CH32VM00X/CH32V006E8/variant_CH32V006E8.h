@@ -26,6 +26,7 @@
 #endif
 
 /* CH32V006F Pins */
+#define PA0                     11
 #define PA1                     PIN_A1
 #define PA2                     PIN_A0
 #define PA3                     14
