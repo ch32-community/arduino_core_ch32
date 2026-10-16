@@ -1,8 +1,8 @@
 /********************************** (C) COPYRIGHT  *******************************
  * File Name          : ch32v10x_gpio.c
  * Author             : WCH
- * Version            : V1.0.0
- * Date               : 2020/04/30
+ * Version            : V1.0.1
+ * Date               : 2025/01/02
  * Description        : This file provides all the GPIO firmware functions.
  *********************************************************************************
  * Copyright (c) 2021 Nanjing Qinheng Microelectronics Co., Ltd.
@@ -431,7 +431,7 @@ void GPIO_EventOutputCmd(FunctionalState NewState)
  *            GPIO_Remap_TIM4 - TIM4 Alternate Function mapping
  *            GPIO_Remap1_CAN1 - CAN1 Alternate Function mapping
  *            GPIO_Remap2_CAN1 - CAN1 Alternate Function mapping
- *            GPIO_Remap_PD01 - PD01 Alternate Function mapping
+ *            GPIO_Remap_PD0PD1 - PD0 and PD1 Alternate Function mapping
  *            GPIO_Remap_ADC1_ETRGINJ - ADC1 External Trigger Injected Conversion remapping
  *            GPIO_Remap_ADC1_ETRGREG - ADC1 External Trigger Regular Conversion remapping
  *            GPIO_Remap_ADC2_ETRGINJ - ADC2 External Trigger Injected Conversion remapping
@@ -439,9 +439,7 @@ void GPIO_EventOutputCmd(FunctionalState NewState)
  *            GPIO_Remap_ETH - Ethernet remapping
  *            GPIO_Remap_CAN2 - CAN2 remapping
  *            GPIO_Remap_MII_RMII_SEL - MII or RMII selection
- *            GPIO_Remap_SWJ_NoJTRST - Full SWJ Enabled (JTAG-DP + SW-DP) but without JTRST
- *            GPIO_Remap_SWJ_JTAGDisable - JTAG-DP Disabled and SW-DP Enabled
- *            GPIO_Remap_SWJ_Disable - Full SWJ Disabled (JTAG-DP + SW-DP)
+ *            GPIO_Remap_SWJ_Disable - Full SWJ Disabled
  *            GPIO_Remap_TIM2ITR1_PTP_SOF - Ethernet PTP output or USB OTG SOF (Start of Frame) connected
  *        to TIM2 Internal Trigger 1 for calibration
  *            GPIO_Remap_TIM2ITR1_PTP_SOF - Ethernet PTP output or USB OTG SOF (Start of Frame)
@@ -550,7 +548,7 @@ void GPIO_IPD_Unused(void)
     GPIO_InitTypeDef GPIO_InitStructure = {};
     uint32_t chip = 0;
     RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA | RCC_APB2Periph_GPIOB | RCC_APB2Periph_GPIOC | RCC_APB2Periph_GPIOD, ENABLE);
-    chip =  *( uint32_t * )0x1FFFF884 ;
+    chip =  *( uint32_t * )0x1FFFF884 & (~0x000000F0);
     switch(chip)
     {
         case 0x25004102:     //CH32V103C8T6
