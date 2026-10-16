@@ -10,10 +10,8 @@
   #elif defined(CH32X035)
      #define  COM_STARTUP_FILE "startup_ch32x035.S"
 
-  #elif defined(CH32V10x_3V3)
-     #define  COM_STARTUP_FILE "startup_ch32v10x_3v3.S"
-  #elif defined(CH32V10x_5V)
-     #define  COM_STARTUP_FILE "startup_ch32v10x_5v.S"
+  #elif defined(CH32V10x)
+     #define  COM_STARTUP_FILE "startup_ch32v10x.S"
      
   #elif defined(CH32V203)
     #define COM_STARTUP_FILE "startup_ch32v20x_D6.S"
