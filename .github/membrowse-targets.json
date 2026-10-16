@@ -11,19 +11,19 @@
   {
     "target_name": "ch32vm00x-v002",
     "setup_cmd": "curl -fsSL https://raw.githubusercontent.com/arduino/arduino-cli/master/install.sh | sudo BINDIR=/usr/local/bin sh && arduino-cli core install ch32-community:ch32v --additional-urls https://github.com/ch32-community/board_manager_files/raw/main/package_ch32v_index.json",
-    "build_cmd": "CORE_DIR=\"$(arduino-cli config get directories.data)/packages/ch32-community/hardware/ch32v\" && rm -rf \"$CORE_DIR\"/* && mkdir -p \"$CORE_DIR/0.0.0\" && rsync -a --exclude=.git --exclude=build ./ \"$CORE_DIR/0.0.0/\" && arduino-cli compile --fqbn ch32-community:ch32v:CH32VM00X_EVT:dbg=enable_sym --build-path \"$PWD/build/CH32VM00X\" libraries/Wire/examples/i2c_scanner",
-    "elf": "build/CH32VM00X/i2c_scanner.ino.elf",
+    "build_cmd": "CORE_DIR=\"$(arduino-cli config get directories.data)/packages/ch32-community/hardware/ch32v\" && rm -rf \"$CORE_DIR\"/* && mkdir -p \"$CORE_DIR/0.0.0\" && rsync -a --exclude=.git --exclude=build ./ \"$CORE_DIR/0.0.0/\" && arduino-cli compile --fqbn ch32-community:ch32v:CH32VM00X_EVT:pnum=CH32V002F4:dbg=enable_sym --build-path \"$PWD/build/CH32VM00X_002\" libraries/Wire/examples/i2c_scanner",
+    "elf": "build/CH32VM00X_002/i2c_scanner.ino.elf",
     "ld": "system/CH32VM00X/SRC/Ld/Link002.ld",
-    "map_file": "build/CH32VM00X/i2c_scanner.ino.map",
+    "map_file": "build/CH32VM00X_002/i2c_scanner.ino.map",
     "linker_vars": "__FLASH_SIZE=16384 __RAM_SIZE=4096"
   },
   {
     "target_name": "ch32vm00x-v006",
     "setup_cmd": "curl -fsSL https://raw.githubusercontent.com/arduino/arduino-cli/master/install.sh | sudo BINDIR=/usr/local/bin sh && arduino-cli core install ch32-community:ch32v --additional-urls https://github.com/ch32-community/board_manager_files/raw/main/package_ch32v_index.json",
-    "build_cmd": "CORE_DIR=\"$(arduino-cli config get directories.data)/packages/ch32-community/hardware/ch32v\" && rm -rf \"$CORE_DIR\"/* && mkdir -p \"$CORE_DIR/0.0.0\" && rsync -a --exclude=.git --exclude=build ./ \"$CORE_DIR/0.0.0/\" && arduino-cli compile --fqbn ch32-community:ch32v:CH32VM00X_EVT:dbg=enable_sym --build-path \"$PWD/build/CH32VM00X\" libraries/Wire/examples/i2c_scanner",
-    "elf": "build/CH32VM00X/i2c_scanner.ino.elf",
+    "build_cmd": "CORE_DIR=\"$(arduino-cli config get directories.data)/packages/ch32-community/hardware/ch32v\" && rm -rf \"$CORE_DIR\"/* && mkdir -p \"$CORE_DIR/0.0.0\" && rsync -a --exclude=.git --exclude=build ./ \"$CORE_DIR/0.0.0/\" && arduino-cli compile --fqbn ch32-community:ch32v:CH32VM00X_EVT:pnum=CH32V006K8:dbg=enable_sym --build-path \"$PWD/build/CH32VM00X_006\" libraries/Wire/examples/i2c_scanner",
+    "elf": "build/CH32VM00X_006/i2c_scanner.ino.elf",
     "ld": "system/CH32VM00X/SRC/Ld/Link.ld",
-    "map_file": "build/CH32VM00X/i2c_scanner.ino.map",
+    "map_file": "build/CH32VM00X_006/i2c_scanner.ino.map",
     "linker_vars": "__FLASH_SIZE=63488 __RAM_SIZE=8192"
   },
   {
