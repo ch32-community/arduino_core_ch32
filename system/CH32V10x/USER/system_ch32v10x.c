@@ -113,7 +113,14 @@ void SystemCoreClockUpdate(void)
             pllmull = (pllmull >> 18) + 2;
             if(pllsource == 0x00)
             {
-                SystemCoreClock = (HSI_VALUE >> 1) * pllmull;
+                if( EXTEN->EXTEN_CTR & EXTEN_PLL_HSI_PRE )
+                {
+                    SystemCoreClock = ( HSI_VALUE ) * pllmull;
+                }
+                else
+                {
+                    SystemCoreClock = ( HSI_VALUE >> 1 ) * pllmull;
+                }
             }
             else
             {
@@ -514,9 +521,9 @@ static void SetSysClockTo56_HSI(void)
     /* Enable Prefetch Buffer */
     FLASH->ACTLR |= FLASH_ACTLR_PRFTBE;
 
-    /* Flash 1 wait state */
+    /* Flash 2 wait state */
     FLASH->ACTLR &= (uint32_t)((uint32_t)~FLASH_ACTLR_LATENCY);
-    FLASH->ACTLR |= (uint32_t)FLASH_ACTLR_LATENCY_1;
+    FLASH->ACTLR |= (uint32_t)FLASH_ACTLR_LATENCY_2;
 
     /* HCLK = SYSCLK */
     RCC->CFGR0 |= (uint32_t)RCC_HPRE_DIV1;
@@ -560,9 +567,9 @@ static void SetSysClockTo72_HSI(void)
     /* Enable Prefetch Buffer */
     FLASH->ACTLR |= FLASH_ACTLR_PRFTBE;
 
-    /* Flash 1 wait state */
+    /* Flash 2 wait state */
     FLASH->ACTLR &= (uint32_t)((uint32_t)~FLASH_ACTLR_LATENCY);
-    FLASH->ACTLR |= (uint32_t)FLASH_ACTLR_LATENCY_1;
+    FLASH->ACTLR |= (uint32_t)FLASH_ACTLR_LATENCY_2;
 
     /* HCLK = SYSCLK */
     RCC->CFGR0 |= (uint32_t)RCC_HPRE_DIV1;
