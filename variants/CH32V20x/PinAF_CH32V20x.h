@@ -99,10 +99,6 @@ enum {
   AFIO_Remap_ADC2_ETRGREG_ENABLE,
   AFIO_Remap_ADC2_ETRGREG_DISABLE,
 
-  AFIO_Remap_SWJ_NONJTRST,
-  AFIO_Remap_SWJ_NOJTAG,
-  AFIO_Remap_SWJ_DISABLE,
-
   AFIO_Remap_TIM2ITR1_TO_ETH,
   AFIO_Remap_TIM2ITR1_TO_USB,
 
@@ -273,16 +269,6 @@ static inline void pin_SetV32AFPin(uint32_t afnum)
       break;
     case AFIO_Remap_ADC2_ETRGREG_DISABLE: 
       GPIO_PinRemapConfig(GPIO_Remap_ADC2_ETRGREG,DISABLE);
-      break;
-
-    case AFIO_Remap_SWJ_NONJTRST: 
-      GPIO_PinRemapConfig(GPIO_Remap_SWJ_NoJTRST,ENABLE);
-      break;
-    case AFIO_Remap_SWJ_NOJTAG: 
-      GPIO_PinRemapConfig(GPIO_Remap_SWJ_JTAGDisable,ENABLE);
-      break;
-    case AFIO_Remap_SWJ_DISABLE: 
-      GPIO_PinRemapConfig(GPIO_Remap_SWJ_Disable,ENABLE);
       break;
 
     case AFIO_Remap_TIM2ITR1_TO_ETH:
