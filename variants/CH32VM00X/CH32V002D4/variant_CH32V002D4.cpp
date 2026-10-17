@@ -27,7 +27,7 @@ There is no full set of SPI pins on the D4U6.
 V002 QFN12->DIP14 DEV-BOARD PINOUT
                +-----v------+
      D0~/A1 1 -+PA1      PD7+- 14  D10~/RST
-      D1/A0 2 -+PA2      PD4+- 13  D9/A7
+      D1/A0 2 -+PA2      PD4+- 13  D9/A3
   TX/SDA/D7 3 -+PD0      PD1+- 12  SWIO/D8/SCL/RX
         3V3 4 -+VDD  /\  PC7+- 11  D6
          D2 5 -+PC0  \/  PC6+- 10  D5
@@ -47,7 +47,7 @@ const PinName digitalPin[] = {
   PC_6,   // D5
   PC_7,   // D6
   PD_0,   // D7/SDA/TX
-  PD_1,   // D8/SWIO/SCL/TX
+  PD_1,   // D8/SWIO/SCL/RX
   PD_4,   // D9/A3
   PD_7    // D10/RST
 };
