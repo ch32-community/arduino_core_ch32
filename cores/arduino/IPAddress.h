@@ -21,6 +21,7 @@
 #define IPAddress_h
 
 #include <stdint.h>
+#include "Print.h"  // MMOLE 261017: needed for definition of DEC when not having UART_MODULE_ENABLED
 #include "Printable.h"
 #include "WString.h"
 
