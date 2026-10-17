@@ -14,10 +14,11 @@ WARNING = "\033[33mwarnings\033[0m "
 build_format = '| {:35} | {:9} | {:6} |'
 build_separator = '-' * 59
 
-# ci-arduino naming, fqbn
+# ci-arduino naming, fqbn, [family name]
 all_boards = [
     ['CH32V00x' , 'ch32-community:ch32v:CH32V00x_EVT' ],
-    ['CH32VM00X', 'ch32-community:ch32v:CH32VM00X_EVT'],
+    ['CH32VM00X-CH32V002F4', 'ch32-community:ch32v:CH32VM00X_EVT:pnum=CH32V002F4', 'CH32VM00X'],
+    ['CH32VM00X-CH32V006K8', 'ch32-community:ch32v:CH32VM00X_EVT:pnum=CH32V006K8', 'CH32VM00X'],    
     ['CH32L10x' , 'ch32-community:ch32v:CH32L10x_EVT' ],
     ['CH32V10x' , 'ch32-community:ch32v:CH32V10x_EVT' ],
     ['CH32V20x' , 'ch32-community:ch32v:CH32V20x_EVT' ],
@@ -31,25 +32,36 @@ def build_sketch(variant, sketch):
     ret = [0, 0, 0]
     name = variant[0]
     fqbn = variant[1]
+    family = variant[2] if len(variant) > 2 else name
+    skip_names = {family, name}
     start_time = time.monotonic()
 
     # Skip if
     # - contains ".board.test.skip"
     # - contains any of ".board.test.only" but not this one
     # - conntain .skip.txt has this board in it
+
     sketchdir = os.path.dirname(sketch)
-    if os.path.exists(sketchdir + '/.' + name + '.test.skip') or \
-            (glob.glob(sketchdir + "/.*.test.only") and not os.path.exists(sketchdir + '/.' + name + '.test.only')):
+
+    # A family marker applies to every configured variant in that family.
+    # A variant marker applies only to that build entry.
+    skip_marker = any(
+        os.path.exists(os.path.join(sketchdir, f".{key}.test.skip"))
+        for key in skip_names
+    )
+    only_markers = glob.glob(os.path.join(sketchdir, ".*.test.only"))
+    matches_only = any(
+        os.path.exists(os.path.join(sketchdir, f".{key}.test.only"))
+        for key in skip_names
+    )
+    if skip_marker or (only_markers and not matches_only):
         ret[2] = 1
 
-    skip_txt = f"{sketchdir}/.skip.txt"
+    skip_txt = os.path.join(sketchdir, ".skip.txt")
     if os.path.exists(skip_txt):
         with open(skip_txt) as f:
-            lines = f.readlines()
-            for line in lines:
-                if line.strip() == name:
-                    ret[2] = 1
-                    break
+            if any(line.strip() in skip_names for line in f):
+                ret[2] = 1
 
     if ret[2] == 1:
         success = SKIPPED
