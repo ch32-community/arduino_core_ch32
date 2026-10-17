@@ -56,51 +56,17 @@ const PinName digitalPin[] = {
   PC_2,   // D4
   PC_3,   // D5
   PC_4,   // D6/A2
-  PC_5,   // D7    Not on A4M6
+  NC,     // D7    No PC_5 on A4M6
   PC_6,   // D8
   PC_7,   // D9
-  PD_0,   // D10    Not on A4M6
+  NC,     // D10    No PD_0 on A4M6
   PD_1,   // D11/SWIO
-  PD_2,   // D12/A3    Not on A4M6
-  PD_3,   // D13/A4    Not on A4M6
+  NC,     // D12/A3    No PD_2 on A4M6
+  NC,     // D13/A4    No PD_3 on A4M6
   PD_4,   // D14/A7
   PD_5,   // D15/A5/TX/SCK
   PD_6,   // D16/A6/RX/MOSI
   PD_7    // D17/RST/MISO
-
-/* WCH V006K8 pins    
-  PA_0,   //D0 
-  PA_1,   //D1/A1
-  PA_2,   //D2/A0
-  PA_3,   //D3
-  PA_4,   //D4
-  PA_5,   //D5
-  PA_6,   //D6
-  PA_7,   //D7
-  PB_0,   //D8
-  PB_1,   //D9 
-  PB_2,   //D10
-  PB_3,   //D11
-  PB_4,   //D12
-  PB_5,   //D13
-  PB_6,   //D14
-  PC_0,   //D15 
-  PC_1,   //D16 
-  PC_2,   //D17
-  PC_3,   //D18
-  PC_4,   //D19/A2
-  PC_5,   //D20
-  PC_6,   //D21 
-  PC_7,   //D22
-  PD_0,   //D23
-  PD_1,   //D24 
-  PD_2,   //D25/A3
-  PD_3,   //D26/A4
-  PD_4,   //D27/A7
-  PD_5,   //D28/A5
-  PD_6,   //D29/A6 
-  PD_7    //D30
-*/
 };
 
 // Analog (Ax) pin number array
@@ -108,8 +74,8 @@ const uint32_t analogInputPin[] = {
   1,    // A0/PA2
   0,    // A1/PA1
   6,    // A2/PC4
-  12,   // A3/PD2    Not on A4M6
-  13,   // A4/PD3    Not on A4M6
+  12,   // A3/PD2    No PD2 on A4M6
+  13,   // A4/PD3    No PD3 on A4M6
   15,   // A5/PD5
   16,   // A6/PD6
   14    // A7/PD4 
