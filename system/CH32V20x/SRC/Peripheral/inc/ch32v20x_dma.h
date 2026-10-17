@@ -1,13 +1,15 @@
 /********************************** (C) COPYRIGHT  *******************************
  * File Name          : ch32v20x_dma.h
  * Author             : WCH
- * Version            : V1.0.0
- * Date               : 2021/06/06
+ * Version            : V1.0.1
+ * Date               : 2025/04/28
  * Description        : This file contains all the functions prototypes for the
  *                      DMA firmware library.
- * Copyright (c) 2021 Nanjing Qinheng Microelectronics Co., Ltd.
- * SPDX-License-Identifier: Apache-2.0
- *******************************************************************************/
+*********************************************************************************
+* Copyright (c) 2021 Nanjing Qinheng Microelectronics Co., Ltd.
+* Attention: This software (modified or not) and binary are used for 
+* microcontroller manufactured by Nanjing Qinheng Microelectronics.
+*******************************************************************************/
 #ifndef __CH32V20x_DMA_H
 #define __CH32V20x_DMA_H
 
