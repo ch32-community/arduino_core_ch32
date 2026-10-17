@@ -18,7 +18,9 @@ V002 QFN12->DIP14 DEV-BOARD PINOUT
 
 ### MAIN FEATURES/LIMITATIONS ###
 
- - Up to 11 I/O pins, PWM/ADC/I2C/UART
- - SPI is not available (no SCK pin)
- - Shared UART/I2C pins (SCL and RX are shared with SWIO pin)
+ - Up to 11 I/O pins, PWM/ADC/I2C/UART,
+ - Arduino pin numbers on QFN12 deviate from TSSOP20/QFN20 numbers,
+ - SPI is not available (no SCK pin),
+ - Shared UART/I2C pins (SCL and RX are shared with SWIO pin),
+ - On QFN12 UART/I2C pin PD1 is also SWIO. Use "Clear by Power on" in Link Utility to reprogram.
  - Requires updated core and tools. See [these notes](../README.md#known-issues--limitations)
