@@ -14,6 +14,7 @@ menu.upload_method=Upload method
 
 
 
+
 ##############################################################################
 ##CH32V00x_EVT Board
 
@@ -129,10 +130,57 @@ CH32VM00X_EVT.upload.maximum_data_size=0
 CH32VM00X_EVT.build.variant_h=variant_{build.board}.h
 CH32VM00X_EVT.debug.tool=gdb-WCH_LinkE
 
-# TODO:
+
 #CH32V002F4 TSSOP20 Board
-#CH32V002A4 QSOP16 Board
+CH32VM00X_EVT.menu.pnum.CH32V002F4=CH32V002F4 TSSOP20/QFN20
+CH32VM00X_EVT.menu.pnum.CH32V002F4.node=NODE_V002F4
+CH32VM00X_EVT.menu.pnum.CH32V002F4.upload.maximum_size=16384
+CH32VM00X_EVT.menu.pnum.CH32V002F4.upload.maximum_data_size=4096
+CH32VM00X_EVT.menu.pnum.CH32V002F4.build.mcu=QingKe-V2C
+CH32VM00X_EVT.menu.pnum.CH32V002F4.build.board=CH32V002F4
+CH32VM00X_EVT.menu.pnum.CH32V002F4.build.series=CH32VM00X
+CH32VM00X_EVT.menu.pnum.CH32V002F4.build.variant=CH32VM00X/CH32V002F4
+CH32VM00X_EVT.menu.pnum.CH32V002F4.build.chip=CH32V002F4
+CH32VM00X_EVT.menu.pnum.CH32V002F4.build.march=rv32ecxw
+CH32VM00X_EVT.menu.pnum.CH32V002F4.build.mabi=ilp32e
+CH32VM00X_EVT.menu.pnum.CH32V002F4.build.math_lib_gcc=-lm
+CH32VM00X_EVT.menu.pnum.CH32V002F4.build.IQ_math_RV32=
+CH32VM00X_EVT.menu.pnum.CH32V002F4.build.ch_extra_lib=-lprintf
+CH32VM00X_EVT.menu.pnum.CH32V002F4.build.ldscript=LinkV002.ld
+
+#CH32V002A4 SOP16 Board
+CH32VM00X_EVT.menu.pnum.CH32V002A4=CH32V002A4 SOP16
+CH32VM00X_EVT.menu.pnum.CH32V002A4.node=NODE_V002A4
+CH32VM00X_EVT.menu.pnum.CH32V002A4.upload.maximum_size=16384
+CH32VM00X_EVT.menu.pnum.CH32V002A4.upload.maximum_data_size=4096
+CH32VM00X_EVT.menu.pnum.CH32V002A4.build.mcu=QingKe-V2C
+CH32VM00X_EVT.menu.pnum.CH32V002A4.build.board=CH32V002A4
+CH32VM00X_EVT.menu.pnum.CH32V002A4.build.series=CH32VM00X
+CH32VM00X_EVT.menu.pnum.CH32V002A4.build.variant=CH32VM00X/CH32V002A4
+CH32VM00X_EVT.menu.pnum.CH32V002A4.build.chip=CH32V002A4
+CH32VM00X_EVT.menu.pnum.CH32V002A4.build.march=rv32ecxw
+CH32VM00X_EVT.menu.pnum.CH32V002A4.build.mabi=ilp32e
+CH32VM00X_EVT.menu.pnum.CH32V002A4.build.math_lib_gcc=-lm
+CH32VM00X_EVT.menu.pnum.CH32V002A4.build.IQ_math_RV32=
+CH32VM00X_EVT.menu.pnum.CH32V002A4.build.ch_extra_lib=-lprintf
+CH32VM00X_EVT.menu.pnum.CH32V002A4.build.ldscript=LinkV002.ld
+
 #CH32V002D4 QFN12 Board
+CH32VM00X_EVT.menu.pnum.CH32V002D4=CH32V002D4 QFN12
+CH32VM00X_EVT.menu.pnum.CH32V002D4.node=NODE_V002D4
+CH32VM00X_EVT.menu.pnum.CH32V002D4.upload.maximum_size=16384
+CH32VM00X_EVT.menu.pnum.CH32V002D4.upload.maximum_data_size=4096
+CH32VM00X_EVT.menu.pnum.CH32V002D4.build.mcu=QingKe-V2C
+CH32VM00X_EVT.menu.pnum.CH32V002D4.build.board=CH32V002D4
+CH32VM00X_EVT.menu.pnum.CH32V002D4.build.series=CH32VM00X
+CH32VM00X_EVT.menu.pnum.CH32V002D4.build.variant=CH32VM00X/CH32V002D4
+CH32VM00X_EVT.menu.pnum.CH32V002D4.build.chip=CH32V002D4
+CH32VM00X_EVT.menu.pnum.CH32V002D4.build.march=rv32ecxw
+CH32VM00X_EVT.menu.pnum.CH32V002D4.build.mabi=ilp32e
+CH32VM00X_EVT.menu.pnum.CH32V002D4.build.math_lib_gcc=-lm
+CH32VM00X_EVT.menu.pnum.CH32V002D4.build.IQ_math_RV32=
+CH32VM00X_EVT.menu.pnum.CH32V002D4.build.ch_extra_lib=-lprintf
+CH32VM00X_EVT.menu.pnum.CH32V002D4.build.ldscript=LinkV002.ld
 
 #CH32V006K8 QFN32 EVT Board
 CH32VM00X_EVT.menu.pnum.CH32V006K8=CH32V006K8 QFN32 EVT
@@ -201,6 +249,7 @@ CH32VM00X_EVT.menu.pnum.CH32M007E8.build.math_lib_gcc=-lm
 CH32VM00X_EVT.menu.pnum.CH32M007E8.build.IQ_math_RV32=
 CH32VM00X_EVT.menu.pnum.CH32M007E8.build.ch_extra_lib=-lprintf
 CH32VM00X_EVT.menu.pnum.CH32M007E8.build.ldscript=Link.ld
+
 
 # Upload menu
 CH32VM00X_EVT.menu.upload_method.swdMethod=WCH-SWD
@@ -275,6 +324,7 @@ CH32VM00X_EVT.menu.rtlib.nanofps=Newlib Nano + Float Printf/Scanf
 CH32VM00X_EVT.menu.rtlib.nanofps.build.flags.ldflags=--specs=nano.specs --specs=nosys.specs -u _printf_float -u _scanf_float
 CH32VM00X_EVT.menu.rtlib.full=Newlib Standard
 CH32VM00X_EVT.menu.rtlib.full.build.flags.ldflags=--specs=nosys.specs
+
 
 # Serial port selection
 CH32VM00X_EVT.menu.xserial.serial1=Serial=Serial1 (default)
@@ -415,11 +465,14 @@ CH32X035_EVT.menu.xserial.serial4.build.serial_flags=-DSERIAL_UART_INSTANCE=4
 CH32X035_EVT.menu.xserial.serialMulti=Multiple (Serial1-Serial4)
 CH32X035_EVT.menu.xserial.serialMulti.build.serial_flags=-DSERIAL_UART_INSTANCES=4
 
+
 # USB support
 CH32X035_EVT.menu.usb.none=None
 CH32X035_EVT.menu.usb.none.build.usb_flags=
 CH32X035_EVT.menu.usb.usbcdc=USB CDC Serial for CH32X033/35 (TODO)
 CH32X035_EVT.menu.usb.usbcdc.build.usb_flags=-DUSBCON -DUSE_TINYUSB -DCFG_TUD_WCH_USBIP_FSDEV=1 "-I{runtime.platform.path}/libraries/Adafruit_TinyUSB_Arduino/src/arduino"
+
+
 
 
 ##############################################################################
@@ -537,6 +590,8 @@ CH32V10x_EVT.menu.xserial.serial3=Serial=Serial3
 CH32V10x_EVT.menu.xserial.serial3.build.serial_flags=-DSERIAL_UART_INSTANCE=3
 CH32V10x_EVT.menu.xserial.serialMulti=Multiple (Serial1-Serial3)
 CH32V10x_EVT.menu.xserial.serialMulti.build.serial_flags=-DSERIAL_UART_INSTANCES=3
+
+
 
 
 ##############################################################################
@@ -1050,4 +1105,3 @@ CH32L10x_EVT.menu.xserial.serial4=Serial=Serial4
 CH32L10x_EVT.menu.xserial.serial4.build.serial_flags=-DSERIAL_UART_INSTANCE=4
 CH32L10x_EVT.menu.xserial.serialMulti=Multiple (Serial1-Serial4)
 CH32L10x_EVT.menu.xserial.serialMulti.build.serial_flags=-DSERIAL_UART_INSTANCES=4
-
