@@ -39,15 +39,15 @@ TX'/RX' - when I2C is enabled, TX/RX=PD5/PD6, when not enabled TX/RX=PC0/PC1
 CH32V002 vs CH32V003
 
 V002: RV32EmC, 16K Flash, 4KB SRAM, 3328B bootloader, 256B user mem, 12-bit ADC, System Clock Monitor, 2-5V, QFN12
-V003: RV32EC,  16K Flash, 2KB SRAM, 1920B bootloasder, 64B user mmm, 10-bit ADC, OPA, 3v#-5V
+V003: RV32EC,  16K Flash, 2KB SRAM, 1920B bootloader, 64B user mem, 10-bit ADC, OPA, 3v#-5V
 V004: RV32EmC, 32K Flash, 6KB SRAM, 3328B bootloader, 256B user mem, 12-bit ADC, System Clock Monitor, 2-5V
 V005: RV32EmC, 32K Flash, 6KB SRAM, 3328B bootloader, 256B user mem, 12-bit ADC, System Clock Monitor, 2-5V, QFN12, QSOP24, UART2
 V006: RV32EmC, 62K Flash, 8KB SRAM, 3328B bootloader, 256B user mem, 12-bit ADC, 8-ch touch. System Clock Monitor, 2-5V, OPA, UART2, 16-bit simple timer, QFN32
-
 */
+
 // Digital PinName array. On smaller packages some GPIOs are bound to the same pin.
 // Leading pinout is TSSOP20 (18x gpio), same as V003 TSSOP20
-// For QSOP16 (A4M6) we keep the same pin numbering as on TSSOP20
+// For SOP16 (A4M6) we keep the same pin numbering as on TSSOP20
 const PinName digitalPin[] = {
   PA_1,   // D0/A1
   PA_2,   // D1/A0
@@ -80,6 +80,3 @@ const uint32_t analogInputPin[] = {
   16,   // A6/PD6
   14    // A7/PD4 
 };
-
-
-
