@@ -25,6 +25,8 @@
  * =====
  */
 
+// V002f4 has following pins available: PA1/2, PC0-7, PD0-7. PD1=SWIO
+
 //*** ADC ***
 #ifdef ADC_MODULE_ENABLED
 WEAK const PinMap PinMap_ADC[] = {
@@ -82,6 +84,7 @@ WEAK const PinMap PinMap_TIM[] = {
 #ifdef UART_MODULE_ENABLED
 WEAK const PinMap PinMap_UART_TX[] = {
   {PD_5, USART1, CH_PIN_DATA(CH_MODE_OUTPUT_50MHz, CH_CNF_OUTPUT_AFPP, 0, AFIO_NONE)}, 
+  {PC_0, USART1, CH_PIN_DATA(CH_MODE_OUTPUT_50MHz, CH_CNF_OUTPUT_AFPP, 0, AFIO_PartialRemap3_USART1_ENABLE)}, 
   {NC,   NP,     0}
 };
 #endif
@@ -89,6 +92,7 @@ WEAK const PinMap PinMap_UART_TX[] = {
 #ifdef UART_MODULE_ENABLED
 WEAK const PinMap PinMap_UART_RX[] = {
   {PD_6, USART1, CH_PIN_DATA(CH_MODE_INPUT, CH_CNF_INPUT_PUPD, PULLUP, AFIO_NONE)},
+  {PC_1, USART1, CH_PIN_DATA(CH_MODE_INPUT, CH_CNF_INPUT_PUPD, PULLUP, AFIO_PartialRemap3_USART1_ENABLE)},
   {NC,    NP,     0}
 };
 #endif
@@ -96,6 +100,7 @@ WEAK const PinMap PinMap_UART_RX[] = {
 #ifdef UART_MODULE_ENABLED
 WEAK const PinMap PinMap_UART_RTS[] = {
   {PC_2, USART1, CH_PIN_DATA(CH_MODE_OUTPUT_50MHz, CH_CNF_OUTPUT_AFPP, 0, AFIO_NONE)}, 
+  {PC_7, USART1, CH_PIN_DATA(CH_MODE_OUTPUT_50MHz, CH_CNF_OUTPUT_AFPP, 0, AFIO_PartialRemap3_USART1_ENABLE)},
   {NC,    NP,     0}
 };
 #endif
@@ -103,6 +108,7 @@ WEAK const PinMap PinMap_UART_RTS[] = {
 #ifdef UART_MODULE_ENABLED
 WEAK const PinMap PinMap_UART_CTS[] = {
   {PD_3, USART1, CH_PIN_DATA(CH_MODE_INPUT, CH_CNF_INPUT_PUPD, PULLUP, AFIO_NONE)},   
+  {PC_6, USART1, CH_PIN_DATA(CH_MODE_INPUT, CH_CNF_INPUT_PUPD, PULLUP, AFIO_PartialRemap3_USART1_ENABLE)},
   {NC,    NP,     0}
 };
 #endif
@@ -136,12 +142,3 @@ WEAK const PinMap PinMap_SPI_SSEL[] = {
   {NC,    NP,   0}
 };
 #endif
-
-
-
-
-
-
-
-
-
