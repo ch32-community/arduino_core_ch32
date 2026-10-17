@@ -36,8 +36,9 @@ V002 QFN12->DIP14 DEV-BOARD PINOUT
                +------------+        
 
 */
-// Digital PinName array. On QFN12 the SWIO pin is used for UART/I2C.
-// Leading pinout is TSSOP20 (18x gpio), same as V003 TSSOP20
+// Note: - Arduino pin numbers on QFN12 are deviate from TSSOP20/QFN20 numbers.
+//       - On QFN12 UART/I2C pin PD1 is also SWIO. Use "Clear by Power on" in Link Utility to reprogram.
+// Digital PinName array. 
 const PinName digitalPin[] = {
   PA_1,   // D0/A1
   PA_2,   // D1/A0
