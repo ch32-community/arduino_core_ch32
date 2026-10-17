@@ -34,7 +34,7 @@ RX'/SDA D3  1-+PC1     PC0+-16 D2~/TX'
       SWIO  7-+PD1     PD6+-10 RX/A6/MOSI
 SCK/A7/D14~ 8-+PD4     PD5+-9  TX/A5/MISO
               +-----------+
-TX'/RX' - when I2C is enabled, TX/RX=PD5/PD6, when not enabled TX/RX=PC0/PC1
+TX'/RX' - when I2C is enabled TX/RX=PD5/PD6, when not enabled TX/RX=PC0/PC1
 
 CH32V002 vs CH32V003
 
@@ -56,17 +56,17 @@ const PinName digitalPin[] = {
   PC_2,   // D4
   PC_3,   // D5
   PC_4,   // D6/A2
-  NC,     // D7    No PC_5 on A4M6
+  NC,     // D7        No PC_5 on A4M6
   PC_6,   // D8
-  PC_7,   // D9
-  NC,     // D10    No PD_0 on A4M6
+  PC_7,   // D9 (recommended software CS/SS)
+  NC,     // D10       No PD_0 on A4M6
   PD_1,   // D11/SWIO
   NC,     // D12/A3    No PD_2 on A4M6
   NC,     // D13/A4    No PD_3 on A4M6
-  PD_4,   // D14/A7
-  PD_5,   // D15/A5/TX/SCK
+  PD_4,   // D14/A7/SCK
+  PD_5,   // D15/A5/TX/MISO
   PD_6,   // D16/A6/RX/MOSI
-  PD_7    // D17/RST/MISO
+  PD_7    // D17/RST
 };
 
 // Analog (Ax) pin number array
