@@ -36,7 +36,7 @@ V002 QFN12->DIP14 DEV-BOARD PINOUT
                +------------+        
 
 */
-// Note: - Arduino pin numbers on QFN12 are deviate from TSSOP20/QFN20 numbers.
+// Note: - Arduino pin numbers on QFN12 deviate from TSSOP20/QFN20 numbers.
 //       - On QFN12 UART/I2C pin PD1 is also SWIO. Use "Clear by Power on" in Link Utility to reprogram.
 // Digital PinName array. 
 const PinName digitalPin[] = {
