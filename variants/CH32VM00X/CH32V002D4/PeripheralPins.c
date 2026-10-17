@@ -25,23 +25,25 @@
  * =====
  */
 
+// V002D4U6 has Up to 11 I/O pins, PWM/ADC/I2C/UART, no hardware SPI
+// Available pins: PA1/2/ PC0/3-7 PD0/1/4/7,  PD1=SWIO=SCL=RX
+
 //*** ADC ***
 #ifdef ADC_MODULE_ENABLED
 WEAK const PinMap PinMap_ADC[] = {
   {PA_2,      ADC1, CH_PIN_DATA_EXT(CH_MODE_INPUT, CH_CNF_INPUT_ANALOG, 0, AFIO_NONE, 0)}, // ADC1_IN0
   {PA_1,      ADC1, CH_PIN_DATA_EXT(CH_MODE_INPUT, CH_CNF_INPUT_ANALOG, 0, AFIO_NONE, 1)}, // ADC1_IN1
   {PC_4,      ADC1, CH_PIN_DATA_EXT(CH_MODE_INPUT, CH_CNF_INPUT_ANALOG, 0, AFIO_NONE, 2)}, // ADC1_IN2
-  {PD_2,      ADC1, CH_PIN_DATA_EXT(CH_MODE_INPUT, CH_CNF_INPUT_ANALOG, 0, AFIO_NONE, 3)}, // ADC1_IN3
-  {PD_3,      ADC1, CH_PIN_DATA_EXT(CH_MODE_INPUT, CH_CNF_INPUT_ANALOG, 0, AFIO_NONE, 4)}, // ADC1_IN4
-  {PD_5,      ADC1, CH_PIN_DATA_EXT(CH_MODE_INPUT, CH_CNF_INPUT_ANALOG, 0, AFIO_NONE, 5)}, // ADC1_IN5
-  {PD_6,      ADC1, CH_PIN_DATA_EXT(CH_MODE_INPUT, CH_CNF_INPUT_ANALOG, 0, AFIO_NONE, 6)}, // ADC1_IN6
+  // {PD_2,      ADC1, CH_PIN_DATA_EXT(CH_MODE_INPUT, CH_CNF_INPUT_ANALOG, 0, AFIO_NONE, 3)}, // ADC1_IN3
+  // {PD_3,      ADC1, CH_PIN_DATA_EXT(CH_MODE_INPUT, CH_CNF_INPUT_ANALOG, 0, AFIO_NONE, 4)}, // ADC1_IN4
+  // {PD_5,      ADC1, CH_PIN_DATA_EXT(CH_MODE_INPUT, CH_CNF_INPUT_ANALOG, 0, AFIO_NONE, 5)}, // ADC1_IN5
+  // {PD_6,      ADC1, CH_PIN_DATA_EXT(CH_MODE_INPUT, CH_CNF_INPUT_ANALOG, 0, AFIO_NONE, 6)}, // ADC1_IN6
   {PD_4,      ADC1, CH_PIN_DATA_EXT(CH_MODE_INPUT, CH_CNF_INPUT_ANALOG, 0, AFIO_NONE, 7)}, // ADC1_IN7
   {NC,        NP,   0}
 };
 #endif
 
 //*** No DAC ***
-
 
 
 //*** I2C ***
@@ -63,6 +65,7 @@ WEAK const PinMap PinMap_I2C_SCL[] = {
 };
 #endif
 
+
 //*** TIM ***
 // QFN12 has less pins available for analogWrite()
 // TODO: somehow using analogWrite affects SerialPrint() => perhaps timing gets wrong?
@@ -82,6 +85,7 @@ WEAK const PinMap PinMap_TIM[] = {
   {NC,         NP,   0}
 };
 #endif
+
 
 //*** UART ***
 // QFN12 has no pins for PD5=TX/PD6=RX. It has these alternatives: PC0=TX_3, PD0=TX_2, PD1=RX_2/RX_5/TX_4/SWIO, PC6=RX_6, PA1=RX_8, PC4=RX_9
@@ -106,7 +110,7 @@ WEAK const PinMap PinMap_UART_RX[] = {
 #ifdef UART_MODULE_ENABLED
 WEAK const PinMap PinMap_UART_RTS[] = {
   //{PC_2, USART1, CH_PIN_DATA(CH_MODE_OUTPUT_50MHz, CH_CNF_OUTPUT_AFPP, 0, AFIO_NONE)}, 
-  {PC_2, USART1, CH_PIN_DATA(CH_MODE_OUTPUT_50MHz, CH_CNF_OUTPUT_AFPP, 0, AFIO_PartialRemap2_USART1_ENABLE)}, 
+  {NC, USART1, CH_PIN_DATA(CH_MODE_OUTPUT_50MHz, CH_CNF_OUTPUT_AFPP, 0, AFIO_PartialRemap2_USART1_ENABLE)}, // no PC2 on D4U6
   {NC,    NP,     0}
 };
 #endif
@@ -114,14 +118,14 @@ WEAK const PinMap PinMap_UART_RTS[] = {
 #ifdef UART_MODULE_ENABLED
 WEAK const PinMap PinMap_UART_CTS[] = {
   //{PD_3, USART1, CH_PIN_DATA(CH_MODE_INPUT, CH_CNF_INPUT_PUPD, PULLUP, AFIO_NONE)},   
-  {PC_3, USART1, CH_PIN_DATA(CH_MODE_INPUT, CH_CNF_INPUT_PUPD, PULLUP, AFIO_PartialRemap2_USART1_ENABLE)},   
+  {PC_3, USART1, CH_PIN_DATA(CH_MODE_INPUT, CH_CNF_INPUT_PUPD, PULLUP, AFIO_PartialRemap2_USART1_ENABLE)},
   {NC,    NP,     0}
 };
 #endif
 
 
 //*** SPI ***
-// QFN12 has no valid combination of available pins to support MISO/MOSI/SCK
+// D4U6 QFN12 has no valid combination of available pins to support MISO/MOSI/SCK
 // See also table 7-12 on page 74 of CH32V00X Reference Manual v1.4
 #ifdef SPI_MODULE_ENABLED
 WEAK const PinMap PinMap_SPI_MOSI[] = {
@@ -150,12 +154,3 @@ WEAK const PinMap PinMap_SPI_SSEL[] = {
   {NC,    NP,   0}
 };
 #endif
-
-
-
-
-
-
-
-
-
