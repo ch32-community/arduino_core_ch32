@@ -26,7 +26,7 @@ SCK/D14/A7  8-+PD4     PD5+-9  TX/A5/MISO
  - Requires updated core and tools. See [these notes](../README.md#known-issues--limitations).
 
  #### SPI pin limitations
- - Hardware SPI-SSEL is not avalailable on CH32V002A4M6, use software SS (aka. CS) instead. Recommended pin: PC7.
+ - Hardware SPI-SSEL is not available on CH32V002A4M6; use software SS (aka. CS) instead. Recommended pin: PC7.
  - Simultaneous hardware UART, I2C, and full-duplex SPI is unsupported:
 
 | Combination | Pin allocation |
