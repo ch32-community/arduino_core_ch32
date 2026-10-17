@@ -26,7 +26,7 @@
  */
 
 // V002D4U6 has Up to 11 I/O pins, PWM/ADC/I2C/UART, no hardware SPI
-// Available pins: PA1/2/ PC0/3-7 PD0/1/4/7,  PD1=SWIO=SCL=RX
+// Available pins: PA1/2/ PC0/3/4/6/7 PD0/1/4/7,  PD1=SWIO=SCL=RX
 
 //*** ADC ***
 #ifdef ADC_MODULE_ENABLED
@@ -143,7 +143,7 @@ WEAK const PinMap PinMap_SPI_MISO[] = {
 
 #ifdef SPI_MODULE_ENABLED
 WEAK const PinMap PinMap_SPI_SCLK[] = {
-  //{PC_5, SPI1, CH_PIN_DATA(CH_MODE_OUTPUT_50MHz, CH_CNF_OUTPUT_AFPP, 0, AFIO_NONE)},
+  //{PC_5, SPI1, CH_PIN_DATA(CH_MODE_OUTPUT_50MHz, CH_CNF_OUTPUT_AFPP, 0, AFIO_NONE)},  // No PC5 on D4U6
   {NC,   NP,   0}
 };
 #endif
