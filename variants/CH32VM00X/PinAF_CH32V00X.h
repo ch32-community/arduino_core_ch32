@@ -166,10 +166,10 @@ static inline void pin_SetV32AFPin(uint32_t afnum)
       GPIO_PinRemapConfig(GPIO_PartialRemap3_I2C1,ENABLE);
       break;  
     case AFIO_FullRemap_I2C1_ENABLE:
-      GPIO_PinRemapConfig(GPIO_FullRemap_I2C1,ENABLE);
+      GPIO_PinRemapConfig(GPIO_FullRemap4_I2C1,ENABLE);
       break;
     case AFIO_Remap_I2C1_DISABLE:
-      GPIO_PinRemapConfig(GPIO_FullRemap_I2C1,DISABLE);
+      GPIO_PinRemapConfig(GPIO_FullRemap4_I2C1,DISABLE);
       break;
 
     case AFIO_PartialRemap1_USART1_ENABLE:
