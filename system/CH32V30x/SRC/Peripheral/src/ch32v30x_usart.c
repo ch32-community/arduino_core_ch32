@@ -126,10 +126,6 @@ void USART_Init(USART_TypeDef *USARTx, USART_InitTypeDef *USART_InitStruct)
     uint32_t          usartxbase = 0;
     RCC_ClocksTypeDef RCC_ClocksStatus;
 
-    if(USART_InitStruct->USART_HardwareFlowControl != USART_HardwareFlowControl_None)
-    {
-    }
-
     usartxbase = (uint32_t)USARTx;
     tmpreg = USARTx->CTLR2;
     tmpreg &= CTLR2_STOP_CLEAR_Mask;
@@ -158,28 +154,20 @@ void USART_Init(USART_TypeDef *USARTx, USART_InitTypeDef *USART_InitStruct)
         apbclock = RCC_ClocksStatus.PCLK1_Frequency;
     }
 
-    if((USARTx->CTLR1 & CTLR1_OVER8_Set) != 0)
-    {
-        integerdivider = ((25 * apbclock) / (2 * (USART_InitStruct->USART_BaudRate)));
-    }
-    else
-    {
-        integerdivider = ((25 * apbclock) / (4 * (USART_InitStruct->USART_BaudRate)));
-    }
+    integerdivider = ((25 * apbclock) / (4 * (USART_InitStruct->USART_BaudRate)));
     tmpreg = (integerdivider / 100) << 4;
-
     fractionaldivider = integerdivider - (100 * (tmpreg >> 4));
-
-    if((USARTx->CTLR1 & CTLR1_OVER8_Set) != 0)
+    fractionaldivider = (((fractionaldivider * 16) + 50) / 100);
+    if (fractionaldivider > 0xf)
     {
-        tmpreg |= ((((fractionaldivider * 8) + 50) / 100)) & ((uint8_t)0x07);
+        tmpreg += 1 << 4;
     }
     else
     {
-        tmpreg |= ((((fractionaldivider * 16) + 50) / 100)) & ((uint8_t)0x0F);
+        tmpreg |= fractionaldivider & ((uint8_t)0x0f);
     }
-
-    USARTx->BRR = (uint16_t)tmpreg;
+    
+    USARTx->BRR = (uint16_t)tmpreg; 
 }
 
 /*********************************************************************

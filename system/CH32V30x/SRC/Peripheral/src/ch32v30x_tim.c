@@ -106,8 +106,14 @@ void TIM_DeInit(TIM_TypeDef *TIMx)
 void TIM_TimeBaseInit(TIM_TypeDef *TIMx, TIM_TimeBaseInitTypeDef *TIM_TimeBaseInitStruct)
 {
     uint16_t tmpcr1 = 0;
-
+    uint32_t temper1 = 0;
+    temper1 = ((*( uint32_t * )0x1FFFF704) & 0x000000F0) >> 4;
     tmpcr1 = TIMx->CTLR1;
+
+    if(((temper1>=4)&&(temper1<=8))&&((TIMx == TIM1) || (TIMx == TIM8) || (TIMx == TIM9) || (TIMx == TIM10)))
+    {
+        tmpcr1 |= 1<<13;
+    }
 
     if((TIMx == TIM1) || (TIMx == TIM2) || (TIMx == TIM3) || (TIMx == TIM4) ||
        (TIMx == TIM5) || (TIMx == TIM8) || (TIMx == TIM9) || (TIMx == TIM10))
@@ -2224,18 +2230,9 @@ static void TI1_Config(TIM_TypeDef *TIMx, uint16_t TIM_ICPolarity, uint16_t TIM_
     tmpccmr1 &= (uint16_t)(((uint16_t) ~((uint16_t)TIM_CC1S)) & ((uint16_t) ~((uint16_t)TIM_IC1F)));
     tmpccmr1 |= (uint16_t)(TIM_ICSelection | (uint16_t)(TIM_ICFilter << (uint16_t)4));
 
-    if((TIMx == TIM1) || (TIMx == TIM2) || (TIMx == TIM3) || (TIMx == TIM4) ||
-       (TIMx == TIM5) || (TIMx == TIM8) || (TIMx == TIM9) || (TIMx == TIM10))
-    {
-        tmpccer &= (uint16_t) ~((uint16_t)(TIM_CC1P));
-        tmpccer |= (uint16_t)(TIM_ICPolarity | (uint16_t)TIM_CC1E);
-    }
-    else
-    {
-        tmpccer &= (uint16_t) ~((uint16_t)(TIM_CC1P | TIM_CC1NP));
-        tmpccer |= (uint16_t)(TIM_ICPolarity | (uint16_t)TIM_CC1E);
-    }
-
+    tmpccer &= (uint16_t) ~((uint16_t)(TIM_CC1P));
+    tmpccer |= (uint16_t)(TIM_ICPolarity | (uint16_t)TIM_CC1E);
+ 
     TIMx->CHCTLR1 = tmpccmr1;
     TIMx->CCER = tmpccer;
 }
@@ -2274,17 +2271,8 @@ static void TI2_Config(TIM_TypeDef *TIMx, uint16_t TIM_ICPolarity, uint16_t TIM_
     tmpccmr1 |= (uint16_t)(TIM_ICFilter << 12);
     tmpccmr1 |= (uint16_t)(TIM_ICSelection << 8);
 
-    if((TIMx == TIM1) || (TIMx == TIM2) || (TIMx == TIM3) || (TIMx == TIM4) ||
-       (TIMx == TIM5) || (TIMx == TIM8) || (TIMx == TIM9) || (TIMx == TIM10))
-    {
-        tmpccer &= (uint16_t) ~((uint16_t)(TIM_CC2P));
-        tmpccer |= (uint16_t)(tmp | (uint16_t)TIM_CC2E);
-    }
-    else
-    {
-        tmpccer &= (uint16_t) ~((uint16_t)(TIM_CC2P | TIM_CC2NP));
-        tmpccer |= (uint16_t)(TIM_ICPolarity | (uint16_t)TIM_CC2E);
-    }
+    tmpccer &= (uint16_t) ~((uint16_t)(TIM_CC2P));
+    tmpccer |= (uint16_t)(tmp | (uint16_t)TIM_CC2E);
 
     TIMx->CHCTLR1 = tmpccmr1;
     TIMx->CCER = tmpccer;
@@ -2323,17 +2311,8 @@ static void TI3_Config(TIM_TypeDef *TIMx, uint16_t TIM_ICPolarity, uint16_t TIM_
     tmpccmr2 &= (uint16_t)(((uint16_t) ~((uint16_t)TIM_CC3S)) & ((uint16_t) ~((uint16_t)TIM_IC3F)));
     tmpccmr2 |= (uint16_t)(TIM_ICSelection | (uint16_t)(TIM_ICFilter << (uint16_t)4));
 
-    if((TIMx == TIM1) || (TIMx == TIM2) || (TIMx == TIM3) || (TIMx == TIM4) ||
-       (TIMx == TIM5) || (TIMx == TIM8) || (TIMx == TIM9) || (TIMx == TIM10))
-    {
-        tmpccer &= (uint16_t) ~((uint16_t)(TIM_CC3P));
-        tmpccer |= (uint16_t)(tmp | (uint16_t)TIM_CC3E);
-    }
-    else
-    {
-        tmpccer &= (uint16_t) ~((uint16_t)(TIM_CC3P | TIM_CC3NP));
-        tmpccer |= (uint16_t)(TIM_ICPolarity | (uint16_t)TIM_CC3E);
-    }
+    tmpccer &= (uint16_t) ~((uint16_t)(TIM_CC3P));
+    tmpccer |= (uint16_t)(tmp | (uint16_t)TIM_CC3E);
 
     TIMx->CHCTLR2 = tmpccmr2;
     TIMx->CCER = tmpccer;
@@ -2373,17 +2352,8 @@ static void TI4_Config(TIM_TypeDef *TIMx, uint16_t TIM_ICPolarity, uint16_t TIM_
     tmpccmr2 |= (uint16_t)(TIM_ICSelection << 8);
     tmpccmr2 |= (uint16_t)(TIM_ICFilter << 12);
 
-    if((TIMx == TIM1) || (TIMx == TIM2) || (TIMx == TIM3) || (TIMx == TIM4) ||
-       (TIMx == TIM5) || (TIMx == TIM8) || (TIMx == TIM9) || (TIMx == TIM10))
-    {
-        tmpccer &= (uint16_t) ~((uint16_t)(TIM_CC4P));
-        tmpccer |= (uint16_t)(tmp | (uint16_t)TIM_CC4E);
-    }
-    else
-    {
-        tmpccer &= (uint16_t) ~((uint16_t)(TIM_CC3P | TIM_CC4NP));
-        tmpccer |= (uint16_t)(TIM_ICPolarity | (uint16_t)TIM_CC4E);
-    }
+    tmpccer &= (uint16_t) ~((uint16_t)(TIM_CC4P));
+    tmpccer |= (uint16_t)(tmp | (uint16_t)TIM_CC4E);
 
     TIMx->CHCTLR2 = tmpccmr2;
     TIMx->CCER = tmpccer;
