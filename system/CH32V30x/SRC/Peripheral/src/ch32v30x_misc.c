@@ -63,53 +63,36 @@ void NVIC_PriorityGroupConfig(uint32_t NVIC_PriorityGroup)
  */
 void NVIC_Init(NVIC_InitTypeDef *NVIC_InitStruct)
 {
-    uint8_t tmppre = 0;
-
+#if (INTSYSCR_INEST == INTSYSCR_INEST_NoEN)
     if(NVIC_Priority_Group == NVIC_PriorityGroup_0)
     {
         NVIC_SetPriority(NVIC_InitStruct->NVIC_IRQChannel, NVIC_InitStruct->NVIC_IRQChannelSubPriority << 4);
     }
-    else if(NVIC_Priority_Group == NVIC_PriorityGroup_1)
+#elif (INTSYSCR_INEST == INTSYSCR_INEST_EN_2Level)
+    if(NVIC_Priority_Group == NVIC_PriorityGroup_1)
     {
-        if(NVIC_InitStruct->NVIC_IRQChannelPreemptionPriority == 1)
+        if(NVIC_InitStruct->NVIC_IRQChannelPreemptionPriority < 2)
         {
-            NVIC_SetPriority(NVIC_InitStruct->NVIC_IRQChannel, (1 << 7) | (NVIC_InitStruct->NVIC_IRQChannelSubPriority << 4));
-        }
-        else
-        {
-            NVIC_SetPriority(NVIC_InitStruct->NVIC_IRQChannel, (0 << 7) | (NVIC_InitStruct->NVIC_IRQChannelSubPriority << 4));
+            NVIC_SetPriority(NVIC_InitStruct->NVIC_IRQChannel, (NVIC_InitStruct->NVIC_IRQChannelPreemptionPriority << 7) | (NVIC_InitStruct->NVIC_IRQChannelSubPriority << 5));
         }
     }
-    else if(NVIC_Priority_Group == NVIC_PriorityGroup_2)
+#elif (INTSYSCR_INEST == INTSYSCR_INEST_EN_4Level)
+    if(NVIC_Priority_Group == NVIC_PriorityGroup_2)
     {
-        if(NVIC_InitStruct->NVIC_IRQChannelPreemptionPriority <= 1)
+        if(NVIC_InitStruct->NVIC_IRQChannelPreemptionPriority < 4)
         {
-            tmppre = NVIC_InitStruct->NVIC_IRQChannelSubPriority + (4 * NVIC_InitStruct->NVIC_IRQChannelPreemptionPriority);
-            NVIC_SetPriority(NVIC_InitStruct->NVIC_IRQChannel, (0 << 7) | (tmppre << 4));
-        }
-        else
-        {
-            tmppre = NVIC_InitStruct->NVIC_IRQChannelSubPriority + (4 * (NVIC_InitStruct->NVIC_IRQChannelPreemptionPriority - 2));
-            NVIC_SetPriority(NVIC_InitStruct->NVIC_IRQChannel, (1 << 7) | (tmppre << 4));
+            NVIC_SetPriority(NVIC_InitStruct->NVIC_IRQChannel, (NVIC_InitStruct->NVIC_IRQChannelPreemptionPriority << 6) | (NVIC_InitStruct->NVIC_IRQChannelSubPriority << 5));
         }
     }
-    else if(NVIC_Priority_Group == NVIC_PriorityGroup_3)
+#elif (INTSYSCR_INEST == INTSYSCR_INEST_EN_8Level)
+    if(NVIC_Priority_Group == NVIC_PriorityGroup_3)
     {
-        if(NVIC_InitStruct->NVIC_IRQChannelPreemptionPriority <= 3)
+        if(NVIC_InitStruct->NVIC_IRQChannelPreemptionPriority < 8)
         {
-            tmppre = NVIC_InitStruct->NVIC_IRQChannelSubPriority + (2 * NVIC_InitStruct->NVIC_IRQChannelPreemptionPriority);
-            NVIC_SetPriority(NVIC_InitStruct->NVIC_IRQChannel, (0 << 7) | (tmppre << 4));
-        }
-        else
-        {
-            tmppre = NVIC_InitStruct->NVIC_IRQChannelSubPriority + (2 * (NVIC_InitStruct->NVIC_IRQChannelPreemptionPriority - 4));
-            NVIC_SetPriority(NVIC_InitStruct->NVIC_IRQChannel, (1 << 7) | (tmppre << 4));
+            NVIC_SetPriority(NVIC_InitStruct->NVIC_IRQChannel, (NVIC_InitStruct->NVIC_IRQChannelPreemptionPriority << 5) );
         }
     }
-    else if(NVIC_Priority_Group == NVIC_PriorityGroup_4)
-    {
-        NVIC_SetPriority(NVIC_InitStruct->NVIC_IRQChannel, NVIC_InitStruct->NVIC_IRQChannelPreemptionPriority << 4);
-    }
+#endif
 
     if(NVIC_InitStruct->NVIC_IRQChannelCmd != DISABLE)
     {
