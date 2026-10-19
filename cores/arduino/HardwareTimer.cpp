@@ -560,6 +560,36 @@ void HardwareTimer::TIM_OC_ConfigChannel_Static(TIM_TypeDef *tim, TIM_OCInitType
 }
 
 /**
+  * @brief  Enable or disable capture/compare preload for one timer channel
+  * @param  htim: timer instance to configure
+  * @param  Channel: timer channel to configure (TIM_Channel_1 through TIM_Channel_4)
+  * @param  state: ENABLE to enable preload, DISABLE to disable it
+  * @retval None
+  */
+void HardwareTimer::TIM_OC_PreloadConfig_Static(TIM_TypeDef *htim, uint32_t Channel, FunctionalState state)
+{
+  const uint16_t preload = state == ENABLE ? TIM_OCPreload_Enable : TIM_OCPreload_Disable;
+
+  switch (Channel)
+  {
+    case TIM_Channel_1:
+      TIM_OC1PreloadConfig(htim, preload);
+      break;
+    case TIM_Channel_2:
+      TIM_OC2PreloadConfig(htim, preload);
+      break;
+    case TIM_Channel_3:
+      TIM_OC3PreloadConfig(htim, preload);
+      break;
+    case TIM_Channel_4:
+      TIM_OC4PreloadConfig(htim, preload);
+      break;
+    default:
+      break;
+  }
+}
+
+/**
   * @brief  Configure input capture channels
   * @param   timerX, TIM_ICInitTypeDef,  Arduino channel [1..4] 
   * @retval None
@@ -838,11 +868,13 @@ void HardwareTimer::setMode(uint32_t channel, TimerModes_t mode, PinName pin)
       break;
     case TIMER_OUTPUT_COMPARE_PWM1:
       channelOC.TIM_OCMode = TIM_OCMode_PWM1;
-      TIM_OC_ConfigChannel_Static(_timerObj.handle.Instance, &channelOC, timChannel);      
+      TIM_OC_ConfigChannel_Static(_timerObj.handle.Instance, &channelOC, timChannel);
+      TIM_OC_PreloadConfig_Static(_timerObj.handle.Instance, timChannel, ENABLE);
       break;
     case TIMER_OUTPUT_COMPARE_PWM2:
       channelOC.TIM_OCMode = TIM_OCMode_PWM2;
       TIM_OC_ConfigChannel_Static(_timerObj.handle.Instance, &channelOC, timChannel);
+      TIM_OC_PreloadConfig_Static(_timerObj.handle.Instance, timChannel, ENABLE);
       break;
     
     case TIMER_OUTPUT_COMPARE_FORCED_ACTIVE:
