@@ -16,12 +16,18 @@
 extern "C" {
 #endif
 
-#if !defined(CH32V002) && !defined(CH32V005) && !defined(CH32V006)&& !defined(CH32V007_M007)
-//#define CH32V002             /* CH32V002*/
-//#define CH32V004             /* CH32V004 */
-//#define CH32V005             /* CH32V005 */
-#define CH32V006             /* CH32V006 */
-//#define CH32V007_M007        /* CH32V007 - CH32M007*/
+// MxRD 261019: base name is used to allow specific distinctions
+#if defined(CH32V002F4) || defined(CH32V002A4) || defined(CH32V002D4) || defined(CH32V002J4)
+  #define CH32V002
+#endif
+#if defined(CH32M007E8)
+  #define CH32V007_M007
+#endif
+
+#if !defined(CH32V002) && !defined(CH32V004)  && !defined(CH32V005) && !defined(CH32V006)&& !defined(CH32V007_M007)
+//#define CH32V004             /* TODO: CH32V004 */
+//#define CH32V005             /* TODO: CH32V005 */
+#define CH32V006             /* CH32V006 is default */
 #endif
 
 #define __MPU_PRESENT             0 /* Other CH32 devices does not provide an MPU */
