@@ -151,3 +151,6 @@ Please use [GitHub Issues](https://github.com/ch32-community/arduino_core_ch32/i
 - Everyone who has [contributed](https://github.com/ch32-community/arduino_core_ch32/graphs/contributors) fixes, boards and bug reports.
 
 *This is an independent community project and is not affiliated with or endorsed by WCH.*
+
+
+[MxRD just some text for testing purposes]
