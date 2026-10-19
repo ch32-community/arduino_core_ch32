@@ -119,7 +119,11 @@ static inline void pinV32_DisconnectDebug(PinName pin)
 
   // Disconnect JTAG-DP + SW-DP signals.
   // Warning: Need to reconnect under reset
-  if ((pin == PD_1) || (pin == PB_3)) 
+  if ((pin == PD_1)
+#if defined(GPIOB_BASE) // MxRD 250625: V002 and V004 have no port B
+    || (pin == PB_3)
+#endif // #if defined(GPIOB_BASE)
+    ) 
   {
      GPIO_PinRemapConfig(GPIO_Remap_SDI_Disable, ENABLE);  // JTAG-DP Disabled and SW-DP Disabled
   }
@@ -278,6 +282,7 @@ static inline void pin_SetV32AFPin(uint32_t afnum)
       GPIO_PinRemapConfig(GPIO_Remap_ADC1_ETRGREG,DISABLE);
       break;
 
+#if defined(USART2)   // MxRD 250710: V002 and V004 have no USART2
     case AFIO_PartialRemap1_USART2_ENABLE:
       GPIO_PinRemapConfig(GPIO_PartialRemap1_USART2,ENABLE);
       break;
@@ -293,6 +298,7 @@ static inline void pin_SetV32AFPin(uint32_t afnum)
     case AFIO_PartialRemap5_USART2_ENABLE:
       GPIO_PinRemapConfig(GPIO_PartialRemap5_USART2,ENABLE);
       break;
+#endif
 
     case AFIO_Remap_LSI_CAL_ENABLE:
       GPIO_PinRemapConfig(GPIO_Remap_LSI_CAL,ENABLE);
