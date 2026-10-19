@@ -138,6 +138,7 @@ static inline void pin_SetV32AFPin(uint32_t afnum)
   RCC_PB2PeriphClockCmd(RCC_PB2Periph_AFIO, ENABLE);
 
   switch (afnum) {
+#if defined(SPI_MODULE_ENABLED)
     case AFIO_PartialRemap1_SPI1_ENABLE:
       GPIO_PinRemapConfig(GPIO_PartialRemap1_SPI1,ENABLE);
       break;
@@ -159,7 +160,9 @@ static inline void pin_SetV32AFPin(uint32_t afnum)
     case AFIO_Remap_SPI1_DISABLE:
       GPIO_PinRemapConfig(GPIO_FullRemap_SPI1,DISABLE);
       break;
+#endif
 
+#if defined(I2C_MODULE_ENABLED)
     case AFIO_PartialRemap1_I2C1_ENABLE:
       GPIO_PinRemapConfig(GPIO_PartialRemap1_I2C1,ENABLE);
       break;
@@ -175,7 +178,9 @@ static inline void pin_SetV32AFPin(uint32_t afnum)
     case AFIO_Remap_I2C1_DISABLE:
       GPIO_PinRemapConfig(GPIO_FullRemap_I2C1,DISABLE);
       break;
+#endif
 
+#if defined(UART_MODULE_ENABLED)
     case AFIO_PartialRemap1_USART1_ENABLE:
       GPIO_PinRemapConfig(GPIO_PartialRemap1_USART1,ENABLE);
       break;
@@ -206,7 +211,9 @@ static inline void pin_SetV32AFPin(uint32_t afnum)
     case AFIO_Remap_USART1_DISABLE:
       GPIO_PinRemapConfig(GPIO_FullRemap_USART1,DISABLE);
       break;      
+#endif
 
+#if defined(TIM_MODULE_ENABLED)
     case AFIO_PartialRemap1_TIM1_ENABLE:
       GPIO_PinRemapConfig(GPIO_PartialRemap1_TIM1,ENABLE);
       break;         
@@ -262,7 +269,9 @@ static inline void pin_SetV32AFPin(uint32_t afnum)
     case AFIO_Remap_TIM2_DISABLE:
       GPIO_PinRemapConfig(GPIO_FullRemap_TIM2,DISABLE);
       break; 
+#endif
 
+#if defined(ADC_MODULE_ENABLED)
     case AFIO_Remap_PA1_2_ENABLE:
       GPIO_PinRemapConfig(GPIO_Remap_PA1_2,ENABLE);
       break;
@@ -281,6 +290,7 @@ static inline void pin_SetV32AFPin(uint32_t afnum)
     case AFIO_Remap_ADC1_ETRGREG_DISABLE:
       GPIO_PinRemapConfig(GPIO_Remap_ADC1_ETRGREG,DISABLE);
       break;
+#endif
 
 #if defined(USART2)   // MxRD 250710: V002 and V004 have no USART2
     case AFIO_PartialRemap1_USART2_ENABLE:
