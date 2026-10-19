@@ -38,13 +38,14 @@
   */
 #include "core_debug.h"
 #include "utility/twi.h"
+#include "clock.h"  // MxRD 261019: for definition of extern uint64_t GetTick(void);
 #include "PinAF_ch32yyxx.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-extern uint64_t GetTick(void);
+//extern uint64_t GetTick(void);
 
 /* Private Defines */
 
