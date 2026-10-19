@@ -24,8 +24,8 @@ extern "C" {
 // #define TICK_FREQ_10Hz    100L 
 
 
-__IO uint64_t msTick=0;
-WEAK uint64_t GetTick(void)
+__IO uint32_t msTick=0;
+WEAK uint32_t GetTick(void)
 {
   return msTick;
 }
@@ -38,7 +38,7 @@ void noOsSystickHandler()
 }
 
 /**
-  * @brief  Function called wto read the current millisecond
+  * @brief  Function called to read the current millisecond
   * @param  None
   * @retval None
   */
@@ -53,9 +53,9 @@ uint32_t getCurrentMillis(void)
 
 uint32_t getCurrentMicros(void)
 {
- // MMOLE  250708: a uint64_t division causes need for __udivdi3, which is quite large (more than 1KB)
-  //      SysTick->CMP and CNT are 32-bit values, let's try to avoid 64 bit divisions to minimize Flash usage
-  //      (This might cause smaller roll-over, but who cares...)
+ // MxRD 250708: a uint64_t division causes need for __udivdi3, which is quite large (more than 1KB)
+  //     SysTick->CMP and CNT are 32-bit values, let's try to avoid 64 bit divisions to minimize Flash usage
+  //     (This might cause smaller roll-over, but who cares...)
   // NOTE: 64 bit divisions are also used by delayMicroseconds()  
   uint32_t m0 = GetTick();
   __IO uint32_t u0 = SysTick->CNT;
@@ -90,8 +90,6 @@ void SysTick_Handler(void)
 
 
 
-
-
 // for 10x serils (Qingke V3A) 
 #if defined (CH32V10x)
 
@@ -102,7 +100,7 @@ void SysTick_Handler(void)
 
 uint32_t getCurrentMicros(void)
 {
-  
+  // MxRD 261019: TODO? Same optimization for CH32V10x?
   uint64_t m0 = GetTick();
   uint64_t u0 = *((__IO uint32_t *)SYSTICK_CNTH);  
            u0 = (u0 << 32) + *((__IO uint32_t *)SYSTICK_CNTL);
