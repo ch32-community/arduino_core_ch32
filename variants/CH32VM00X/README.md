@@ -1,17 +1,17 @@
 ## CH32VM00X Boards: CH32V002, CH32V006, etc. ##
 
 Currently supported board variants (listed in **bold**):
-|        |  QFN32 |QSOP24|QFN20|TSSOP20 |SOP16|QFN12|SOP8 | |
-|--------|--------|------|-----|--------|------|-----|-----|---|
-|CH32V002|_n/a_   |_n/a_ |**F4U6**|**F4P6**|**A4M6**|**D4U6**|     | |
-|CH32V004|_n/a_   |_n/a_ |     |        |_n/a_ |_n/a_|_n/a_| |
-|CH32V005|_n/a_   |      |     |        |_n/a_ |     |_n/a_| |
+|        |  QFN32  |QSOP24 |QFN20|TSSOP20 |SOP16|QFN12|SOP8 | |
+|--------|--------|--------|-----|--------|------|-----|-----|---|
+|CH32V002|_n/a_   |_n/a_   |**F4U6**|**F4P6**|**A4M6**|**D4U6**| J4M6 | |
+|CH32V004|_n/a_   |_n/a_   | F6U1 | F6P1 |_n/a_ |_n/a_|_n/a_| |
+|CH32V005|_n/a_   | E6R6   | F6U6 | F6P6 |_n/a_ | D6U6 |_n/a_| |
 |CH32V006|**K8U6**|**E8R6**|**F8U6**|**F8P6**|_n/a_ |_n/a_|_n/a_| |
-|CH32V007|        |      |_n/a_| _n/a_  |_n/a_ |_n/a_|_n/a_| |
-|CH32M007|_n/a_   |**E8R6**|_n/a_| _n/a_  |_n/a_ |_n/a_|_n/a_| * |
+|CH32V007| K8U    | E8R    |_n/a_| _n/a_  |_n/a_ |_n/a_|_n/a_| |
+|CH32M007| K8U7   |**E8R6**|_n/a_| _n/a_  |_n/a_ |_n/a_|_n/a_| * |
 
  - See [notes below](#known-issues--limitations) for known issues and installation instructions.
- - CH32M007 also available in QFN26/QSOP28 (no specfic support yet).
+ - CH32M007 also available in QFN26/QSOP28 (E8U7/G8R6 - no specific support yet).
 
 ------------------
 
