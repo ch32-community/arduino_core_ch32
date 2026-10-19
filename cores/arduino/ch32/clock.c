@@ -53,12 +53,15 @@ uint32_t getCurrentMillis(void)
 
 uint32_t getCurrentMicros(void)
 {
-  
-  uint64_t m0 = GetTick();
-  __IO uint64_t u0 = SysTick->CNT;
-  uint64_t m1 = GetTick();
+ // MMOLE  250708: a uint64_t division causes need for __udivdi3, which is quite large (more than 1KB)
+  //      SysTick->CMP and CNT are 32-bit values, let's try to avoid 64 bit divisions to minimize Flash usage
+  //      (This might cause smaller roll-over, but who cares...)
+  // NOTE: 64 bit divisions are also used by delayMicroseconds()  
+  uint32_t m0 = GetTick();
+  __IO uint32_t u0 = SysTick->CNT;
+  uint32_t m1 = GetTick();
   __IO uint32_t u1 = SysTick->CNT;   //may be a interruption
-   uint64_t tms = SysTick->CMP + 1;
+   uint32_t tms = SysTick->CMP + 1;
 
   if (m1 != m0) {
     return m1 * 1000 + u1 * 1000 / tms;  // fix #65 - micros() is non-monotonic 
@@ -141,10 +144,6 @@ void SysTick_Handler(void)
 #endif
 
 
-
-
 #ifdef __cplusplus
 }
 #endif
-
-
