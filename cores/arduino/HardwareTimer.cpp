@@ -568,25 +568,18 @@ void HardwareTimer::TIM_OC_ConfigChannel_Static(TIM_TypeDef *tim, TIM_OCInitType
   */
 void HardwareTimer::TIM_OC_PreloadConfig_Static(TIM_TypeDef *htim, uint32_t Channel, FunctionalState state)
 {
-  const uint16_t preload = state == ENABLE ? TIM_OCPreload_Enable : TIM_OCPreload_Disable;
+  if(htim == nullptr || Channel > TIM_Channel_4 || (Channel & 0x03))
+    return;
 
-  switch (Channel)
-  {
-    case TIM_Channel_1:
-      TIM_OC1PreloadConfig(htim, preload);
-      break;
-    case TIM_Channel_2:
-      TIM_OC2PreloadConfig(htim, preload);
-      break;
-    case TIM_Channel_3:
-      TIM_OC3PreloadConfig(htim, preload);
-      break;
-    case TIM_Channel_4:
-      TIM_OC4PreloadConfig(htim, preload);
-      break;
-    default:
-      break;
-  }
+  const uint8_t TIM_OCPE_BP = 2;
+  const uint16_t TIM_OCPE_ARR[] = {TIM_OC1PE, TIM_OC2PE, TIM_OC3PE, TIM_OC4PE};
+  __IO uint16_t *const CHCTLR_REG = (Channel <= TIM_Channel_2 ? &htim->CHCTLR1 : &htim->CHCTLR2);
+
+  uint8_t channel_num = Channel >> TIM_OCPE_BP; // channel number 0..3
+  if(state == ENABLE)
+    *CHCTLR_REG |= TIM_OCPE_ARR[channel_num];   // set preload bit
+  else
+    *CHCTLR_REG &= ~TIM_OCPE_ARR[channel_num];  // clear preload bit
 }
 
 /**
