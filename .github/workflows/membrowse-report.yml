@@ -22,9 +22,14 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v5
 
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.13'
+
       - name: Load target matrix
         id: set-matrix
-        run: echo "matrix=$(jq -c '.' .github/membrowse-targets.json)" >> $GITHUB_OUTPUT
+        run: python3 .github/scripts/generate_membrowse_targets.py
 
   analyze:
     needs: load-targets
@@ -40,11 +45,6 @@ jobs:
         with:
           fetch-depth: 2
           submodules: recursive
-
-      - name: Set up Python
-        uses: actions/setup-python@v6
-        with:
-          python-version: '3.13'
 
       - name: Install packages
         run: ${{ matrix.setup_cmd }}
