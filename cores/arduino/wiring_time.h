@@ -70,10 +70,11 @@ static inline void delayMicroseconds(uint32_t us)
   //      (This might cause smaller roll-over, but who cares...)
   // NOTE: 64 bit divisions are also used by micros() in clock.c
   __IO uint32_t  currentTicks = SysTick->CNT;
-  /* Number of ticks per millisecond */
+  /* Number of ticks per millisecond, eg. 48000 for 48MHz */
   uint32_t  tickPerMs = SysTick->CMP + 1;
   /* Number of ticks to count */
-  uint32_t  nbTicks = ((us - ((us > 0) ? 1 : 0)) * tickPerMs) / 1000U;
+  // uint32_t  nbTicks = ((us - ((us > 0) ? 1 : 0)) * tickPerMs) / 1000U;
+  uint32_t  nbTicks = ((us - ((us > 0) ? 1 : 0)) * (tickPerMs/(tickPerMs>=1000U?1000U:1)) / (tickPerMs>=1000U?1:1000U) ); // Dividing first avoids overflow, but for LSI tickPerMs could be < 1000 (<1MHz). 
   /* Number of elapsed ticks */
   uint32_t  elapsedTicks = 0;
   __IO uint32_t  oldTicks = currentTicks;
@@ -90,6 +91,7 @@ static inline void delayMicroseconds(uint32_t us)
   } while (nbTicks > elapsedTicks);  
 }
 #else
+  // MxRD 261020: TODO? Same 64->32 bit optimization for CH32V10x?
 #define SYSTICK_CNTL    (0xE000F004)   
 #define SYSTICK_CNTH    (0xE000F008)
 #define SYSTICK_CMPL    (0xE000F00C)
@@ -98,7 +100,6 @@ static inline void delayMicroseconds(uint32_t us)
 static inline void delayMicroseconds(uint32_t) __attribute__((always_inline, unused));
 static inline void delayMicroseconds(uint32_t us)
 {
-  
   __IO uint64_t currentTicks = *((__IO uint32_t *)SYSTICK_CNTH);
                 currentTicks = (currentTicks << 32) +  *((__IO uint32_t *)SYSTICK_CNTL); 
   /* Number of ticks per millisecond */
@@ -120,7 +121,7 @@ static inline void delayMicroseconds(uint32_t us)
   } while (nbTicks > elapsedTicks);  
 }
 
-#endif
+#endif  // CH32V10x
 
 
 #ifdef __cplusplus
