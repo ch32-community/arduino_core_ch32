@@ -825,6 +825,11 @@ void HardwareTimer::setMode(uint32_t channel, TimerModes_t mode, PinName pin)
     Error_Handler();
   }
 
+  const bool wasPWM = _ChannelMode[channel - 1] == TIMER_OUTPUT_COMPARE_PWM1 ||
+                      _ChannelMode[channel - 1] == TIMER_OUTPUT_COMPARE_PWM2;
+  const bool isPWM = mode == TIMER_OUTPUT_COMPARE_PWM1 ||
+                     mode == TIMER_OUTPUT_COMPARE_PWM2;
+
   /* Configure some default values. Maybe overwritten later */
   channelOC.TIM_OCMode = TIMER_NOT_USED;  //set default value 0xFFFF
 
@@ -866,6 +871,8 @@ void HardwareTimer::setMode(uint32_t channel, TimerModes_t mode, PinName pin)
 
         TIM_OC_ConfigChannel_Static(_timerObj.handle.Instance, &channelOC, timChannel);
       }
+      if (wasPWM && !isPWM)
+        TIM_OC_PreloadConfig_Static(_timerObj.handle.Instance, timChannel, DISABLE);
       return;
     case TIMER_OUTPUT_COMPARE_ACTIVE:
       channelOC.TIM_OCMode = TIM_OCMode_Active;
@@ -926,6 +933,9 @@ void HardwareTimer::setMode(uint32_t channel, TimerModes_t mode, PinName pin)
     default:
       break;
   }
+  if (wasPWM && !isPWM)
+    TIM_OC_PreloadConfig_Static(_timerObj.handle.Instance, timChannel, DISABLE);
+  
   // Save channel selected mode to object attribute
   _ChannelMode[channel - 1] = mode;
   if (pin != NC) 
