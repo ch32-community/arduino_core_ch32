@@ -270,25 +270,32 @@ void HardwareTimer::resume(void)
  //CHANNEL 
 int HardwareTimer::getChannel(uint32_t channel)
 {
-  uint32_t return_value;
+  #ifdef ENSURE_COMPATIBILITY
+    uint32_t return_value;
 
-  switch (channel) {
-    case 1:
-      return_value = TIM_Channel_1;
-      break;
-    case 2:
-      return_value = TIM_Channel_2;
-      break;
-    case 3:
-      return_value = TIM_Channel_3;
-      break;
-    case 4:
-      return_value = TIM_Channel_4;
-      break;
-    default:
-      return_value = -1;
-  }
-  return return_value;
+    switch (channel) {
+      case 1:
+        return_value = TIM_Channel_1;
+        break;
+      case 2:
+        return_value = TIM_Channel_2;
+        break;
+      case 3:
+        return_value = TIM_Channel_3;
+        break;
+      case 4:
+        return_value = TIM_Channel_4;
+        break;
+      default:
+        return_value = -1;
+    }
+    return return_value;
+  #else
+    const uint32_t TIMER_CHANNEL_SHIFT = 2;
+    if(channel < 1 || channel > 4)
+      return -1;
+    return (channel-1) << TIMER_CHANNEL_SHIFT;
+  #endif
 }
 
 /**
