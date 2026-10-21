@@ -925,6 +925,10 @@ void HardwareTimer::setMode(uint32_t channel, TimerModes_t mode, PinName pin)
       TIM_IC_ConfigChannel_Static(_timerObj.handle.Instance, &channelIC, timChannel); 
       // // Identify and configure 2nd associated channel
       timAssociatedInputChannel = getAssociatedChannel(channel);
+      if (_ChannelMode[timAssociatedInputChannel - 1] == TIMER_OUTPUT_COMPARE_PWM1 ||
+          _ChannelMode[timAssociatedInputChannel - 1] == TIMER_OUTPUT_COMPARE_PWM2) {
+        TIM_OC_PreloadConfig_Static(_timerObj.handle.Instance, getChannel(timAssociatedInputChannel), DISABLE);
+      }
       _ChannelMode[timAssociatedInputChannel - 1] = mode;
       channelIC.TIM_ICPolarity = TIM_ICPolarity_Falling;
       channelIC.TIM_ICSelection = TIM_ICSelection_IndirectTI;
