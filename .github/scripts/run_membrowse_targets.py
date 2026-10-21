@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
-"""Build and upload every configured MemBrowse target in one CI job."""
+"""Build and upload all configured targets for one MCU in a CI job."""
 
+import argparse
 import json
 import os
 import shlex
@@ -16,9 +17,20 @@ def run(command: list[str] | str, *, shell: bool = False) -> int:
 
 
 def main() -> int:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--mcu", required=True, help="Configured MCU name to process")
+    args = parser.parse_args()
+
     api_key = os.environ.get("MEMBROWSE_API_KEY", "")
     config = json.loads(CONFIG_PATH.read_text(encoding="utf-8"))
-    targets = generate_targets(config)
+    targets = [
+        target
+        for target in generate_targets(config)
+        if target["target_name"].startswith(f"{args.mcu}/")
+    ]
+    if not targets:
+        print(f"No MemBrowse targets found for MCU '{args.mcu}'.", file=sys.stderr)
+        return 1
     failures = []
 
     print("Installing Arduino CLI and the CH32 core...")
@@ -88,7 +100,7 @@ def main() -> int:
         return 1
 
     result = "built and uploaded" if api_key else "built and analyzed locally"
-    print(f"\nSuccessfully {result} {len(targets)} MemBrowse targets.")
+    print(f"\nSuccessfully {result} {len(targets)} targets for {args.mcu}.")
     return 0
 
 

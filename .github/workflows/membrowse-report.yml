@@ -14,8 +14,31 @@ concurrency:
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
-  analyze:
+  load-targets:
     runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.13'
+
+      - name: Load MCU matrix
+        id: set-matrix
+        run: python3 .github/scripts/generate_membrowse_targets.py --mcu-matrix
+
+  analyze:
+    needs: load-targets
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include: ${{ fromJson(needs.load-targets.outputs.matrix) }}
+    name: MemBrowse (${{ matrix.mcu }})
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
@@ -28,8 +51,8 @@ jobs:
         with:
           python-version: '3.13'
 
-      - name: Build and analyze all targets
-        run: python3 .github/scripts/run_membrowse_targets.py
+      - name: Build and analyze MCU targets
+        run: python3 .github/scripts/run_membrowse_targets.py --mcu "${{ matrix.mcu }}"
         env:
           MEMBROWSE_API_KEY: ${{ secrets.MEMBROWSE_API_KEY }}
           MEMBROWSE_API_URL: ${{ vars.MEMBROWSE_API_URL }}

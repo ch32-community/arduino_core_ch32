@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Expand the concise MCU and example lists into a MemBrowse matrix."""
 
+import argparse
 import json
 import os
 import sys
@@ -66,7 +67,7 @@ def generate_targets(config: dict) -> list[dict]:
             )
             targets.append(
                 {
-                    "target_name": f"{mcu['name']}-{sketch.lower()}",
+                    "target_name": f"{mcu['name']}/{sketch}",
                     "setup_cmd": setup_cmd,
                     "build_cmd": build_cmd,
                     "elf": f"{build_dir}/{sketch}.ino.elf",
@@ -83,10 +84,28 @@ def generate_targets(config: dict) -> list[dict]:
     return targets
 
 
-def main() -> None:
-    config = json.loads(CONFIG_PATH.read_text(encoding="utf-8"))
+def generate_mcu_matrix(config: dict) -> list[dict]:
     targets = generate_targets(config)
-    compact_json = json.dumps(targets, separators=(",", ":"))
+    target_names = [target["target_name"] for target in targets]
+    return [
+        {"mcu": mcu["name"]}
+        for mcu in config["mcus"]
+        if any(name.startswith(f"{mcu['name']}/") for name in target_names)
+    ]
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--mcu-matrix",
+        action="store_true",
+        help="Output one matrix entry per configured MCU instead of per target",
+    )
+    args = parser.parse_args()
+
+    config = json.loads(CONFIG_PATH.read_text(encoding="utf-8"))
+    matrix = generate_mcu_matrix(config) if args.mcu_matrix else generate_targets(config)
+    compact_json = json.dumps(matrix, separators=(",", ":"))
 
     github_output = os.environ.get("GITHUB_OUTPUT")
     if github_output:
