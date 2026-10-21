@@ -560,6 +560,50 @@ void HardwareTimer::TIM_OC_ConfigChannel_Static(TIM_TypeDef *tim, TIM_OCInitType
 }
 
 /**
+  * @brief  Enable or disable capture/compare preload for one timer channel
+  * @param  htim: timer instance to configure
+  * @param  Channel: timer channel to configure (TIM_Channel_1 through TIM_Channel_4)
+  * @param  state: ENABLE to enable preload, DISABLE to disable it
+  * @retval None
+  */
+void HardwareTimer::TIM_OC_PreloadConfig_Static(TIM_TypeDef *htim, uint32_t Channel, FunctionalState state)
+{
+  #ifdef ENSURE_COMPATIBILITY
+    const uint16_t preload = state == ENABLE ? TIM_OCPreload_Enable : TIM_OCPreload_Disable;
+
+    switch (Channel){
+    case TIM_Channel_1:
+      TIM_OC1PreloadConfig(htim, preload);
+      break;
+    case TIM_Channel_2:
+      TIM_OC2PreloadConfig(htim, preload);
+      break;
+    case TIM_Channel_3:
+      TIM_OC3PreloadConfig(htim, preload);
+      break;
+    case TIM_Channel_4:
+      TIM_OC4PreloadConfig(htim, preload);
+      break;
+    default:
+      break;
+    }
+  #else
+    if(htim == nullptr || Channel > TIM_Channel_4 || (Channel & 0x03))
+      return;
+
+    const uint8_t TIM_OCPE_BP = 2;
+    const uint16_t TIM_OCPE_ARR[] = {TIM_OC1PE, TIM_OC2PE, TIM_OC3PE, TIM_OC4PE};
+    __IO uint16_t *const CHCTLR_REG = (Channel <= TIM_Channel_2 ? &htim->CHCTLR1 : &htim->CHCTLR2);
+
+    uint8_t channel_num = Channel >> TIM_OCPE_BP; // channel number 0..3
+    if(state == ENABLE)
+      *CHCTLR_REG |= TIM_OCPE_ARR[channel_num];   // set preload bit
+    else
+      *CHCTLR_REG &= ~TIM_OCPE_ARR[channel_num];  // clear preload bit
+  #endif  
+}
+
+/**
   * @brief  Configure input capture channels
   * @param   timerX, TIM_ICInitTypeDef,  Arduino channel [1..4] 
   * @retval None
@@ -781,6 +825,11 @@ void HardwareTimer::setMode(uint32_t channel, TimerModes_t mode, PinName pin)
     Error_Handler();
   }
 
+  const bool wasPWM = _ChannelMode[channel - 1] == TIMER_OUTPUT_COMPARE_PWM1 ||
+                      _ChannelMode[channel - 1] == TIMER_OUTPUT_COMPARE_PWM2;
+  const bool isPWM = mode == TIMER_OUTPUT_COMPARE_PWM1 ||
+                     mode == TIMER_OUTPUT_COMPARE_PWM2;
+
   /* Configure some default values. Maybe overwritten later */
   channelOC.TIM_OCMode = TIMER_NOT_USED;  //set default value 0xFFFF
 
@@ -822,6 +871,8 @@ void HardwareTimer::setMode(uint32_t channel, TimerModes_t mode, PinName pin)
 
         TIM_OC_ConfigChannel_Static(_timerObj.handle.Instance, &channelOC, timChannel);
       }
+      if (wasPWM && !isPWM)
+        TIM_OC_PreloadConfig_Static(_timerObj.handle.Instance, timChannel, DISABLE);
       return;
     case TIMER_OUTPUT_COMPARE_ACTIVE:
       channelOC.TIM_OCMode = TIM_OCMode_Active;
@@ -838,11 +889,13 @@ void HardwareTimer::setMode(uint32_t channel, TimerModes_t mode, PinName pin)
       break;
     case TIMER_OUTPUT_COMPARE_PWM1:
       channelOC.TIM_OCMode = TIM_OCMode_PWM1;
-      TIM_OC_ConfigChannel_Static(_timerObj.handle.Instance, &channelOC, timChannel);      
+      TIM_OC_ConfigChannel_Static(_timerObj.handle.Instance, &channelOC, timChannel);
+      TIM_OC_PreloadConfig_Static(_timerObj.handle.Instance, timChannel, ENABLE);
       break;
     case TIMER_OUTPUT_COMPARE_PWM2:
       channelOC.TIM_OCMode = TIM_OCMode_PWM2;
       TIM_OC_ConfigChannel_Static(_timerObj.handle.Instance, &channelOC, timChannel);
+      TIM_OC_PreloadConfig_Static(_timerObj.handle.Instance, timChannel, ENABLE);
       break;
     
     case TIMER_OUTPUT_COMPARE_FORCED_ACTIVE:
@@ -872,6 +925,10 @@ void HardwareTimer::setMode(uint32_t channel, TimerModes_t mode, PinName pin)
       TIM_IC_ConfigChannel_Static(_timerObj.handle.Instance, &channelIC, timChannel); 
       // // Identify and configure 2nd associated channel
       timAssociatedInputChannel = getAssociatedChannel(channel);
+      if (_ChannelMode[timAssociatedInputChannel - 1] == TIMER_OUTPUT_COMPARE_PWM1 ||
+          _ChannelMode[timAssociatedInputChannel - 1] == TIMER_OUTPUT_COMPARE_PWM2) {
+        TIM_OC_PreloadConfig_Static(_timerObj.handle.Instance, getChannel(timAssociatedInputChannel), DISABLE);
+      }
       _ChannelMode[timAssociatedInputChannel - 1] = mode;
       channelIC.TIM_ICPolarity = TIM_ICPolarity_Falling;
       channelIC.TIM_ICSelection = TIM_ICSelection_IndirectTI;
@@ -880,6 +937,9 @@ void HardwareTimer::setMode(uint32_t channel, TimerModes_t mode, PinName pin)
     default:
       break;
   }
+  if (wasPWM && !isPWM)
+    TIM_OC_PreloadConfig_Static(_timerObj.handle.Instance, timChannel, DISABLE);
+  
   // Save channel selected mode to object attribute
   _ChannelMode[channel - 1] = mode;
   if (pin != NC) 
