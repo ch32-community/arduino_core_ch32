@@ -524,5 +524,9 @@ void TwoWire::recoverBus(void)
   }
 }
 
+#if defined(I2C_MODULE_ENABLED)  // MxRD 261019: no need for a global object when disabled 
+
 // Preinstantiate Objects //////////////////////////////////////////////////////
 TwoWire Wire = TwoWire( ); 
+
+#endif
