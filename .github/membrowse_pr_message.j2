@@ -1,0 +1,26 @@
+## Code size
+
+{% set changed_targets = targets | selectattr('has_changes') | list %}
+{{ targets | length }} example/MCU builds compared, {{ changed_targets | length }} changed.
+
+| Build | Status | Details |
+|-------|:------:|---------|
+{% for target in changed_targets | sort(attribute='name') %}
+| `{{ target.name }}` | Changed | {% if target.comparison_url %}[Compare]({{ target.comparison_url }}){% else %}-{% endif %} |
+{% else %}
+| - | No memory changes detected | - |
+{% endfor %}
+
+<details>
+<summary>All {{ targets | length }} example/MCU builds</summary>
+
+| Build | Status | Details |
+|-------|:------:|---------|
+{% for target in targets | sort(attribute='name') %}
+| `{{ target.name }}` | {% if target.alerts %}Alerts: {{ target.alerts | join('; ') }}{% elif target.has_changes %}Changed{% else %}No change{% endif %} | {% if target.comparison_url %}[Compare]({{ target.comparison_url }}){% else %}-{% endif %} |
+{% endfor %}
+</details>
+
+_Each row is one example compiled for one MCU variant._
+
+<!-- Sticky Pull Request Commentcode-size -->
