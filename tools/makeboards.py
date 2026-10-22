@@ -60,12 +60,12 @@ board_list = {
     },
     'CH32V10x': {
         'name': 'CH32V10x_EVT',
-        'info': '-lprintf, CH32V10x_3V3: 3.3V power supply  CH32V10x_5V: 5V power supply',
+        'info': '-lprintf, CH32V10x: 3.3V/5V power supply',
         'usb': [],
         'hsi': [72, 56, 48, 8],
         'hse': [72, 56, 48, 8],
         'pnums': {
-            'CH32V103R8T6': {'name': 'CH32V103R8T6 EVT', 'maximum_size': 65536, 'maximum_data_size': 20480, 'mcu': 'QingKe-V3A', 'chip': 'CH32V10x_3V3'},
+            'CH32V103R8T6': {'name': 'CH32V103R8T6 EVT', 'maximum_size': 65536, 'maximum_data_size': 20480, 'mcu': 'QingKe-V3A', 'chip': 'CH32V10x'},
         }
     },
     'CH32V20x': {
