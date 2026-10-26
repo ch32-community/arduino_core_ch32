@@ -327,6 +327,8 @@ CH32VM00X_EVT.menu.rtlib.full.build.flags.ldflags=--specs=nosys.specs
 
 
 # Serial port selection
+CH32VM00X_EVT.menu.xserial.none=No Serial (smallest sketch)
+CH32VM00X_EVT.menu.xserial.none.build.serial_flags=-DHWSERIAL_NONE
 CH32VM00X_EVT.menu.xserial.serial1=Serial=Serial1 (default)
 CH32VM00X_EVT.menu.xserial.serial1.build.serial_flags=-DSERIAL_UART_INSTANCE=1
 CH32VM00X_EVT.menu.xserial.serial2=Serial=Serial2 (V005/6/7)
@@ -454,6 +456,8 @@ CH32X035_EVT.menu.rtlib.full.build.flags.ldflags=--specs=nosys.specs
 
 
 # Serial port selection
+CH32X035_EVT.menu.xserial.none=No Serial (smallest sketch)
+CH32X035_EVT.menu.xserial.none.build.serial_flags=-DHWSERIAL_NONE
 CH32X035_EVT.menu.xserial.serial1=Serial=Serial1 (default)
 CH32X035_EVT.menu.xserial.serial1.build.serial_flags=-DSERIAL_UART_INSTANCE=1
 CH32X035_EVT.menu.xserial.serial2=Serial=Serial2
@@ -582,6 +586,8 @@ CH32V10x_EVT.menu.rtlib.full.build.flags.ldflags=--specs=nosys.specs
 
 
 # Serial port selection
+CH32V10x_EVT.menu.xserial.none=No Serial (smallest sketch)
+CH32V10x_EVT.menu.xserial.none.build.serial_flags=-DHWSERIAL_NONE
 CH32V10x_EVT.menu.xserial.serial1=Serial=Serial1 (default)
 CH32V10x_EVT.menu.xserial.serial1.build.serial_flags=-DSERIAL_UART_INSTANCE=1
 CH32V10x_EVT.menu.xserial.serial2=Serial=Serial2
@@ -720,6 +726,8 @@ CH32V20x_EVT.menu.pnum.CH32V203G6_LANA_TNY.build.ch_extra_lib=-lprintf
 
 
 # Serial port selection
+CH32V20x_EVT.menu.xserial.none=No Serial (smallest sketch)
+CH32V20x_EVT.menu.xserial.none.build.serial_flags=-DHWSERIAL_NONE
 CH32V20x_EVT.menu.xserial.serial1=Serial=Serial1 (default)
 CH32V20x_EVT.menu.xserial.serial1.build.serial_flags=-DSERIAL_UART_INSTANCE=1
 CH32V20x_EVT.menu.xserial.serial2=Serial=Serial2
@@ -862,6 +870,8 @@ CH32V30x_EVT.menu.pnum.CH32V307VCT6.build.ch_extra_lib=-lprintfloat
 
 
 # Serial port selection
+CH32V30x_EVT.menu.xserial.none=No Serial (smallest sketch)
+CH32V30x_EVT.menu.xserial.none.build.serial_flags=-DHWSERIAL_NONE
 CH32V30x_EVT.menu.xserial.serial1=Serial=Serial1 (default)
 CH32V30x_EVT.menu.xserial.serial1.build.serial_flags=-DSERIAL_UART_INSTANCE=1
 CH32V30x_EVT.menu.xserial.serial2=Serial=Serial2
@@ -1095,6 +1105,8 @@ CH32L10x_EVT.menu.rtlib.full.build.flags.ldflags=--specs=nosys.specs
 
 
 # Serial port selection
+CH32L10x_EVT.menu.xserial.none=No Serial (smallest sketch)
+CH32L10x_EVT.menu.xserial.none.build.serial_flags=-DHWSERIAL_NONE
 CH32L10x_EVT.menu.xserial.serial1=Serial=Serial1 (default)
 CH32L10x_EVT.menu.xserial.serial1.build.serial_flags=-DSERIAL_UART_INSTANCE=1
 CH32L10x_EVT.menu.xserial.serial2=Serial=Serial2
