@@ -15,7 +15,7 @@
 
     "ci/libraries/ArduinoBlinkExample/ArduinoBlinkExample.ino",
     "ci/libraries/ArduinoFadeExample/ArduinoFadeExample.ino",
-    "ci/libraries/ArduinoReadAnalogVoltageExample/ArdArduinoReadAnalogVoltageExampleuinoBlinkExample.ino"
+    "ci/libraries/ArduinoReadAnalogVoltageExample/ArduinoReadAnalogVoltageExample.ino"
   ],
   "mcus": [
     {
