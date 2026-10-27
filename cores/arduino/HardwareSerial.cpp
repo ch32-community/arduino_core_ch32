@@ -174,6 +174,19 @@ void HardwareSerial::init(PinName _rx, PinName _tx, PinName _rts, PinName _cts)
   _serial.pin_cts = _cts;
 }
 
+void HardwareSerial::rx_irq_enable(USART_TypeDef *u, IRQn_Type irq)
+{
+  USART_ITConfig(u, USART_IT_RXNE, ENABLE);
+  NVIC_SetPriority(irq, 2);
+  NVIC_EnableIRQ(irq);
+}
+
+void HardwareSerial::rx_irq_disable(USART_TypeDef *u, IRQn_Type irq)
+{
+  NVIC_DisableIRQ(irq);
+  USART_ITConfig(u, USART_IT_RXNE, DISABLE);
+}
+
 // Public Methods //////////////////////////////////////////////////////////////
 void HardwareSerial::begin(unsigned long baud, byte config)
 {
@@ -259,30 +272,122 @@ void HardwareSerial::begin(unsigned long baud, byte config)
   uart_init(&_serial, (uint32_t)baud, databits, parity, stopbits);
 
 #if ENABLE_RX_BUFFER
+  // Enable UART RX interrupts for all CH32 series MCUs
+  // Publish the callback before any instance can be seen by an interrupt.
   serial_rx_handler = uart_rx_isr;
-  for (const RxMap &m : rx_map) {
-    if (m.uart == _serial.uart) {
-      *m.slot = this;
-      USART_ITConfig(m.uart, USART_IT_RXNE, ENABLE);
-      NVIC_SetPriority(m.irq, 2);
-      NVIC_EnableIRQ(m.irq);
-      break;
-    }
+  if (_serial.uart == USART1) {
+#if defined(USART1) && defined(HAVE_HWSERIAL1)
+    serial1_rx_instance = this;
+    rx_irq_enable(USART1, USART1_IRQn);
+    #endif
+  } 
+#if defined(USART2) && defined(HAVE_HWSERIAL2)
+  else if (_serial.uart == USART2) {
+      serial2_rx_instance = this;
+      rx_irq_enable(USART2, USART2_IRQn);
   }
+#endif
+#if defined(USART3) && defined(HAVE_HWSERIAL3)
+  else if (_serial.uart == USART3) {
+    serial3_rx_instance = this;
+    rx_irq_enable(USART3, USART3_IRQn);
+  }
+#endif
+#if defined(USART4) && defined(HAVE_HWSERIAL4)
+  else if (_serial.uart == USART4) {
+    serial4_rx_instance = this;
+    rx_irq_enable(USART4, USART4_IRQn);
+  }
+#endif
+#if defined(UART4) && defined(HAVE_HWSERIAL4) && !defined(USART4)
+  else if (_serial.uart == UART4) {
+    serial4_rx_instance = this;
+    rx_irq_enable(UART4, UART4_IRQn);
+  }
+#endif
+#if defined(UART5) && defined(HAVE_HWSERIAL5)
+  else if (_serial.uart == UART5) {
+    serial5_rx_instance = this;
+    rx_irq_enable(UART5, UART5_IRQn);
+  }
+#endif
+#if defined(UART6) && defined(HAVE_HWSERIAL6)
+  else if (_serial.uart == UART6) {
+    serial6_rx_instance = this;
+    rx_irq_enable(UART6, UART6_IRQn);
+  }
+#endif
+#if defined(UART7) && defined(HAVE_HWSERIAL7)
+  else if (_serial.uart == UART7) {
+    serial7_rx_instance = this;
+    rx_irq_enable(UART7, UART7_IRQn);
+  }
+#endif
+#if defined(UART8) && defined(HAVE_HWSERIAL8)
+  else if (_serial.uart == UART8) {
+    serial8_rx_instance = this;
+    rx_irq_enable(UART8, UART8_IRQn);
+  }
+#endif
 #endif
 }
 
 void HardwareSerial::end()
 {
 #if ENABLE_RX_BUFFER
-  for (const RxMap &m : rx_map) {
-    if (m.uart == _serial.uart) {
-      NVIC_DisableIRQ(m.irq);
-      USART_ITConfig(m.uart, USART_IT_RXNE, DISABLE);
-      *m.slot = NULL;
-      break;
-    }
+#if defined(USART1) && defined(HAVE_HWSERIAL1)
+    serial1_rx_instance = this;
+    rx_irq_disable(USART1, USART1_IRQn);
+    #endif
+  } 
+#if defined(USART2) && defined(HAVE_HWSERIAL2)
+  else if (_serial.uart == USART2) {
+    serial2_rx_instance = this;
+    rx_irq_disable(USART2, USART2_IRQn);
   }
+#endif
+#if defined(USART3) && defined(HAVE_HWSERIAL3)
+  else if (_serial.uart == USART3) {
+    serial3_rx_instance = this;
+    rx_irq_disable(USART3, USART3_IRQn);
+  }
+#endif
+#if defined(USART4) && defined(HAVE_HWSERIAL4)
+  else if (_serial.uart == USART4) {
+    serial4_rx_instance = this;
+    rx_irq_disable(USART4, USART4_IRQn);
+  }
+#endif
+#if defined(UART4) && defined(HAVE_HWSERIAL4) && !defined(USART4)
+  else if (_serial.uart == UART4) {
+    serial4_rx_instance = this;
+    rx_irq_disable(UART4, UART4_IRQn);
+  }
+#endif
+#if defined(UART5) && defined(HAVE_HWSERIAL5)
+  else if (_serial.uart == UART5) {
+    serial5_rx_instance = this;
+    rx_irq_disable(UART5, UART5_IRQn);
+  }
+#endif
+#if defined(UART6) && defined(HAVE_HWSERIAL6)
+  else if (_serial.uart == UART6) {
+    serial6_rx_instance = this;
+    rx_irq_disable(UART6, UART6_IRQn);
+  }
+#endif
+#if defined(UART7) && defined(HAVE_HWSERIAL7)
+  else if (_serial.uart == UART7) {
+    serial7_rx_instance = this;
+    rx_irq_disable(UART7, UART7_IRQn);
+  }
+#endif
+#if defined(UART8) && defined(HAVE_HWSERIAL8)
+  else if (_serial.uart == UART8) {
+    serial8_rx_instance = this;
+    rx_irq_disable(UART8, UART8_IRQn);
+  }
+#endif
 
   // Clear buffers
   _rx_buffer_head = _rx_buffer_tail;
