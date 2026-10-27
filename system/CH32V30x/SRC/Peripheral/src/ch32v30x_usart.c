@@ -1,8 +1,8 @@
 /********************************** (C) COPYRIGHT *******************************
 * File Name          : ch32v30x_usart.c
 * Author             : WCH
-* Version            : V1.0.0
-* Date               : 2021/06/06
+* Version            : V1.0.1
+* Date               : 2025/09/11
 * Description        : This file provides all the USART firmware functions.
 *********************************************************************************
 * Copyright (c) 2021 Nanjing Qinheng Microelectronics Co., Ltd.
@@ -21,15 +21,15 @@
 #define CTLR1_RWU_Set             ((uint16_t)0x0002) /* USART mute mode Enable Mask */
 #define CTLR1_RWU_Reset           ((uint16_t)0xFFFD) /* USART mute mode Enable Mask */
 #define CTLR1_SBK_Set             ((uint16_t)0x0001) /* USART Break Character send Mask */
-#define CTLR1_CLEAR_Mask          ((uint16_t)0xE9F3) /* USART CR1 Mask */
+#define CTLR1_CLEAR_Mask          ((uint16_t)0xE9F3) /* USART CTLR1 Mask */
 #define CTLR2_Address_Mask        ((uint16_t)0xFFF0) /* USART address Mask */
 
 #define CTLR2_LINEN_Set           ((uint16_t)0x4000) /* USART LIN Enable Mask */
 #define CTLR2_LINEN_Reset         ((uint16_t)0xBFFF) /* USART LIN Disable Mask */
 
 #define CTLR2_LBDL_Mask           ((uint16_t)0xFFDF) /* USART LIN Break detection Mask */
-#define CTLR2_STOP_CLEAR_Mask     ((uint16_t)0xCFFF) /* USART CR2 STOP Bits Mask */
-#define CTLR2_CLOCK_CLEAR_Mask    ((uint16_t)0xF0FF) /* USART CR2 Clock Mask */
+#define CTLR2_STOP_CLEAR_Mask     ((uint16_t)0xCFFF) /* USART CTLR2 STOP Bits Mask */
+#define CTLR2_CLOCK_CLEAR_Mask    ((uint16_t)0xF0FF) /* USART CTLR2 Clock Mask */
 
 #define CTLR3_SCEN_Set            ((uint16_t)0x0020) /* USART SC Enable Mask */
 #define CTLR3_SCEN_Reset          ((uint16_t)0xFFDF) /* USART SC Disable Mask */
@@ -41,7 +41,7 @@
 #define CTLR3_HDSEL_Reset         ((uint16_t)0xFFF7) /* USART Half-Duplex Disable Mask */
 
 #define CTLR3_IRLP_Mask           ((uint16_t)0xFFFB) /* USART IrDA LowPower mode Mask */
-#define CTLR3_CLEAR_Mask          ((uint16_t)0xFCFF) /* USART CR3 Mask */
+#define CTLR3_CLEAR_Mask          ((uint16_t)0xFCFF) /* USART CTLR3 Mask */
 
 #define CTLR3_IREN_Set            ((uint16_t)0x0002) /* USART IrDA Enable Mask */
 #define CTLR3_IREN_Reset          ((uint16_t)0xFFFD) /* USART IrDA Disable Mask */
@@ -49,21 +49,14 @@
 #define GPR_MSB_Mask              ((uint16_t)0xFF00) /* Guard Time Register MSB Mask */
 #define IT_Mask                   ((uint16_t)0x001F) /* USART Interrupt Mask */
 
-/* USART OverSampling-8 Mask */
-#define CTLR1_OVER8_Set           ((uint16_t)0x8000) /* USART OVER8 mode Enable Mask */
-#define CTLR1_OVER8_Reset         ((uint16_t)0x7FFF) /* USART OVER8 mode Disable Mask */
-
-/* USART One Bit Sampling Mask */
-#define CTLR3_ONEBITE_Set         ((uint16_t)0x0800) /* USART ONEBITE mode Enable Mask */
-#define CTLR3_ONEBITE_Reset       ((uint16_t)0xF7FF) /* USART ONEBITE mode Disable Mask */
-
 /*********************************************************************
  * @fn      USART_DeInit
  *
  * @brief   Deinitializes the USARTx peripheral registers to their default
  *        reset values.
  *
- * @param   USARTx - where x can be 1, 2 or 3 to select the UART peripheral.
+ * @param   USARTx - where x can be 1 to 3 to select the USART peripheral.
+ *          UARTx   where x can be 4 to 8 to select the UART peripheral.
  *
  * @return  none
  */
@@ -117,7 +110,8 @@ void USART_DeInit(USART_TypeDef *USARTx)
  * @brief   Initializes the USARTx peripheral according to the specified
  *        parameters in the USART_InitStruct.
  *
- * @param   USARTx - where x can be 1, 2 or 3 to select the UART peripheral.
+ * @param   USARTx - where x can be 1 to 3 to select the USART peripheral.
+ *          UARTx   where x can be 4 to 8 to select the UART peripheral.
  *          USART_InitStruct - pointer to a USART_InitTypeDef structure
  *        that contains the configuration information for the specified
  *        USART peripheral.
@@ -131,10 +125,6 @@ void USART_Init(USART_TypeDef *USARTx, USART_InitTypeDef *USART_InitStruct)
     uint32_t          fractionaldivider = 0x00;
     uint32_t          usartxbase = 0;
     RCC_ClocksTypeDef RCC_ClocksStatus;
-
-    if(USART_InitStruct->USART_HardwareFlowControl != USART_HardwareFlowControl_None)
-    {
-    }
 
     usartxbase = (uint32_t)USARTx;
     tmpreg = USARTx->CTLR2;
@@ -164,28 +154,20 @@ void USART_Init(USART_TypeDef *USARTx, USART_InitTypeDef *USART_InitStruct)
         apbclock = RCC_ClocksStatus.PCLK1_Frequency;
     }
 
-    if((USARTx->CTLR1 & CTLR1_OVER8_Set) != 0)
-    {
-        integerdivider = ((25 * apbclock) / (2 * (USART_InitStruct->USART_BaudRate)));
-    }
-    else
-    {
-        integerdivider = ((25 * apbclock) / (4 * (USART_InitStruct->USART_BaudRate)));
-    }
+    integerdivider = ((25 * apbclock) / (4 * (USART_InitStruct->USART_BaudRate)));
     tmpreg = (integerdivider / 100) << 4;
-
     fractionaldivider = integerdivider - (100 * (tmpreg >> 4));
-
-    if((USARTx->CTLR1 & CTLR1_OVER8_Set) != 0)
+    fractionaldivider = (((fractionaldivider * 16) + 50) / 100);
+    if (fractionaldivider > 0xf)
     {
-        tmpreg |= ((((fractionaldivider * 8) + 50) / 100)) & ((uint8_t)0x07);
+        tmpreg += 1 << 4;
     }
     else
     {
-        tmpreg |= ((((fractionaldivider * 16) + 50) / 100)) & ((uint8_t)0x0F);
+        tmpreg |= fractionaldivider & ((uint8_t)0x0f);
     }
-
-    USARTx->BRR = (uint16_t)tmpreg;
+    
+    USARTx->BRR = (uint16_t)tmpreg; 
 }
 
 /*********************************************************************
@@ -256,7 +238,8 @@ void USART_ClockStructInit(USART_ClockInitTypeDef *USART_ClockInitStruct)
  * @brief   Enables or disables the specified USART peripheral.
  *        reset values (Affects also the I2Ss).
  *
- * @param   USARTx - where x can be 1, 2, 3 to select the USART peripheral.
+ * @param   USARTx - where x can be 1 to 3 to select the USART peripheral.
+ *          UARTx   where x can be 4 to 8 to select the UART peripheral.
  *          NewState: ENABLE or DISABLE.
  *
  * @return  none
@@ -279,7 +262,8 @@ void USART_Cmd(USART_TypeDef *USARTx, FunctionalState NewState)
  * @brief   Enables or disables the specified USART interrupts.
  *        reset values (Affects also the I2Ss).
  *
- * @param   USARTx - where x can be 1, 2, 3 to select the USART peripheral.
+ * @param   USARTx - where x can be 1 to 3 to select the USART peripheral.
+ *          UARTx   where x can be 4 to 8 to select the UART peripheral.
  *          USART_IT - specifies the USART interrupt sources to be enabled or disabled.
  *            USART_IT_LBD - LIN Break detection interrupt.
  *            USART_IT_TXE - Transmit Data Register empty interrupt.
@@ -330,7 +314,8 @@ void USART_ITConfig(USART_TypeDef *USARTx, uint16_t USART_IT, FunctionalState Ne
  *
  * @brief   Enables or disables the USART DMA interface.
  *
- * @param   USARTx - where x can be 1, 2, 3 to select the USART peripheral.
+ * @param   USARTx - where x can be 1 to 3 to select the USART peripheral.
+ *          UARTx   where x can be 4 to 8 to select the UART peripheral.
  *          USART_DMAReq - specifies the DMA request.
  *            USART_DMAReq_Tx - USART DMA transmit request.
  *            USART_DMAReq_Rx - USART DMA receive request.
@@ -355,7 +340,8 @@ void USART_DMACmd(USART_TypeDef *USARTx, uint16_t USART_DMAReq, FunctionalState 
  *
  * @brief   Sets the address of the USART node.
  *
- * @param   USARTx - where x can be 1, 2, 3 to select the USART peripheral.
+ * @param   USARTx - where x can be 1 to 3 to select the USART peripheral.
+ *          UARTx   where x can be 4 to 8 to select the UART peripheral.
  *          USART_Address - Indicates the address of the USART node.
  *
  * @return  none
@@ -371,7 +357,8 @@ void USART_SetAddress(USART_TypeDef *USARTx, uint8_t USART_Address)
  *
  * @brief   Selects the USART WakeUp method.
  *
- * @param   USARTx - where x can be 1, 2, 3 to select the USART peripheral.
+ * @param   USARTx - where x can be 1 to 3 to select the USART peripheral.
+ *          UARTx   where x can be 4 to 8 to select the UART peripheral.
  *          USART_WakeUp - specifies the USART wakeup method.
  *            USART_WakeUp_IdleLine - WakeUp by an idle line detection.
  *            USART_WakeUp_AddressMark - WakeUp by an address mark.
@@ -389,7 +376,8 @@ void USART_WakeUpConfig(USART_TypeDef *USARTx, uint16_t USART_WakeUp)
  *
  * @brief   Determines if the USART is in mute mode or not.
  *
- * @param   USARTx - where x can be 1, 2, 3 to select the USART peripheral.
+ * @param   USARTx - where x can be 1 to 3 to select the USART peripheral.
+ *          UARTx   where x can be 4 to 8 to select the UART peripheral.
  *          NewState - ENABLE or DISABLE.
  *
  * @return  none
@@ -411,7 +399,8 @@ void USART_ReceiverWakeUpCmd(USART_TypeDef *USARTx, FunctionalState NewState)
  *
  * @brief   Sets the USART LIN Break detection length.
  *
- * @param   USARTx - where x can be 1, 2, 3 to select the USART peripheral.
+ * @param   USARTx - where x can be 1 to 3 to select the USART peripheral.
+ *          UARTx   where x can be 4 to 8 to select the UART peripheral.
  *          USART_LINBreakDetectLength - specifies the LIN break detection length.
  *            USART_LINBreakDetectLength_10b - 10-bit break detection.
  *            USART_LINBreakDetectLength_11b - 11-bit break detection.
@@ -429,7 +418,8 @@ void USART_LINBreakDetectLengthConfig(USART_TypeDef *USARTx, uint16_t USART_LINB
  *
  * @brief   Enables or disables the USART LIN mode.
  *
- * @param   USARTx - where x can be 1, 2, 3 to select the USART peripheral.
+ * @param   USARTx - where x can be 1 to 3 to select the USART peripheral.
+ *          UARTx   where x can be 4 to 8 to select the UART peripheral.
  *          NewState - ENABLE or DISABLE.
  *
  * @return  none
@@ -451,7 +441,8 @@ void USART_LINCmd(USART_TypeDef *USARTx, FunctionalState NewState)
  *
  * @brief   Transmits single data through the USARTx peripheral.
  *
- * @param   USARTx - where x can be 1, 2, 3 to select the USART peripheral.
+ * @param   USARTx - where x can be 1 to 3 to select the USART peripheral.
+ *          UARTx   where x can be 4 to 8 to select the UART peripheral.
  *          Data - the data to transmit.
  *
  * @return  none
@@ -466,7 +457,8 @@ void USART_SendData(USART_TypeDef *USARTx, uint16_t Data)
  *
  * @brief   Returns the most recent received data by the USARTx peripheral.
  *
- * @param   USARTx - where x can be 1, 2, 3 to select the USART peripheral.
+ * @param   USARTx - where x can be 1 to 3 to select the USART peripheral.
+ *          UARTx   where x can be 4 to 8 to select the UART peripheral.
  *
  * @return  The received data.
  */
@@ -480,7 +472,8 @@ uint16_t USART_ReceiveData(USART_TypeDef *USARTx)
  *
  * @brief   Transmits break characters.
  *
- * @param   USARTx - where x can be 1, 2, 3 to select the USART peripheral.
+ * @param   USARTx - where x can be 1 to 3 to select the USART peripheral.
+ *          UARTx   where x can be 4 to 8 to select the UART peripheral.
  *
  * @return  none
  */
@@ -494,7 +487,8 @@ void USART_SendBreak(USART_TypeDef *USARTx)
  *
  * @brief   Sets the specified USART guard time.
  *
- * @param   USARTx - where x can be 1, 2, 3 to select the USART peripheral.
+ * @param   USARTx - where x can be 1 to 3 to select the USART peripheral.
+ *          UARTx   where x can be 4 to 8 to select the UART peripheral.
  *          USART_GuardTime - specifies the guard time.
  *
  * @return  none
@@ -510,7 +504,8 @@ void USART_SetGuardTime(USART_TypeDef *USARTx, uint8_t USART_GuardTime)
  *
  * @brief   Sets the system clock prescaler.
  *
- * @param   USARTx - where x can be 1, 2, 3 to select the USART peripheral.
+ * @param   USARTx - where x can be 1 to 3 to select the USART peripheral.
+ *          UARTx   where x can be 4 to 8 to select the UART peripheral.
  *          USART_Prescaler - specifies the prescaler clock.
  *
  * @return  none
@@ -526,7 +521,8 @@ void USART_SetPrescaler(USART_TypeDef *USARTx, uint8_t USART_Prescaler)
  *
  * @brief   Enables or disables the USART Smart Card mode.
  *
- * @param   USARTx - where x can be 1, 2, 3 to select the USART peripheral.
+ * @param   USARTx - where x can be 1 to 3 to select the USART peripheral.
+ *          UARTx   where x can be 4 to 8 to select the UART peripheral.
  *          NewState - ENABLE or DISABLE.
  *
  * @return  none
@@ -548,7 +544,8 @@ void USART_SmartCardCmd(USART_TypeDef *USARTx, FunctionalState NewState)
  *
  * @brief   Enables or disables NACK transmission.
  *
- * @param   USARTx - where x can be 1, 2, 3 to select the USART peripheral.
+ * @param   USARTx - where x can be 1 to 3 to select the USART peripheral.
+ *          UARTx   where x can be 4 to 8 to select the UART peripheral.
  *          NewState - ENABLE or DISABLE.
  *
  * @return  none
@@ -570,7 +567,8 @@ void USART_SmartCardNACKCmd(USART_TypeDef *USARTx, FunctionalState NewState)
  *
  * @brief   Enables or disables the USART Half Duplex communication.
  *
- * @param   USARTx - where x can be 1, 2, 3 to select the USART peripheral.
+ * @param   USARTx - where x can be 1 to 3 to select the USART peripheral.
+ *          UARTx   where x can be 4 to 8 to select the UART peripheral.
  *                  NewState - ENABLE or DISABLE.
  *
  * @return  none
@@ -588,57 +586,12 @@ void USART_HalfDuplexCmd(USART_TypeDef *USARTx, FunctionalState NewState)
 }
 
 /*********************************************************************
- * @fn      USART_OverSampling8Cmd
- *
- * @brief   Enables or disables the USART's 8x oversampling mode.
- *
- * @param   USARTx - where x can be 1, 2, 3 to select the USART peripheral.
- *          NewState - ENABLE or DISABLE.
- *          Note-
- *          This function has to be called before calling USART_Init()
- *          function in order to have correct baudrate Divider value. 
- * @return  none
- */
-void USART_OverSampling8Cmd(USART_TypeDef *USARTx, FunctionalState NewState)
-{
-    if(NewState != DISABLE)
-    {
-        USARTx->CTLR1 |= CTLR1_OVER8_Set;
-    }
-    else
-    {
-        USARTx->CTLR1 &= CTLR1_OVER8_Reset;
-    }
-}
-
-/*********************************************************************
- * @fn      USART_OneBitMethodCmd
- *
- * @brief   Enables or disables the USART's one bit sampling method.
- *
- * @param   USARTx - where x can be 1, 2, 3 to select the USART peripheral.
- *          NewState - ENABLE or DISABLE.
- *
- * @return  none
- */
-void USART_OneBitMethodCmd(USART_TypeDef *USARTx, FunctionalState NewState)
-{
-    if(NewState != DISABLE)
-    {
-        USARTx->CTLR3 |= CTLR3_ONEBITE_Set;
-    }
-    else
-    {
-        USARTx->CTLR3 &= CTLR3_ONEBITE_Reset;
-    }
-}
-
-/*********************************************************************
  * @fn      USART_IrDAConfig
  *
  * @brief   Configures the USART's IrDA interface.
  *
- * @param   USARTx - where x can be 1, 2, 3 to select the USART peripheral.
+ * @param   USARTx - where x can be 1 to 3 to select the USART peripheral.
+ *          UARTx   where x can be 4 to 8 to select the UART peripheral.
  *          USART_IrDAMode - specifies the IrDA mode.
  *            USART_IrDAMode_LowPower.
  *            USART_IrDAMode_Normal.
@@ -656,7 +609,8 @@ void USART_IrDAConfig(USART_TypeDef *USARTx, uint16_t USART_IrDAMode)
  *
  * @brief   Enables or disables the USART's IrDA interface.
  *
- * @param   USARTx - where x can be 1, 2, 3 to select the USART peripheral.
+ * @param   USARTx - where x can be 1 to 3 to select the USART peripheral.
+ *          UARTx   where x can be 4 to 8 to select the UART peripheral.
  *          NewState - ENABLE or DISABLE.
  *
  * @return  none
@@ -678,7 +632,8 @@ void USART_IrDACmd(USART_TypeDef *USARTx, FunctionalState NewState)
  *
  * @brief   Checks whether the specified USART flag is set or not.
  *
- * @param   USARTx - where x can be 1, 2, 3 to select the USART peripheral.
+ * @param   USARTx - where x can be 1 to 3 to select the USART peripheral.
+ *          UARTx   where x can be 4 to 8 to select the UART peripheral.
  *          USART_FLAG - specifies the flag to check.
  *            USART_FLAG_LBD - LIN Break detection flag.
  *            USART_FLAG_TXE - Transmit data register empty flag.
@@ -712,7 +667,8 @@ FlagStatus USART_GetFlagStatus(USART_TypeDef *USARTx, uint16_t USART_FLAG)
  *
  * @brief   Clears the USARTx's pending flags.
  *
- * @param   USARTx - where x can be 1, 2, 3 to select the USART peripheral.
+ * @param   USARTx - where x can be 1 to 3 to select the USART peripheral.
+ *          UARTx   where x can be 4 to 8 to select the UART peripheral.
  *          USART_FLAG - specifies the flag to clear.
  *            USART_FLAG_LBD - LIN Break detection flag.
  *            USART_FLAG_TC - Transmission Complete flag.
@@ -742,7 +698,8 @@ void USART_ClearFlag(USART_TypeDef *USARTx, uint16_t USART_FLAG)
  *
  * @brief   Checks whether the specified USART interrupt has occurred or not.
  *
- * @param   USARTx - where x can be 1, 2, 3 to select the USART peripheral.
+ * @param   USARTx - where x can be 1 to 3 to select the USART peripheral.
+ *          UARTx   where x can be 4 to 8 to select the UART peripheral.
  *          USART_IT - specifies the USART interrupt source to check.
  *            USART_IT_LBD - LIN Break detection interrupt.
  *            USART_IT_TXE - Tansmit Data Register empty interrupt.
@@ -800,7 +757,8 @@ ITStatus USART_GetITStatus(USART_TypeDef *USARTx, uint16_t USART_IT)
  *
  * @brief   Clears the USARTx's interrupt pending bits.
  *
- * @param   USARTx - where x can be 1, 2, 3 to select the USART peripheral.
+ * @param   USARTx - where x can be 1 to 3 to select the USART peripheral.
+ *          UARTx   where x can be 4 to 8 to select the UART peripheral.
  *          USART_IT - specifies the interrupt pending bit to clear.
  *            USART_IT_LBD - LIN Break detection interrupt.
  *            USART_IT_TC - Transmission complete interrupt.
