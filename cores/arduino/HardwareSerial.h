@@ -168,34 +168,42 @@ public:
 #endif
 
   private:
-    uint8_t _config;
-    unsigned long _baud;
     void init(PinName _rx, PinName _tx, PinName _rts = NC, PinName _cts = NC);
 };
 
+// Preserve SerialN.method(), &SerialN and Stream/Print references while creating
+// each port on first use. These are expressions, not external object symbols.
 #if defined(HAVE_HWSERIAL1) && defined(USART1)
-  extern HardwareSerial Serial1;
+  HardwareSerial &getSerial1();
+  #define Serial1 getSerial1()
 #endif
 #if defined(HAVE_HWSERIAL2) && defined(USART2)
-  extern HardwareSerial Serial2;
+  HardwareSerial &getSerial2();
+  #define Serial2 getSerial2()
 #endif
 #if defined(HAVE_HWSERIAL3) && defined(USART3)
-  extern HardwareSerial Serial3;
+  HardwareSerial &getSerial3();
+  #define Serial3 getSerial3()
 #endif
 #if defined(HAVE_HWSERIAL4) && (defined(UART4) || defined(USART4))   // Note: some have USART4, V30x has UART4
-  extern HardwareSerial Serial4;
+  HardwareSerial &getSerial4();
+  #define Serial4 getSerial4()
 #endif
 #if defined(HAVE_HWSERIAL5) && (defined(UART5) || defined(USART5))   // Note: V30x has UART 4-8, no USART5-8 in supported series (even though mentioned in various GPIO/remap sources)
-  extern HardwareSerial Serial5;
+  HardwareSerial &getSerial5();
+  #define Serial5 getSerial5()
 #endif
 #if defined(HAVE_HWSERIAL6) && (defined(UART6) || defined(USART6))
-  extern HardwareSerial Serial6;
+  HardwareSerial &getSerial6();
+  #define Serial6 getSerial6()
 #endif
 #if defined(HAVE_HWSERIAL7) && (defined(UART7) || defined(USART7))
-  extern HardwareSerial Serial7;
+  HardwareSerial &getSerial7();
+  #define Serial7 getSerial7()
 #endif
 #if defined(HAVE_HWSERIAL8) && (defined(UART8) || defined(USART8))
-  extern HardwareSerial Serial8;
+  HardwareSerial &getSerial8();
+  #define Serial8 getSerial8()
 #endif
 
 #endif   // HardwareSerial_h
