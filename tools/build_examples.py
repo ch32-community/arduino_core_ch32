@@ -115,7 +115,12 @@ if __name__ == '__main__':
     else:
         build_boards = all_boards
 
-    all_examples = list(glob.iglob('**/examples/**/*.ino', recursive=True))
+    all_examples = []
+    for library_dir in ('libraries', os.path.join('ci', 'libraries')):
+        if os.path.isdir(library_dir):
+            all_examples.extend(
+                glob.iglob(os.path.join(library_dir, '**', '*.ino'), recursive=True)
+            )
     all_examples.sort()
 
     total_time = time.monotonic()

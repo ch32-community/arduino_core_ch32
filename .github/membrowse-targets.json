@@ -11,7 +11,9 @@
     "libraries/USBPD_SINK/examples/usbpd_sink_request_voltage",
     "libraries/Wire/examples/at24c02_read_write",
     "libraries/Wire/examples/i2cMinimalSlave",
-    "libraries/Wire/examples/i2c_scanner"
+    "libraries/Wire/examples/i2c_scanner",
+
+    "ci/libraries/DefaultBlinkyTest/DefaultBlinkyTest.ino"
   ],
   "mcus": [
     {
