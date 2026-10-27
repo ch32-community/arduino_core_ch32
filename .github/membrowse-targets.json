@@ -13,7 +13,7 @@
     "libraries/Wire/examples/i2cMinimalSlave",
     "libraries/Wire/examples/i2c_scanner",
 
-    "ci/libraries/DefaultBlinkyTest/DefaultBlinkyTest.ino"
+    "ci/libraries/ArduinoBlinkExample/ArduinoBlinkExample.ino"
   ],
   "mcus": [
     {
