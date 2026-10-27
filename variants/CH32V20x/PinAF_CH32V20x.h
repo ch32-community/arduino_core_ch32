@@ -85,9 +85,6 @@ enum {
 
   AFIO_Remap_ETH_ENABLE,
   AFIO_Remap_ETH_DISABLE,
-
-  AFIO_Remap_CAN2_ENABLE,
-  AFIO_Remap_CAN2_DISABLE,
   
   AFIO_Remap_ETH_RMII,
   AFIO_Remap_ETH_MII,
@@ -102,29 +99,11 @@ enum {
   AFIO_Remap_ADC2_ETRGREG_ENABLE,
   AFIO_Remap_ADC2_ETRGREG_DISABLE,
 
-  AFIO_Remap_SWJ_NONJTRST,
-  AFIO_Remap_SWJ_NOJTAG,
-  AFIO_Remap_SWJ_DISABLE,
-
-  AFIO_Remap_SPI3_ENABLE,
-  AFIO_Remap_SPI3_DISABLE,
-
   AFIO_Remap_TIM2ITR1_TO_ETH,
   AFIO_Remap_TIM2ITR1_TO_USB,
 
   AFIO_Remap_PTP_PPS_ENABLE,
   AFIO_Remap_PTP_PPS_DISABLE,
-
-  AFIO_Remap_TIM8_ENABLE,
-  AFIO_Remap_TIM8_DISABLE,
-
-  AFIO_FullRemap_TIM9_ENABLE,
-  AFIO_PartialRemap_TIM9_ENABLE,
-  AFIO_Remap_TIM9_DISABLE,
-
-  AFIO_FullRemap_TIM10_ENABLE,
-  AFIO_PartialRemap_TIM10_ENABLE,
-  AFIO_Remap_TIM10_DISABLE,
 
   AFIO_Remap_FSMCNADV_ENABLE,
   AFIO_Remap_FSMCNADV_DISABLE,
@@ -132,22 +111,6 @@ enum {
   AFIO_FullRemap_USART4_ENABLE,
   AFIO_PartialRemap_USART4_ENABLE,
   AFIO_Remap_USART4_DISABLE,
-
-  AFIO_FullRemap_USART5_ENABLE,
-  AFIO_PritialRemap_USART5_ENABLE,
-  AFIO_Remap_USART5_DISABLE,
-
-  AFIO_FullRemap_USART6_ENABLE,
-  AFIO_PartialRemap_USART6_ENABLE,
-  AFIO_Remap_USART6_DISABLE,
-
-  AFIO_FullRemap_USART7_ENABLE,
-  AFIO_PartialRemap_USART7_ENABLE,
-  AFIO_Remap_USART7_DISABLE,
-
-  AFIO_FullRemap_USART8_ENABLE,
-  AFIO_PartialRemap_USART8_ENABLE,
-  AFIO_Remap_USART8_DISABLE,
 
   AFIO_Remap_USART1_HighBit_ENABLE,
   AFIO_Remap_USART1_HighBit_DISABLE
@@ -273,12 +236,6 @@ static inline void pin_SetV32AFPin(uint32_t afnum)
       break;
     case AFIO_Remap_ETH_DISABLE: 
       GPIO_PinRemapConfig(GPIO_Remap_ETH,DISABLE);
-      break;      
-    case AFIO_Remap_CAN2_ENABLE: 
-      GPIO_PinRemapConfig(GPIO_Remap_CAN2,ENABLE);
-      break;
-    case AFIO_Remap_CAN2_DISABLE: 
-      GPIO_PinRemapConfig(GPIO_Remap_CAN2,DISABLE);
       break;
 
     case AFIO_Remap_ETH_RMII:     
@@ -314,23 +271,6 @@ static inline void pin_SetV32AFPin(uint32_t afnum)
       GPIO_PinRemapConfig(GPIO_Remap_ADC2_ETRGREG,DISABLE);
       break;
 
-    case AFIO_Remap_SWJ_NONJTRST: 
-      GPIO_PinRemapConfig(GPIO_Remap_SWJ_NoJTRST,ENABLE);
-      break;
-    case AFIO_Remap_SWJ_NOJTAG: 
-      GPIO_PinRemapConfig(GPIO_Remap_SWJ_JTAGDisable,ENABLE);
-      break;
-    case AFIO_Remap_SWJ_DISABLE: 
-      GPIO_PinRemapConfig(GPIO_Remap_SWJ_Disable,ENABLE);
-      break;
-
-    case AFIO_Remap_SPI3_ENABLE:
-      GPIO_PinRemapConfig(GPIO_Remap_SPI3,ENABLE);
-      break;
-    case AFIO_Remap_SPI3_DISABLE:
-      GPIO_PinRemapConfig(GPIO_Remap_SPI3,DISABLE);
-      break;
-
     case AFIO_Remap_TIM2ITR1_TO_ETH:
       GPIO_PinRemapConfig(GPIO_Remap_TIM2ITR1_PTP_SOF,DISABLE);   //0 is to pps of eth, 1 is to sof of USB, (only for Connectivity line devices)
       break;
@@ -342,33 +282,6 @@ static inline void pin_SetV32AFPin(uint32_t afnum)
       break;
     case AFIO_Remap_PTP_PPS_DISABLE:
       GPIO_PinRemapConfig(GPIO_Remap_PTP_PPS,DISABLE);          //(only for Connectivity line devices)
-      break;
-
-    case AFIO_Remap_TIM8_ENABLE:
-      GPIO_PinRemapConfig(GPIO_Remap_TIM8,ENABLE);
-      break;
-    case AFIO_Remap_TIM8_DISABLE:
-      GPIO_PinRemapConfig(GPIO_Remap_TIM8,DISABLE);  
-      break;
-
-    case AFIO_FullRemap_TIM9_ENABLE:
-      GPIO_PinRemapConfig(GPIO_FullRemap_TIM9,ENABLE);  
-      break;
-    case AFIO_PartialRemap_TIM9_ENABLE:
-      GPIO_PinRemapConfig(GPIO_PartialRemap_TIM9,DISABLE);  
-      break;
-    case AFIO_Remap_TIM9_DISABLE:
-      GPIO_PinRemapConfig(GPIO_FullRemap_TIM9,DISABLE);      
-      break;
-
-    case AFIO_FullRemap_TIM10_ENABLE:
-      GPIO_PinRemapConfig(GPIO_FullRemap_TIM10,ENABLE);
-      break;
-    case AFIO_PartialRemap_TIM10_ENABLE:
-      GPIO_PinRemapConfig(GPIO_PartialRemap_TIM10,ENABLE);       
-      break;
-    case AFIO_Remap_TIM10_DISABLE:
-      GPIO_PinRemapConfig(GPIO_FullRemap_TIM10,DISABLE);
       break;
 
     case AFIO_Remap_FSMCNADV_ENABLE:
@@ -386,46 +299,6 @@ static inline void pin_SetV32AFPin(uint32_t afnum)
       break;
     case AFIO_Remap_USART4_DISABLE:
       GPIO_PinRemapConfig(GPIO_FullRemap_USART4,DISABLE);
-      break;  
-
-    case AFIO_FullRemap_USART5_ENABLE:
-      GPIO_PinRemapConfig(GPIO_FullRemap_USART5,ENABLE);
-      break;
-    case AFIO_PritialRemap_USART5_ENABLE:
-      GPIO_PinRemapConfig(GPIO_PartialRemap_USART5,ENABLE);
-      break;
-    case AFIO_Remap_USART5_DISABLE:
-      GPIO_PinRemapConfig(GPIO_FullRemap_USART5,DISABLE);
-      break;
-
-    case AFIO_FullRemap_USART6_ENABLE:
-      GPIO_PinRemapConfig(GPIO_FullRemap_USART6,ENABLE);
-      break;
-    case AFIO_PartialRemap_USART6_ENABLE:
-      GPIO_PinRemapConfig(GPIO_PartialRemap_USART6,ENABLE);
-      break;
-    case AFIO_Remap_USART6_DISABLE:
-      GPIO_PinRemapConfig(GPIO_FullRemap_USART6,DISABLE);
-      break;
-
-    case AFIO_FullRemap_USART7_ENABLE:
-      GPIO_PinRemapConfig(GPIO_FullRemap_USART7,ENABLE);
-      break;
-    case AFIO_PartialRemap_USART7_ENABLE:
-      GPIO_PinRemapConfig(GPIO_PartialRemap_USART7,ENABLE);
-      break;
-    case AFIO_Remap_USART7_DISABLE:
-      GPIO_PinRemapConfig(GPIO_FullRemap_USART7,DISABLE);
-      break;
-
-    case AFIO_FullRemap_USART8_ENABLE:
-      GPIO_PinRemapConfig(GPIO_FullRemap_USART8,ENABLE);
-      break;
-    case AFIO_PartialRemap_USART8_ENABLE:
-      GPIO_PinRemapConfig(GPIO_PartialRemap_USART8,ENABLE);
-      break;
-    case AFIO_Remap_USART8_DISABLE:
-      GPIO_PinRemapConfig(GPIO_FullRemap_USART8,DISABLE);
       break;
 
     case AFIO_Remap_USART1_HighBit_ENABLE:
