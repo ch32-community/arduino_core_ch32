@@ -1,8 +1,8 @@
 /********************************** (C) COPYRIGHT  *******************************
  * File Name          : ch32v00X.h
  * Author             : WCH
- * Version            : V1.0.0
- * Date               : 2024/01/01
+ * Version            : V1.0.3
+ * Date               : 2026/08/04
  * Description        : CH32V00X Device Peripheral Access Layer Header File.
  *********************************************************************************
  * Copyright (c) 2021 Nanjing Qinheng Microelectronics Co., Ltd.
@@ -33,7 +33,9 @@ extern "C" {
 #define __MPU_PRESENT             0 /* Other CH32 devices does not provide an MPU */
 #define __Vendor_SysTickConfig    0 /* Set to 1 if different SysTick Config is used */
 
+#ifndef HSE_VALUE
 #define HSE_VALUE                 ((uint32_t)24000000) /* Value of the External oscillator in Hz */
+#endif
 
 /* In the following line adjust the External High Speed oscillator (HSE) Startup Timeout value */
 #define HSE_STARTUP_TIMEOUT       ((uint16_t)0x2000) /* Time out for HSE start up */
@@ -42,7 +44,7 @@ extern "C" {
 
 /* CH32V00X Standard Peripheral Library version number */
 #define __CH32V00X_STDPERIPH_VERSION_MAIN   (0x01) /* [15:8] main version */
-#define __CH32V00X_STDPERIPH_VERSION_SUB    (0x00) /* [7:0] sub version */
+#define __CH32V00X_STDPERIPH_VERSION_SUB    (0x05) /* [7:0] sub version */
 #define __CH32V00X_STDPERIPH_VERSION        ( (__CH32V00X_STDPERIPH_VERSION_MAIN << 8)\
                                              |(__CH32V00X_STDPERIPH_VERSION_SUB << 0))
 
@@ -52,7 +54,7 @@ typedef enum IRQn
     /******  RISC-V Processor Exceptions Numbers *******************************************************/
     NonMaskableInt_IRQn = 2, /* 2 Non Maskable Interrupt                             */
     HardFault_IRQn = 3,      /* 3 HardFault Interrupt                                */
-    SysTicK_IRQn = 12,       /* 12 System timer Interrupt                            */
+    SysTick_IRQn = 12,       /* 12 System timer Interrupt                            */
     Software_IRQn = 14,      /* 14 software Interrupt                                */
 
     /******  RISC-V specific Interrupt Numbers *********************************************************/
@@ -86,6 +88,8 @@ typedef enum IRQn
 #endif
 } IRQn_Type;
 
+#define SysTicK_IRQn      SysTick_IRQn
+
 #include <stdint.h>
 #include <core_riscv.h>
 #include <system_ch32v00X.h>
@@ -101,7 +105,7 @@ typedef struct
     __IO uint32_t STATR;
     __IO uint32_t CTLR1;
     __IO uint32_t CTLR2;
-    __IO uint32_t SAMPTR1;
+    uint32_t RESERVED;
     __IO uint32_t SAMPTR2;
     __IO uint32_t IOFR1;
     __IO uint32_t IOFR2;
@@ -531,8 +535,6 @@ typedef struct
 /*******************  Bit definition for ADC_CTLR2 register  ********************/
 #define ADC_ADON                                ((uint32_t)0x00000001) /* A/D Converter ON / OFF */
 #define ADC_CONT                                ((uint32_t)0x00000002) /* Continuous Conversion */
-#define ADC_CAL                                 ((uint32_t)0x00000004) /* A/D Calibration */
-#define ADC_RSTCAL                              ((uint32_t)0x00000008) /* Reset Calibration */
 #define ADC_TGREGU                              ((uint32_t)0x00000010) /*External Trigger Events for Rule Channel Conversion*/
 #define ADC_TGINJE                              ((uint32_t)0x00000020) /*Injection of externally triggered events for channel conversions*/
 
@@ -554,12 +556,6 @@ typedef struct
 #define ADC_EXTTRIG                             ((uint32_t)0x00100000) /* External Trigger Conversion mode for regular channels */
 #define ADC_JSWSTART                            ((uint32_t)0x00200000) /* Start Conversion of injected channels */
 #define ADC_SWSTART                             ((uint32_t)0x00400000) /* Start Conversion of regular channels */
-
-/******************  Bit definition for ADC_SAMPTR1 register  *******************/
-#define ADC_SMP10                               ((uint32_t)0x00000007) /* SMP10[2:0] bits (Channel 10 Sample time selection) */
-#define ADC_SMP10_0                             ((uint32_t)0x00000001) /* Bit 0 */
-#define ADC_SMP10_1                             ((uint32_t)0x00000002) /* Bit 1 */
-#define ADC_SMP10_2                             ((uint32_t)0x00000004) /* Bit 2 */
 
 /******************  Bit definition for ADC_SAMPTR2 register  *******************/
 #define ADC_SMP0                                ((uint32_t)0x00000007) /* SMP0[2:0] bits (Channel 0 Sample time selection) */
@@ -1224,7 +1220,6 @@ typedef struct
 /*******************  Bit definition for FLASH_CTLR register  *******************/
 #define FLASH_CTLR_PER                          ((uint16_t)0x0002)     /* Page Erase 1KByte*/
 #define FLASH_CTLR_MER                          ((uint16_t)0x0004)     /* Mass Erase */
-#define FLASH_CTLR_OPTPG                        ((uint16_t)0x0010)     /* Option Byte Programming */
 #define FLASH_CTLR_OPTER                        ((uint16_t)0x0020)     /* Option Byte Erase */
 #define FLASH_CTLR_STRT                         ((uint16_t)0x0040)     /* Start */
 #define FLASH_CTLR_LOCK                         ((uint16_t)0x0080)     /* Lock */
