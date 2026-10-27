@@ -105,10 +105,15 @@ def build_variant(variant):
     with Pool(processes=os.cpu_count()) as pool:
         pool_args = list((map(lambda e, v=variant: [v, e], all_examples)))
         result = pool.starmap(build_sketch, pool_args)
+        if not result:
+            return [0, 0, 0]
         # sum all element of same index (column sum)
         return list(map(sum, list(zip(*result))))
 
 if __name__ == '__main__':
+    # Resolve all sketch paths from the repository, even when invoked elsewhere.
+    os.chdir(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
     # build all variants if input not existed
     if len(sys.argv) > 1:
         build_boards = list(filter(lambda x: sys.argv[1] in x[0], all_boards))
