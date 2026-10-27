@@ -142,9 +142,6 @@ void HardwareSerial::begin(unsigned long baud, byte config)
   uint32_t stopbits = 0;
   uint32_t parity = 0;
 
-  _baud = baud;
-  _config = config;
-
 #if ENABLE_RX_BUFFER
   // Clear buffers for all CH32 series MCUs
   _rx_buffer_head = 0;
