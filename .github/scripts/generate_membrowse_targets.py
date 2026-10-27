@@ -47,7 +47,7 @@ def generate_targets(config: dict) -> list[dict]:
             example_path = ROOT / example
             if example_path.is_dir():
                 compile_path = example
-                sketch = sketch_name(example)
+                sketch = example_path.name
             elif example_path.is_file() and example_path.suffix.lower() == ".ino":
                 allowed_roots = (ROOT / "libraries", ROOT / "ci" / "libraries")
                 if not any(example_path.is_relative_to(root) for root in allowed_roots):
