@@ -168,11 +168,7 @@ public:
 #endif
 
   private:
-    uint8_t _config;
-    unsigned long _baud;
     void init(PinName _rx, PinName _tx, PinName _rts = NC, PinName _cts = NC);
-    static void rx_irq_enable(USART_TypeDef *u, IRQn_Type irq);
-    static void rx_irq_disable(USART_TypeDef *u, IRQn_Type irq);
 };
 
 // Preserve SerialN.method(), &SerialN and Stream/Print references while creating
