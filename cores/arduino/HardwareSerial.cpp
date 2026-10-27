@@ -335,59 +335,13 @@ void HardwareSerial::begin(unsigned long baud, byte config)
 void HardwareSerial::end()
 {
 #if ENABLE_RX_BUFFER
-#if defined(USART1) && defined(HAVE_HWSERIAL1)
-    serial1_rx_instance = this;
-    rx_irq_disable(USART1, USART1_IRQn);
-    #endif
-  } 
-#if defined(USART2) && defined(HAVE_HWSERIAL2)
-  else if (_serial.uart == USART2) {
-    serial2_rx_instance = this;
-    rx_irq_disable(USART2, USART2_IRQn);
+  for (const RxMap &m : rx_map) {
+    if (m.uart == _serial.uart) {
+      *m.slot = NULL;
+      rx_irq_disable(m.uart, m.irq);
+      break;
+    }
   }
-#endif
-#if defined(USART3) && defined(HAVE_HWSERIAL3)
-  else if (_serial.uart == USART3) {
-    serial3_rx_instance = this;
-    rx_irq_disable(USART3, USART3_IRQn);
-  }
-#endif
-#if defined(USART4) && defined(HAVE_HWSERIAL4)
-  else if (_serial.uart == USART4) {
-    serial4_rx_instance = this;
-    rx_irq_disable(USART4, USART4_IRQn);
-  }
-#endif
-#if defined(UART4) && defined(HAVE_HWSERIAL4) && !defined(USART4)
-  else if (_serial.uart == UART4) {
-    serial4_rx_instance = this;
-    rx_irq_disable(UART4, UART4_IRQn);
-  }
-#endif
-#if defined(UART5) && defined(HAVE_HWSERIAL5)
-  else if (_serial.uart == UART5) {
-    serial5_rx_instance = this;
-    rx_irq_disable(UART5, UART5_IRQn);
-  }
-#endif
-#if defined(UART6) && defined(HAVE_HWSERIAL6)
-  else if (_serial.uart == UART6) {
-    serial6_rx_instance = this;
-    rx_irq_disable(UART6, UART6_IRQn);
-  }
-#endif
-#if defined(UART7) && defined(HAVE_HWSERIAL7)
-  else if (_serial.uart == UART7) {
-    serial7_rx_instance = this;
-    rx_irq_disable(UART7, UART7_IRQn);
-  }
-#endif
-#if defined(UART8) && defined(HAVE_HWSERIAL8)
-  else if (_serial.uart == UART8) {
-    serial8_rx_instance = this;
-    rx_irq_disable(UART8, UART8_IRQn);
-  }
-#endif
 
   // Clear buffers
   _rx_buffer_head = _rx_buffer_tail;
