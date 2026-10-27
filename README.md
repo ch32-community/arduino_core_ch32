@@ -43,7 +43,7 @@ The original core was published by WCH ([openwch/arduino_core_ch32](https://gith
    https://github.com/ch32-community/board_manager_files/raw/main/package_ch32v_index.json
    ```
 
-3. Open **Tools → Board → Boards Manager**, search for **wch**, and click **Install**.
+3. Open **Tools → Board → Boards Manager**, search for **ch32**, and click **Install**.
 4. Pick your board under **Tools → Board**, plug in a WCH-LinkE, and hit **Upload**.
 
 Linux and macOS need a one-time extra step. See [Platform setup](#-platform-setup).

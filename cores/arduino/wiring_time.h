@@ -56,36 +56,43 @@ extern uint32_t micros(void) ;
 extern void delay(uint32_t ms) ;
 
 /**
- * \brief Pauses the program for the amount of time (in microseconds) specified as parameter.
+ * \brief Busy-waits for a short interval.
  *
- * \param us the number of microseconds to pause (uint32_t)
+ * \param us - Delay in microseconds, from 0 through 20000 inclusive
+ *
+ * For longer waits, use delay(), or use millis()/micros() to schedule work.
+ * Timing is not guaranteed for values above 20000 (ie. 20 ms).
+ * Interrupt handling can extend the actual delay.
  */
 
 #ifndef CH32V10x
 static inline void delayMicroseconds(uint32_t) __attribute__((always_inline, unused));
 static inline void delayMicroseconds(uint32_t us)
 {
-  __IO uint64_t currentTicks = SysTick->CNT;
-  /* Number of ticks per millisecond */
-  uint64_t tickPerMs = SysTick->CMP + 1;
-  /* Number of ticks to count */
-  uint64_t nbTicks = ((us - ((us > 0) ? 1 : 0)) * tickPerMs) / 1000;
-  /* Number of elapsed ticks */
-  uint64_t elapsedTicks = 0;
-  __IO uint64_t oldTicks = currentTicks;
+  // MxRD 250708: a uint64_t division causes need for __udivdi3, which is quite large (more than 1KB)
+  //      SysTick->CMP and CNT are 32-bit values, let's try to avoid 64 bit divisions to minimize Flash usage
+  //      (This might cause smaller roll-over, but who cares...)
+  // NOTE: 64 bit divisions are also used by micros() in clock.c
+  // NOTE 2: delayMicroseconds() is blocking and doesn't call yield(). It should not be used for long durations. 
+  //         For ESP8266 the guideline is <20ms; ESP32 <10ms; piPico <16ms; STM32 <16.384ms.
+  __IO uint32_t  currentTicks = SysTick->CNT;
+  // Number of ticks per millisecond, eg. 48000 for 48MHz 
+  uint32_t  tickPerMs = SysTick->CMP + 1;
+  // Number of ticks to spend in the busy-loop 
+  // uint32_t  nbTicks = ((us - ((us > 0) ? 1 : 0)) * tickPerMs) / 1000U;
+  uint32_t  nbTicks = ((us - ((us > 0) ? 1 : 0)) * (tickPerMs/(tickPerMs>=1000U?1000U:1)) / (tickPerMs>=1000U?1:1000U) ); // Dividing first sets back any overflow, but for LSI tickPerMs could be < 1000 (<1MHz). 
+  // Number of elapsed ticks (incremented in the do-while loop).
+  uint32_t  elapsedTicks = 0;
+  __IO uint32_t oldTicks = currentTicks;
   do {
     currentTicks = SysTick->CNT;
-    // elapsedTicks += (oldTicks < currentTicks) ? tickPerMs + oldTicks - currentTicks :
-    //                 oldTicks - currentTicks;
-    
-    //increment
-    elapsedTicks += (oldTicks <= currentTicks) ? currentTicks - oldTicks :
-                     tickPerMs - oldTicks + currentTicks;
+    elapsedTicks += (oldTicks <= currentTicks) ? currentTicks - oldTicks : tickPerMs - oldTicks + currentTicks;
 
     oldTicks = currentTicks;
   } while (nbTicks > elapsedTicks);  
 }
 #else
+  // MxRD 261020: TODO? Same 64->32 bit optimization for CH32V10x?
 #define SYSTICK_CNTL    (0xE000F004)   
 #define SYSTICK_CNTH    (0xE000F008)
 #define SYSTICK_CMPL    (0xE000F00C)
@@ -115,8 +122,7 @@ static inline void delayMicroseconds(uint32_t us)
   } while (nbTicks > elapsedTicks);  
 }
 
-#endif
-
+#endif  // CH32V10x
 
 
 #ifdef __cplusplus

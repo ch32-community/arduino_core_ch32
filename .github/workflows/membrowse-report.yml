@@ -20,11 +20,16 @@ jobs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7
 
-      - name: Load target matrix
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.13'
+
+      - name: Load MCU matrix
         id: set-matrix
-        run: echo "matrix=$(jq -c '.' .github/membrowse-targets.json)" >> $GITHUB_OUTPUT
+        run: python3 .github/scripts/generate_membrowse_targets.py --mcu-matrix
 
   analyze:
     needs: load-targets
@@ -33,10 +38,10 @@ jobs:
       fail-fast: false
       matrix:
         include: ${{ fromJson(needs.load-targets.outputs.matrix) }}
-
+    name: MemBrowse (${{ matrix.mcu }})
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7
         with:
           fetch-depth: 2
           submodules: recursive
@@ -46,22 +51,8 @@ jobs:
         with:
           python-version: '3.13'
 
-      - name: Install packages
-        run: ${{ matrix.setup_cmd }}
-
-      - name: Build
-        run: ${{ matrix.build_cmd }}
-
-      - name: Run MemBrowse analysis
-        uses: membrowse/membrowse-action@v1
-        with:
-          target_name: ${{ matrix.target_name }}
-          elf: ${{ matrix.elf }}
-          ld: ${{ matrix.ld }}
-          map_file: ${{ matrix.map_file }}
-          linker_vars: ${{ matrix.linker_vars }}
-          api_key: ${{ secrets.MEMBROWSE_API_KEY }}
-          api_url: ${{ vars.MEMBROWSE_API_URL }}
-          verbose: INFO
-          # Uncomment to allow CI to pass even when memory budgets are exceeded
-          # dont_fail_on_alerts: true
+      - name: Build and analyze MCU targets
+        run: python3 .github/scripts/run_membrowse_targets.py --mcu "${{ matrix.mcu }}"
+        env:
+          MEMBROWSE_API_KEY: ${{ secrets.MEMBROWSE_API_KEY }}
+          MEMBROWSE_API_URL: ${{ vars.MEMBROWSE_API_URL }}

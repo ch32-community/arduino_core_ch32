@@ -37,11 +37,13 @@ void GPIO_DeInit(GPIO_TypeDef *GPIOx)
         RCC_PB2PeriphResetCmd(RCC_PB2Periph_GPIOA, ENABLE);
         RCC_PB2PeriphResetCmd(RCC_PB2Periph_GPIOA, DISABLE);
     }
+#if defined(GPIOB_BASE) // MxRD 250625: V002 and V004 have no port B
     else if(GPIOx == GPIOB)
     {
         RCC_PB2PeriphResetCmd(RCC_PB2Periph_GPIOB, ENABLE);
         RCC_PB2PeriphResetCmd(RCC_PB2Periph_GPIOB, DISABLE);
     }
+#endif // #if defined(GPIOB_BASE)
     else if(GPIOx == GPIOC)
     {
         RCC_PB2PeriphResetCmd(RCC_PB2Periph_GPIOC, ENABLE);
@@ -473,7 +475,12 @@ void GPIO_IPD_Unused(void)
     chip =  *( uint32_t * )0x1FFFF704 & (~0x000000F0);
     switch(chip)
     {
-        case 0x00630600:     //CH32V006F8P
+// MxRD 261019: Not having run-time cases for things definable at compiletime will save valuable flash (about 500 bytes on V002A4)
+// Note that according to Reference Manual p1 fig.1-1, the V002 has no port GPIOB, so that init can be omitted along with everything GPIOB_BASE
+// (location of GPIOB_BASE (PB2PERIPH_BASE+0x0C00) is marked RESERVED in the RM p9. for V002 and V004
+#if defined(CH32V006)
+        case 0x00630600:     //CH32V006F8P6
+        case 0x00620600:     //CH32V006F8U6
         {
             GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0|GPIO_Pin_3|GPIO_Pin_5\
                                          |GPIO_Pin_6|GPIO_Pin_7;
@@ -486,7 +493,8 @@ void GPIO_IPD_Unused(void)
             GPIO_Init(GPIOB, &GPIO_InitStructure);
             break;
         }
-        case 0x00620600:     //CH32V006F8U
+/* identical to 0x00630600:     //CH32V006F8P6
+        case 0x00620600:     //CH32V006F8U6
         {
             GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0|GPIO_Pin_3|GPIO_Pin_5\
                                          |GPIO_Pin_6|GPIO_Pin_7;
@@ -499,7 +507,8 @@ void GPIO_IPD_Unused(void)
             GPIO_Init(GPIOB, &GPIO_InitStructure);
             break;
         }
-        case 0x00610600:     //CH32V006E8R
+*/
+        case 0x00610600:     //CH32V006E8R6
         {
             GPIO_InitStructure.GPIO_Pin = GPIO_Pin_7;
             GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPD;
@@ -530,12 +539,8 @@ void GPIO_IPD_Unused(void)
         {
             break;
         }
-
-        case 0x00720600:     //CH32V007K8U
-        {
-            break;
-        }
-        case 0x00710600:     //CH32V007E8R
+#elif defined(CH32V007_M007)
+        case 0x00720600:     //CH32V007F8U6
         {
             GPIO_InitStructure.GPIO_Pin = GPIO_Pin_7;
             GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPD;
@@ -594,8 +599,8 @@ void GPIO_IPD_Unused(void)
             GPIO_Init(GPIOC, &GPIO_InitStructure);
             break;
         }
-
-        case 0x00530600:     //CH32V005D6U
+#elif defined(CH32V005)
+        case 0x00530600:     //CH32V005D6U6
         {
             GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0|GPIO_Pin_3|GPIO_Pin_5\
                                          |GPIO_Pin_6;
@@ -613,7 +618,8 @@ void GPIO_IPD_Unused(void)
             GPIO_Init(GPIOD, &GPIO_InitStructure);
             break;
         }
-        case 0x00520600:     //CH32V005F6P
+        case 0x00520600:     //CH32V005F6P6
+        case 0x00510600:     //CH32V005F6U6
         {
             GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0|GPIO_Pin_3|GPIO_Pin_5\
                                          |GPIO_Pin_6;
@@ -624,7 +630,8 @@ void GPIO_IPD_Unused(void)
             GPIO_Init(GPIOB, &GPIO_InitStructure);
             break;
         }
-        case 0x00510600:     //CH32V005F6U
+/* identical to 0x00520600:     //CH32V005F6P6
+        case 0x00510600:     //CH32V005F6U6
         {
             GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0|GPIO_Pin_3|GPIO_Pin_5\
                                          |GPIO_Pin_6;
@@ -635,25 +642,30 @@ void GPIO_IPD_Unused(void)
             GPIO_Init(GPIOB, &GPIO_InitStructure);
             break;
         }
-        case 0x00500600:     //CH32V005E6R
+*/
+        case 0x00500600:     //CH32V005E6R6
         {
             GPIO_InitStructure.GPIO_Pin = GPIO_Pin_3|GPIO_Pin_6|GPIO_Pin_7;
             GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPD;
             GPIO_Init(GPIOC, &GPIO_InitStructure);
             break;
         }
-
-        case 0x00240600:     //CH32V002J4M
+#elif defined(CH32V002)
+        // MxRD 2619=019: TODO: possible further optimization by checking for define CH32V002xx and perhaps by combining parts
+        // CH32V002J4M6, CH32V002D4U6, CH32V002A4M6 have less pins and thus need additional and inits for GPIOC and GPIOD, but are identical for GPIOA and GPIOB
+        case 0x00240600:     //CH32V002J4M6
         {
             GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0|GPIO_Pin_3|GPIO_Pin_4\
                                          |GPIO_Pin_5|GPIO_Pin_6|GPIO_Pin_7;
             GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPD;
             GPIO_Init(GPIOA, &GPIO_InitStructure);
+#if defined(GPIOB_BASE) // MxRD 250625: V002 and V004 have no port B
             GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0|GPIO_Pin_1|GPIO_Pin_2\
                                          |GPIO_Pin_3|GPIO_Pin_4|GPIO_Pin_5\
                                          |GPIO_Pin_6;
             GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPD;
             GPIO_Init(GPIOB, &GPIO_InitStructure);
+#endif
             GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0|GPIO_Pin_3|GPIO_Pin_5\
                                          |GPIO_Pin_6|GPIO_Pin_7;
             GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPD;
@@ -664,18 +676,19 @@ void GPIO_IPD_Unused(void)
             GPIO_Init(GPIOD, &GPIO_InitStructure);
             break;
         }
-
-        case 0x00230600:     //CH32V002D4U
+        case 0x00230600:     //CH32V002D4U6
         {
             GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0|GPIO_Pin_3|GPIO_Pin_4\
                                          |GPIO_Pin_5|GPIO_Pin_6|GPIO_Pin_7;
             GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPD;
             GPIO_Init(GPIOA, &GPIO_InitStructure);
+#if defined(GPIOB_BASE) // MxRD 250625: V002 and V004 have no port B
             GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0|GPIO_Pin_1|GPIO_Pin_2\
                                          |GPIO_Pin_3|GPIO_Pin_4|GPIO_Pin_5\
                                          |GPIO_Pin_6;
             GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPD;
             GPIO_Init(GPIOB, &GPIO_InitStructure);
+#endif
             GPIO_InitStructure.GPIO_Pin = GPIO_Pin_1|GPIO_Pin_2|GPIO_Pin_5;
             GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPD;
             GPIO_Init(GPIOC, &GPIO_InitStructure);
@@ -691,11 +704,13 @@ void GPIO_IPD_Unused(void)
                                          |GPIO_Pin_5|GPIO_Pin_6|GPIO_Pin_7;
             GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPD;
             GPIO_Init(GPIOA, &GPIO_InitStructure);
+#if defined(GPIOB_BASE) // MxRD 250625: V002 and V004 have no port B
             GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0|GPIO_Pin_1|GPIO_Pin_2\
                                          |GPIO_Pin_3|GPIO_Pin_4|GPIO_Pin_5\
                                          |GPIO_Pin_6;
             GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPD;
             GPIO_Init(GPIOB, &GPIO_InitStructure);
+#endif
             GPIO_InitStructure.GPIO_Pin = GPIO_Pin_5;
             GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPD;
             GPIO_Init(GPIOC, &GPIO_InitStructure);
@@ -704,7 +719,24 @@ void GPIO_IPD_Unused(void)
             GPIO_Init(GPIOD, &GPIO_InitStructure);
             break;
         }
-        case 0x00210600:     //CH32V002F4U
+        case 0x00210600:     //CH32V002F4U6
+        case 0x00200600:     //CH32V002F4P6
+        {
+            GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0|GPIO_Pin_3|GPIO_Pin_4\
+                                         |GPIO_Pin_5|GPIO_Pin_6|GPIO_Pin_7;
+            GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPD;
+            GPIO_Init(GPIOA, &GPIO_InitStructure);
+#if defined(GPIOB_BASE) // MxRD 250625: V002 and V004 have no port B
+            GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0|GPIO_Pin_1|GPIO_Pin_2\
+                                         |GPIO_Pin_3|GPIO_Pin_4|GPIO_Pin_5\
+                                         |GPIO_Pin_6;
+            GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPD;
+            GPIO_Init(GPIOB, &GPIO_InitStructure);
+#endif
+            break;
+        }
+/* identical to CH32V002F4U6
+        case 0x00200600:     //CH32V002F4P6
         {
             GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0|GPIO_Pin_3|GPIO_Pin_4\
                                          |GPIO_Pin_5|GPIO_Pin_6|GPIO_Pin_7;
@@ -717,30 +749,21 @@ void GPIO_IPD_Unused(void)
             GPIO_Init(GPIOB, &GPIO_InitStructure);
             break;
         }
-        case 0x00200600:     //CH32V002F4P
-        {
-            GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0|GPIO_Pin_3|GPIO_Pin_4\
-                                         |GPIO_Pin_5|GPIO_Pin_6|GPIO_Pin_7;
-            GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPD;
-            GPIO_Init(GPIOA, &GPIO_InitStructure);
-            GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0|GPIO_Pin_1|GPIO_Pin_2\
-                                         |GPIO_Pin_3|GPIO_Pin_4|GPIO_Pin_5\
-                                         |GPIO_Pin_6;
-            GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPD;
-            GPIO_Init(GPIOB, &GPIO_InitStructure);
-            break;
-        }
-        case 0x00400600:     //CH32V004F6P
+*/
+#elif defined(CH32V004)
+        case 0x00400600:     //CH32V004F6P1
         {
             GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0|GPIO_Pin_3|GPIO_Pin_5\
                                          |GPIO_Pin_6|GPIO_Pin_7;
             GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPD;
             GPIO_Init(GPIOA, &GPIO_InitStructure);
+#if defined(GPIOB_BASE) // MxRD 250625: V002 and V004 have no port B
             GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0|GPIO_Pin_1|GPIO_Pin_2\
                                          |GPIO_Pin_3|GPIO_Pin_4|GPIO_Pin_5\
                                          |GPIO_Pin_6;
             GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPD;
             GPIO_Init(GPIOB, &GPIO_InitStructure);
+#endif
             break;
         }
         case 0x00410600:     //CH32V004F6U
@@ -749,14 +772,16 @@ void GPIO_IPD_Unused(void)
                                          |GPIO_Pin_6|GPIO_Pin_7;
             GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPD;
             GPIO_Init(GPIOA, &GPIO_InitStructure);
+#if defined(GPIOB_BASE) // MxRD 250625: V002 and V004 have no port B
             GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0|GPIO_Pin_1|GPIO_Pin_2\
                                          |GPIO_Pin_3|GPIO_Pin_4|GPIO_Pin_5\
                                          |GPIO_Pin_6;
             GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPD;
             GPIO_Init(GPIOB, &GPIO_InitStructure);
+#endif
             break;
         }
-
+#endif //  defined(CH32VM00X-variant)
         default:
         {
             break;

@@ -21,7 +21,7 @@ jobs:
       pull-requests: write
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7
 
       - name: Post combined PR comment
         if: ${{ env.MEMBROWSE_API_KEY != '' }}
@@ -30,6 +30,7 @@ jobs:
           api_key: ${{ secrets.MEMBROWSE_API_KEY }}
           commit: ${{ github.event.workflow_run.head_sha }}
           api_url: ${{ vars.MEMBROWSE_API_URL }}
+          comment_template: .github/membrowse_pr_message.j2
         env:
           MEMBROWSE_API_KEY: ${{ secrets.MEMBROWSE_API_KEY }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

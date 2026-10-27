@@ -11,6 +11,7 @@
  *******************************************************************************
  */
 #include "core_debug.h"
+#include "clock.h"  // MxRD 261019: for definition of extern uint64_t GetTick(void);
 #include "uart.h"
 #include "Arduino.h"
 #include "PinAF_ch32yyxx.h"
@@ -88,8 +89,6 @@ static serial_t serial_debug =
   .pin_cts = NC,
   .index = UART_NUM,
 };
-
-extern uint64_t GetTick(void);
 
 /* Aim of the function is to get serial_s pointer using huart pointer */
 /* Highly inspired from magical linux kernel's "container_of" */
@@ -562,14 +561,7 @@ int uart_putc(serial_t *obj, unsigned char c)
 
 
 
-
-
-
-
 #endif /* UART_MODULE_ENABLED  && !UART_MODULE_ONLY */
 #ifdef __cplusplus
 }
 #endif
-
-
-
