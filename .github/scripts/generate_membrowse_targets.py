@@ -12,12 +12,10 @@ ROOT = Path(__file__).resolve().parents[2]
 CONFIG_PATH = ROOT / ".github" / "membrowse-targets.json"
 
 
-def sketch_name(example: str) -> str:
-    return Path(example).name
-
-
 def example_is_skipped(example: str, skip_keys: list[str]) -> bool:
     sketch_dir = ROOT / example
+    if sketch_dir.is_file():
+        sketch_dir = sketch_dir.parent
     skip_keys = set(skip_keys)
 
     if any((sketch_dir / f".{key}.test.skip").exists() for key in skip_keys):
@@ -47,10 +45,22 @@ def generate_targets(config: dict) -> list[dict]:
     for mcu in config["mcus"]:
         for example in config["examples"]:
             example_path = ROOT / example
-            if not example_path.is_dir():
-                raise ValueError(f"Example directory does not exist: {example}")
+            if example_path.is_dir():
+                compile_path = example
+                sketch = example_path.name
+            elif example_path.is_file() and example_path.suffix.lower() == ".ino":
+                allowed_roots = (ROOT / "libraries", ROOT / "ci" / "libraries")
+                if not any(example_path.is_relative_to(root) for root in allowed_roots):
+                    raise ValueError(
+                        f"Sketch file must be under libraries or ci/libraries: {example}"
+                    )
+                compile_path = example
+                sketch = example_path.stem
+            else:
+                raise ValueError(
+                    f"Example must be an existing directory or .ino file: {example}"
+                )
 
-            sketch = sketch_name(example)
             skip_keys = mcu.get("skip_keys", [mcu["name"]])
             if example_is_skipped(example, skip_keys):
                 continue
@@ -63,7 +73,7 @@ def generate_targets(config: dict) -> list[dict]:
                 'mkdir -p "$CORE_DIR/0.0.0" && '
                 'rsync -a --exclude=.git --exclude=build ./ "$CORE_DIR/0.0.0/" && '
                 f'arduino-cli compile --fqbn {mcu["fqbn"]} '
-                f'--build-path "$PWD/{build_dir}" {example}'
+                f'--build-path "$PWD/{build_dir}" {compile_path}'
             )
             targets.append(
                 {
