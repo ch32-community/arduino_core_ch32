@@ -152,7 +152,13 @@ if __name__ == '__main__':
     for library_dir in ('libraries', os.path.join('ci', 'libraries')):
         if os.path.isdir(library_dir):
             all_examples.extend(
-                glob.iglob(os.path.join(library_dir, '**', '*.ino'), recursive=True)
+                sketch for sketch in glob.iglob(
+                    os.path.join(library_dir, '**', '*.ino'), recursive=True
+                )
+                if (
+                    os.path.splitext(os.path.basename(sketch))[0]
+                    == os.path.basename(os.path.dirname(sketch))
+                )
             )
     all_examples.sort(key=lambda sketch: (os.path.basename(sketch).casefold(), sketch.casefold()))
 
