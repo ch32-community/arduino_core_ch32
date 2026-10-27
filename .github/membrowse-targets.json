@@ -13,7 +13,9 @@
     "libraries/Wire/examples/i2cMinimalSlave",
     "libraries/Wire/examples/i2c_scanner",
 
-    "ci/libraries/ArduinoBlinkExample/ArduinoBlinkExample.ino"
+    "ci/libraries/ArduinoBlinkExample/ArduinoBlinkExample.ino",
+    "ci/libraries/ArduinoFadeExample/ArduinoFadeExample.ino",
+    "ci/libraries/ArduinoReadAnalogVoltageExample/ArdArduinoReadAnalogVoltageExampleuinoBlinkExample.ino"
   ],
   "mcus": [
     {
