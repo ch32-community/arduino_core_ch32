@@ -77,7 +77,7 @@ _vector_base:
     .word   TIM3_IRQHandler            /* TIM3 */
 
     .option rvc;
-
+/* MxRD 250805: moved from startup_ch32x035.S to ch32x035_misc.c (see issue #204)
     .section    .text.vector_handler, "ax", @progbits
     .weak   NMI_Handler                /* NMI */
     .weak   HardFault_Handler          /* Hard Fault */
@@ -170,6 +170,7 @@ TIM2_CC_IRQHandler:  1:  j 1b
 TIM2_TRG_COM_IRQHandler:  1:  j 1b
 TIM2_BRK_IRQHandler:  1:  j 1b
 TIM3_IRQHandler:  1:  j 1b
+*/
 
 	.section	.text.handle_reset,"ax",@progbits
 	.weak	handle_reset
