@@ -31,6 +31,12 @@
 #if defined(UART_MODULE_ENABLED) && !defined(UART_MODULE_ONLY)
 
 #if ENABLE_RX_BUFFER
+  struct RxMap {
+    USART_TypeDef *uart;
+    IRQn_Type irq;
+    HardwareSerial **slot;   // where to store 'this'
+  };
+
   #define RX_ENTRY(P, N) { P, P##_IRQn, &serial##N##_rx_instance },
 
   static const RxMap rx_map[] = {
