@@ -31,45 +31,6 @@
 #if defined(UART_MODULE_ENABLED) && !defined(UART_MODULE_ONLY)
 
 #if ENABLE_RX_BUFFER
-  struct RxMap {
-    USART_TypeDef *uart;
-    IRQn_Type irq;
-    HardwareSerial **slot;   // where to store 'this'
-  };
-
-  #define RX_ENTRY(P, N) { P, P##_IRQn, &serial##N##_rx_instance },
-
-  static const RxMap rx_map[] = {
-  #if defined(USART1) && defined(HAVE_HWSERIAL1)
-    RX_ENTRY(USART1, 1)
-  #endif
-  #if defined(USART2) && defined(HAVE_HWSERIAL2)
-    RX_ENTRY(USART2, 2)
-  #endif
-  #if defined(USART3) && defined(HAVE_HWSERIAL3)
-    RX_ENTRY(USART3, 3)
-  #endif
-  #if defined(USART4) && defined(HAVE_HWSERIAL4)
-    RX_ENTRY(USART4, 4)
-  #endif
-  #if defined(UART4) && defined(HAVE_HWSERIAL4) && !defined(USART4)
-    RX_ENTRY(UART4, 4)
-  #endif
-  #if defined(UART5) && defined(HAVE_HWSERIAL5)
-    RX_ENTRY(UART5, 5)
-  #endif
-  #if defined(UART6) && defined(HAVE_HWSERIAL6)
-    RX_ENTRY(UART6, 6)
-  #endif
-  #if defined(UART7) && defined(HAVE_HWSERIAL7)
-    RX_ENTRY(UART7, 7)
-  #endif
-  #if defined(UART8) && defined(HAVE_HWSERIAL8)
-    RX_ENTRY(UART8, 8)
-  #endif
-  };
-  #undef RX_ENTRY
-
 // Only begin() references the receive routine. The vector wrappers use this
 // zero-initialized callback, so unused serial builds can discard RX processing.
 typedef void (*SerialRxHandler)(USART_TypeDef *, HardwareSerial *);
@@ -139,6 +100,45 @@ static void uart_rx_isr(USART_TypeDef *uart, HardwareSerial *obj) {
 #if defined(UART8) && defined(HAVE_HWSERIAL8)
   DEFINE_UART_RX_ISR(UART8_IRQHandler, UART8, serial8_rx_instance);
 #endif
+
+struct RxMap {
+  USART_TypeDef *uart;
+  IRQn_Type irq;
+  HardwareSerial * volatile *slot;   // where to store 'this'
+};
+
+#define RX_ENTRY(P, N) { P, P##_IRQn, &serial##N##_rx_instance },
+
+static const RxMap rx_map[] = {
+#if defined(USART1) && defined(HAVE_HWSERIAL1)
+  RX_ENTRY(USART1, 1)
+#endif
+#if defined(USART2) && defined(HAVE_HWSERIAL2)
+  RX_ENTRY(USART2, 2)
+#endif
+#if defined(USART3) && defined(HAVE_HWSERIAL3)
+  RX_ENTRY(USART3, 3)
+#endif
+#if defined(USART4) && defined(HAVE_HWSERIAL4)
+  RX_ENTRY(USART4, 4)
+#endif
+#if defined(UART4) && defined(HAVE_HWSERIAL4) && !defined(USART4)
+  RX_ENTRY(UART4, 4)
+#endif
+#if defined(UART5) && defined(HAVE_HWSERIAL5)
+  RX_ENTRY(UART5, 5)
+#endif
+#if defined(UART6) && defined(HAVE_HWSERIAL6)
+  RX_ENTRY(UART6, 6)
+#endif
+#if defined(UART7) && defined(HAVE_HWSERIAL7)
+  RX_ENTRY(UART7, 7)
+#endif
+#if defined(UART8) && defined(HAVE_HWSERIAL8)
+  RX_ENTRY(UART8, 8)
+#endif
+};
+#undef RX_ENTRY
 
 #ifdef __cplusplus
 }
