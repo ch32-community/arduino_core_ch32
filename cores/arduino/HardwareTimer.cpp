@@ -624,7 +624,7 @@ void HardwareTimer::TIM_IC_ConfigChannel_Static(TIM_TypeDef *tim, TIM_ICInitType
     TIM_ICInit(tim, sConfig);
 
     uint8_t shift = (Channel & 0x04U) << 1;
-    __IO uint16_t *ccmr = (Channel & 0x08U) ? &TIMx->CHCTLR2 : &TIMx->CHCTLR1;
+    __IO uint16_t *ccmr = (Channel & 0x08U) ? &tim->CHCTLR2 : &tim->CHCTLR1;
     uint16_t mask = (uint16_t)(TIM_IC1PSC << shift);
 
     *ccmr = (uint16_t)((*ccmr & ~mask) | (TIM_ICPSC << shift));
