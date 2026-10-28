@@ -600,26 +600,23 @@ void HardwareTimer::TIM_OC_PreloadConfig_Static(TIM_TypeDef *htim, uint32_t Chan
 
 /**
   * @brief  Configure input capture channels
-  * @param   timerX, TIM_ICInitTypeDef,  Arduino channel [1..4] 
+  * @param  tim: timer instance to configure
+  * @param  sConfig: input capture configuration
+  * @param  Channel: timer channel (TIM_Channel_1 through TIM_Channel_4)
   * @retval None
   */
 void HardwareTimer::TIM_IC_ConfigChannel_Static(TIM_TypeDef *tim, TIM_ICInitTypeDef *sConfig, uint32_t Channel)
 {
-  #ifdef ENSURE_COMPATIBILITY
-    sConfig->TIM_Channel = Channel;
-    TIM_ICInit(tim,  sConfig);
-  #else
-    if(TIM_ICInitStruct->TIM_Channel == TIM_Channel_1)
-      TIM_TI1_Config(tim, TIM_ICInitStruct->TIM_ICPolarity, TIM_ICInitStruct->TIM_ICSelection, TIM_ICInitStruct->TIM_ICFilter);
-    else if(TIM_ICInitStruct->TIM_Channel == TIM_Channel_2)
-      TIM_TI2_Config(tim, TIM_ICInitStruct->TIM_ICPolarity, TIM_ICInitStruct->TIM_ICSelection, TIM_ICInitStruct->TIM_ICFilter);
-    else if(TIM_ICInitStruct->TIM_Channel == TIM_Channel_3)
-      TIM_TI3_Config(tim, TIM_ICInitStruct->TIM_ICPolarity, TIM_ICInitStruct->TIM_ICSelection, TIM_ICInitStruct->TIM_ICFilter);
-    else
-      TIM_TI4_Config(tim, TIM_ICInitStruct->TIM_ICPolarity, TIM_ICInitStruct->TIM_ICSelection, TIM_ICInitStruct->TIM_ICFilter);
-  #endif
+  if(tim == nullptr || sConfig == nullptr || Channel > TIM_Channel_4 || (Channel & 0x03U))
+    return;
 
-  TIM_SetICPrescaler(tim, sConfig->TIM_ICPrescaler, Channel);
+  sConfig->TIM_Channel = Channel;
+  #ifdef ENSURE_COMPATIBILITY
+    TIM_ICInit(tim,  sConfig); /* TIM_ICInit already calls TIM_SetICxPrescaler so no need to call it separately */
+  #else
+    TIM_TI_Config(tim, sConfig, Channel);
+    TIM_SetICPrescaler(tim, sConfig->TIM_ICPrescaler, Channel);
+  #endif
 }
 
 
@@ -1623,6 +1620,36 @@ void HardwareTimer::timerHandleDeinit()
     TIM_DeInit(_timerObj.handle.Instance);
 }
 
+/**
+  * @brief  Configure input selection, filter and polarity for one capture channel
+  * @param  TIMx: Timer peripheral to configure.
+  * @param  sConfig: Input capture configuration.
+  * @param  Channel: TIM_Channel_1 through TIM_Channel_4.
+  * @note   Disables the selected capture channel while updating its input
+  *         configuration, then enables it. Null pointers or invalid channel
+  *         constants leave the timer unchanged.
+  */
+void HardwareTimer::TIM_TI_Config(TIM_TypeDef *TIMx, const TIM_ICInitTypeDef *sConfig, uint32_t Channel) const
+{
+  if(TIMx == nullptr || sConfig == nullptr || Channel > TIM_Channel_4 || (Channel & 0x03U))
+    return;
+
+  // CHCTLR fields use byte offsets 0/8; CCER fields use bit offsets 0/4/8/12.
+  const uint8_t shift = (Channel & 0x04U) << 1;
+  __IO uint16_t *const reg = (Channel <= TIM_Channel_2) ? &TIMx->CHCTLR1 : &TIMx->CHCTLR2;
+  const uint16_t enableMask = TIM_CC1E << Channel;
+  const uint16_t polarityMask = TIM_CC1P << Channel;
+  const uint16_t inputMask = (TIM_CC1S | TIM_IC1F) << shift;
+
+  // Disable capture before changing the input, then enable it with the new polarity.
+  TIMx->CCER &= (uint16_t)~enableMask;
+  uint16_t input = *reg;
+  uint16_t ccer = TIMx->CCER;
+  input = (uint16_t)((input & ~inputMask) | ((sConfig->TIM_ICSelection | (sConfig->TIM_ICFilter << 4)) << shift));
+  ccer = (uint16_t)((ccer & ~polarityMask) | (sConfig->TIM_ICPolarity << Channel) | enableMask);
+  *reg = input;
+  TIMx->CCER = ccer;
+}
 
 /**
   * @brief  Set the input capture prescaler for TIM_Channel_1 through TIM_Channel_4
