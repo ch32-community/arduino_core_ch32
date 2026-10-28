@@ -26,6 +26,8 @@ The original core was published by WCH ([openwch/arduino_core_ch32](https://gith
 
 ### What's inside
 
+For timer RAM and flash options, see [HardwareTimer memory configuration](docs/HardwareTimer-memory.md).
+
 | Component | What it does |
 | :-- | :-- |
 | [Arduino core](https://github.com/ch32-community/arduino_core_ch32) | Arduino API implementation, variants and libraries for CH32 |
