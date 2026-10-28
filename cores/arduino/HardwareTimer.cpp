@@ -361,25 +361,35 @@ int HardwareTimer::getLLChannel(uint32_t channel)
   */
 int HardwareTimer::getIT(uint32_t channel)
 {
-  uint32_t return_value;
+  #ifndef ENSURE_COMPATIBILITY
+    uint32_t return_value;
 
-  switch (channel) {
-    case 1:
-      return_value = TIM_IT_CC1;
-      break;
-    case 2:
-      return_value = TIM_IT_CC2;
-      break;
-    case 3:
-      return_value = TIM_IT_CC3;
-      break;
-    case 4:
-      return_value = TIM_IT_CC4;
-      break;
-    default:
-      return_value = -1;
-  }
-  return return_value;
+    switch (channel) {
+      case 1:
+        return_value = TIM_IT_CC1;
+        break;
+      case 2:
+        return_value = TIM_IT_CC2;
+        break;
+      case 3:
+        return_value = TIM_IT_CC3;
+        break;
+      case 4:
+        return_value = TIM_IT_CC4;
+        break;
+      default:
+        return_value = -1;
+    }
+    return return_value;
+  #else
+    static_assert(TIM_IT_CC2 == (TIM_IT_CC1 << 1U) &&
+                  TIM_IT_CC3 == (TIM_IT_CC2 << 1U) &&
+                  TIM_IT_CC4 == (TIM_IT_CC3 << 1U),
+                  "Capture interrupt bits changed; define ENSURE_COMPATIBILITY");
+    if(channel < 1 || channel > TIMER_CHANNELS)
+      return -1;
+    return TIM_IT_CC1 << (channel - 1U);
+  #endif
 }
 
 /**
