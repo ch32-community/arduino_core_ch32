@@ -610,13 +610,13 @@ void HardwareTimer::TIM_IC_ConfigChannel_Static(TIM_TypeDef *tim, TIM_ICInitType
     TIM_ICInit(tim,  sConfig);
   #else
     if(TIM_ICInitStruct->TIM_Channel == TIM_Channel_1)
-        TI1_Config(TIMx, TIM_ICInitStruct->TIM_ICPolarity, TIM_ICInitStruct->TIM_ICSelection, TIM_ICInitStruct->TIM_ICFilter);
+        TI1_Config(tim, TIM_ICInitStruct->TIM_ICPolarity, TIM_ICInitStruct->TIM_ICSelection, TIM_ICInitStruct->TIM_ICFilter);
     else if(TIM_ICInitStruct->TIM_Channel == TIM_Channel_2)
-        TI2_Config(TIMx, TIM_ICInitStruct->TIM_ICPolarity, TIM_ICInitStruct->TIM_ICSelection, TIM_ICInitStruct->TIM_ICFilter);
+        TI2_Config(tim, TIM_ICInitStruct->TIM_ICPolarity, TIM_ICInitStruct->TIM_ICSelection, TIM_ICInitStruct->TIM_ICFilter);
     else if(TIM_ICInitStruct->TIM_Channel == TIM_Channel_3)
-        TI3_Config(TIMx, TIM_ICInitStruct->TIM_ICPolarity, TIM_ICInitStruct->TIM_ICSelection, TIM_ICInitStruct->TIM_ICFilter);
+        TI3_Config(tim, TIM_ICInitStruct->TIM_ICPolarity, TIM_ICInitStruct->TIM_ICSelection, TIM_ICInitStruct->TIM_ICFilter);
     else
-        TI4_Config(TIMx, TIM_ICInitStruct->TIM_ICPolarity, TIM_ICInitStruct->TIM_ICSelection, TIM_ICInitStruct->TIM_ICFilter);
+        TI4_Config(tim, TIM_ICInitStruct->TIM_ICPolarity, TIM_ICInitStruct->TIM_ICSelection, TIM_ICInitStruct->TIM_ICFilter);
   #endif
 
   TIM_SetICPrescaler(tim, sConfig->TIM_ICPrescaler, Channel);
