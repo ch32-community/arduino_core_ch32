@@ -400,24 +400,33 @@ int HardwareTimer::getIT(uint32_t channel)
   */
 int HardwareTimer::getAssociatedChannel(uint32_t channel)
 {
-  int timAssociatedInputChannel = -1;
-  switch (channel) {
-    case 1:
-      timAssociatedInputChannel = 2;
-      break;
-    case 2:
-      timAssociatedInputChannel = 1;
-      break;
-    case 3:
-      timAssociatedInputChannel = 4;
-      break;
-    case 4:
-      timAssociatedInputChannel = 3;
-      break;
-    default:
-      break;
-  }
-  return timAssociatedInputChannel;
+  #if ENSURE_COMPATIBILITY
+    int timAssociatedInputChannel = -1;
+    switch (channel) {
+      case 1:
+        timAssociatedInputChannel = 2;
+        break;
+      case 2:
+        timAssociatedInputChannel = 1;
+        break;
+      case 3:
+        timAssociatedInputChannel = 4;
+        break;
+      case 4:
+        timAssociatedInputChannel = 3;
+        break;
+      default:
+        break;
+    }
+    return timAssociatedInputChannel;
+  #else
+    if(channel < 1 || channel > TIMER_CHANNELS)
+      return -1;
+
+    // Toggle the low bit of the zero-based index to exchange paired channels.
+    const uint32_t pairedChannelBit = 1U;
+    return ((channel - 1U) ^ pairedChannelBit) + 1U;
+  #endif
 }
 
 /**
