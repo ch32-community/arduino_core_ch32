@@ -590,7 +590,9 @@ void HardwareTimer::TIM_OC_PreloadConfig_Static(TIM_TypeDef *htim, uint32_t Chan
       return;
 
     __IO uint16_t *const CHCTLR_REG = (Channel <= TIM_Channel_2 ? &htim->CHCTLR1 : &htim->CHCTLR2);
-    const uint16_t preloadMask = TIM_OC1PE << ((Channel & 4U) * 2U);
+    const uint32_t highByteBitOffset = 8U;
+    const uint32_t preloadShift = (Channel & TIM_Channel_2) ? highByteBitOffset : 0U; // Channels 2 and 4 use the high byte (bit 2 of Channel is set for them)
+    const uint16_t preloadMask = TIM_OC1PE << preloadShift;
     if(state == ENABLE)
       *CHCTLR_REG |= preloadMask;
     else
