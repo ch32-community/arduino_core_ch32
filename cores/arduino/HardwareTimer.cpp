@@ -610,13 +610,13 @@ void HardwareTimer::TIM_IC_ConfigChannel_Static(TIM_TypeDef *tim, TIM_ICInitType
     TIM_ICInit(tim,  sConfig);
   #else
     if(TIM_ICInitStruct->TIM_Channel == TIM_Channel_1)
-        TI1_Config(tim, TIM_ICInitStruct->TIM_ICPolarity, TIM_ICInitStruct->TIM_ICSelection, TIM_ICInitStruct->TIM_ICFilter);
+      TIM_TI1_Config(tim, TIM_ICInitStruct->TIM_ICPolarity, TIM_ICInitStruct->TIM_ICSelection, TIM_ICInitStruct->TIM_ICFilter);
     else if(TIM_ICInitStruct->TIM_Channel == TIM_Channel_2)
-        TI2_Config(tim, TIM_ICInitStruct->TIM_ICPolarity, TIM_ICInitStruct->TIM_ICSelection, TIM_ICInitStruct->TIM_ICFilter);
+      TIM_TI2_Config(tim, TIM_ICInitStruct->TIM_ICPolarity, TIM_ICInitStruct->TIM_ICSelection, TIM_ICInitStruct->TIM_ICFilter);
     else if(TIM_ICInitStruct->TIM_Channel == TIM_Channel_3)
-        TI3_Config(tim, TIM_ICInitStruct->TIM_ICPolarity, TIM_ICInitStruct->TIM_ICSelection, TIM_ICInitStruct->TIM_ICFilter);
+      TIM_TI3_Config(tim, TIM_ICInitStruct->TIM_ICPolarity, TIM_ICInitStruct->TIM_ICSelection, TIM_ICInitStruct->TIM_ICFilter);
     else
-        TI4_Config(tim, TIM_ICInitStruct->TIM_ICPolarity, TIM_ICInitStruct->TIM_ICSelection, TIM_ICInitStruct->TIM_ICFilter);
+      TIM_TI4_Config(tim, TIM_ICInitStruct->TIM_ICPolarity, TIM_ICInitStruct->TIM_ICSelection, TIM_ICInitStruct->TIM_ICFilter);
   #endif
 
   TIM_SetICPrescaler(tim, sConfig->TIM_ICPrescaler, Channel);
@@ -1624,25 +1624,30 @@ void HardwareTimer::timerHandleDeinit()
 }
 
 
+/**
+  * @brief  Set the input capture prescaler for TIM_Channel_1 through TIM_Channel_4
+  */
 void HardwareTimer::TIM_SetICPrescaler(TIM_TypeDef *TIMx, uint16_t TIM_ICPSC, uint32_t Channel) const
 {
+  if(TIMx == nullptr || Channel > TIM_Channel_4 || (Channel & 0x03U))
+    return;
+
   #ifdef ENSURE_COMPATIBILITY
     if(Channel == TIM_Channel_1)
-      TIM_SetIC1Prescaler(tim, sConfig->TIM_ICPrescaler);
+      TIM_SetIC1Prescaler(TIMx, TIM_ICPSC);
     else if(Channel == TIM_Channel_2)
-      TIM_SetIC2Prescaler(tim, sConfig->TIM_ICPrescaler);
+      TIM_SetIC2Prescaler(TIMx, TIM_ICPSC);
     else if(Channel == TIM_Channel_3)
-      TIM_SetIC3Prescaler(tim, sConfig->TIM_ICPrescaler);
+      TIM_SetIC3Prescaler(TIMx, TIM_ICPSC);
     else /* Channel == TIM_Channel_4 */
-      TIM_SetIC4Prescaler(tim, sConfig->TIM_ICPrescaler);
+      TIM_SetIC4Prescaler(TIMx, TIM_ICPSC);
   #else
     /* Channels 1/2 are in CHCTLR1, channels 3/4 in CHCTLR2 */
-    volatile uint16_t *reg = (Channel <= TIM_Channel_2) ? &tim->CHCTLR1 : &tim->CHCTLR2;
+    __IO uint16_t *const reg = (Channel <= TIM_Channel_2) ? &TIMx->CHCTLR1 : &TIMx->CHCTLR2;
     uint8_t shift = (Channel & 0x4) << 1; // Channels 2 and 4 use the high byte (bit 2 of Channel is set for them)
-    const uint16_t TIM_ICPSC = 0x000C;    // Input capture prescaler mask
+    const uint16_t mask = TIM_IC1PSC << shift;
 
-    *reg &= ~(TIM_ICPSC << shift);
-    *reg |= (sConfig->TIM_ICPrescaler << shift);
+    *reg = (uint16_t)((*reg & ~mask) | (TIM_ICPSC << shift));
   #endif
 }
 
