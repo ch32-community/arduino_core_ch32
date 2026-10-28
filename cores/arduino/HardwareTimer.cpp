@@ -662,7 +662,7 @@ uint32_t HardwareTimer::getOverflow(TimerFormat_t format)
   uint32_t return_value;
   switch (format) {
     case MICROSEC_FORMAT:
-      return_value = (uint32_t)(((ARR_RegisterValue + 1) * Prescalerfactor * 1000000.0) / getTimerClkFreq());
+      return_value = ticksToMicroseconds(ARR_RegisterValue + 1, Prescalerfactor);
       break;
     case HERTZ_FORMAT:
       return_value = (uint32_t)(getTimerClkFreq() / ((ARR_RegisterValue + 1) * Prescalerfactor));
@@ -673,6 +673,20 @@ uint32_t HardwareTimer::getOverflow(TimerFormat_t format)
       break;
   }
   return return_value;
+}
+
+/**
+  * @brief  Convert prescaled ticks to whole microseconds without floating point.
+  * @param  ticks: Timer ticks to convert.
+  * @param  prescaler: Timer prescaler factor (register value plus one).
+  * @retval Whole microseconds, truncated as in the public timer getters.
+  */
+uint32_t HardwareTimer::ticksToMicroseconds(uint32_t ticks, uint32_t prescaler)
+{
+  const uint32_t microsecondsPerSecond = 1000000U;
+  const uint32_t timerCycles = ticks * prescaler;
+  // Widen only the scaling step, preserving the getters' timer-cycle arithmetic.
+  return (static_cast<uint64_t>(timerCycles) * microsecondsPerSecond) / getTimerClkFreq();
 }
 
 /**
@@ -741,7 +755,7 @@ uint32_t HardwareTimer::getCount(TimerFormat_t format)
   uint32_t return_value;
   switch (format) {
     case MICROSEC_FORMAT:
-      return_value = (uint32_t)((CNT_RegisterValue * Prescalerfactor * 1000000.0) / getTimerClkFreq());
+      return_value = ticksToMicroseconds(CNT_RegisterValue, Prescalerfactor);
       break;
     case HERTZ_FORMAT:
       return_value = (uint32_t)(getTimerClkFreq() / (CNT_RegisterValue  * Prescalerfactor));
@@ -1112,7 +1126,7 @@ uint32_t HardwareTimer::getCaptureCompare(uint32_t channel,  TimerCompareFormat_
 
   switch (format) {
     case MICROSEC_COMPARE_FORMAT:
-      return_value = (uint32_t)((CCR_RegisterValue * Prescalerfactor * 1000000.0) / getTimerClkFreq());
+      return_value = ticksToMicroseconds(CCR_RegisterValue, Prescalerfactor);
       break;
     case HERTZ_COMPARE_FORMAT:
       return_value = (uint32_t)(getTimerClkFreq() / (CCR_RegisterValue  * Prescalerfactor));
