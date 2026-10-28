@@ -9,6 +9,7 @@ menu.virtio=Virtual serial support
 
 menu.opt=Optimize
 menu.dbg=Debug symbols and core logs
+menu.compatibility=Hardware compatibility
 menu.rtlib=C Runtime Library
 menu.upload_method=Upload method
 
@@ -102,6 +103,13 @@ CH32V00x_EVT.menu.dbg.enable_log=Core logs Enabled
 CH32V00x_EVT.menu.dbg.enable_log.build.flags.debug=
 CH32V00x_EVT.menu.dbg.enable_all=Core Logs and Symbols Enabled (-g)
 CH32V00x_EVT.menu.dbg.enable_all.build.flags.debug=-g
+
+
+# Compatibility mode
+CH32V00x_EVT.menu.compatibility.disabled=Disabled (default)
+CH32V00x_EVT.menu.compatibility.disabled.build.flags.compatibility=
+CH32V00x_EVT.menu.compatibility.enabled=Enabled (may use more program space)
+CH32V00x_EVT.menu.compatibility.enabled.build.flags.compatibility=-DENSURE_COMPATIBILITY
 
 
 # C Runtime Library
@@ -313,6 +321,13 @@ CH32VM00X_EVT.menu.dbg.enable_all=Core Logs and Symbols Enabled (-g)
 CH32VM00X_EVT.menu.dbg.enable_all.build.flags.debug=-g
 
 
+# Compatibility mode
+CH32VM00X_EVT.menu.compatibility.disabled=Disabled (default)
+CH32VM00X_EVT.menu.compatibility.disabled.build.flags.compatibility=
+CH32VM00X_EVT.menu.compatibility.enabled=Enabled (may use more program space)
+CH32VM00X_EVT.menu.compatibility.enabled.build.flags.compatibility=-DENSURE_COMPATIBILITY
+
+
 # C Runtime Library
 CH32VM00X_EVT.menu.rtlib.nano=Newlib Nano (default)
 CH32VM00X_EVT.menu.rtlib.nano.build.flags.ldflags=--specs=nano.specs --specs=nosys.specs
@@ -440,6 +455,13 @@ CH32X035_EVT.menu.dbg.enable_log=Core logs Enabled
 CH32X035_EVT.menu.dbg.enable_log.build.flags.debug=
 CH32X035_EVT.menu.dbg.enable_all=Core Logs and Symbols Enabled (-g)
 CH32X035_EVT.menu.dbg.enable_all.build.flags.debug=-g
+
+
+# Compatibility mode
+CH32X035_EVT.menu.compatibility.disabled=Disabled (default)
+CH32X035_EVT.menu.compatibility.disabled.build.flags.compatibility=
+CH32X035_EVT.menu.compatibility.enabled=Enabled (may use more program space)
+CH32X035_EVT.menu.compatibility.enabled.build.flags.compatibility=-DENSURE_COMPATIBILITY
 
 
 # C Runtime Library
@@ -570,6 +592,13 @@ CH32V10x_EVT.menu.dbg.enable_log=Core logs Enabled
 CH32V10x_EVT.menu.dbg.enable_log.build.flags.debug=
 CH32V10x_EVT.menu.dbg.enable_all=Core Logs and Symbols Enabled (-g)
 CH32V10x_EVT.menu.dbg.enable_all.build.flags.debug=-g
+
+
+# Compatibility mode
+CH32V10x_EVT.menu.compatibility.disabled=Disabled (default)
+CH32V10x_EVT.menu.compatibility.disabled.build.flags.compatibility=
+CH32V10x_EVT.menu.compatibility.enabled=Enabled (may use more program space)
+CH32V10x_EVT.menu.compatibility.enabled.build.flags.compatibility=-DENSURE_COMPATIBILITY
 
 
 # C Runtime Library
@@ -825,6 +854,13 @@ CH32V20x_EVT.menu.dbg.enable_all=Core Logs and Symbols Enabled (-g)
 CH32V20x_EVT.menu.dbg.enable_all.build.flags.debug=-g
 
 
+# Compatibility mode
+CH32V20x_EVT.menu.compatibility.disabled=Disabled (default)
+CH32V20x_EVT.menu.compatibility.disabled.build.flags.compatibility=
+CH32V20x_EVT.menu.compatibility.enabled=Enabled (may use more program space)
+CH32V20x_EVT.menu.compatibility.enabled.build.flags.compatibility=-DENSURE_COMPATIBILITY
+
+
 # C Runtime Library
 CH32V20x_EVT.menu.rtlib.nano=Newlib Nano (default)
 CH32V20x_EVT.menu.rtlib.nano.build.flags.ldflags=--specs=nano.specs --specs=nosys.specs
@@ -977,6 +1013,13 @@ CH32V30x_EVT.menu.dbg.enable_all=Core Logs and Symbols Enabled (-g)
 CH32V30x_EVT.menu.dbg.enable_all.build.flags.debug=-g
 
 
+# Compatibility mode
+CH32V30x_EVT.menu.compatibility.disabled=Disabled (default)
+CH32V30x_EVT.menu.compatibility.disabled.build.flags.compatibility=
+CH32V30x_EVT.menu.compatibility.enabled=Enabled (may use more program space)
+CH32V30x_EVT.menu.compatibility.enabled.build.flags.compatibility=-DENSURE_COMPATIBILITY
+
+
 # C Runtime Library
 CH32V30x_EVT.menu.rtlib.nano=Newlib Nano (default)
 CH32V30x_EVT.menu.rtlib.nano.build.flags.ldflags=--specs=nano.specs --specs=nosys.specs
@@ -1089,6 +1132,13 @@ CH32L10x_EVT.menu.dbg.enable_log=Core logs Enabled
 CH32L10x_EVT.menu.dbg.enable_log.build.flags.debug=
 CH32L10x_EVT.menu.dbg.enable_all=Core Logs and Symbols Enabled (-g)
 CH32L10x_EVT.menu.dbg.enable_all.build.flags.debug=-g
+
+
+# Compatibility mode
+CH32L10x_EVT.menu.compatibility.disabled=Disabled (default)
+CH32L10x_EVT.menu.compatibility.disabled.build.flags.compatibility=
+CH32L10x_EVT.menu.compatibility.enabled=Enabled (may use more program space)
+CH32L10x_EVT.menu.compatibility.enabled.build.flags.compatibility=-DENSURE_COMPATIBILITY
 
 
 # C Runtime Library

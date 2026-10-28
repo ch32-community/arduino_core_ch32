@@ -119,6 +119,7 @@ menu.virtio=Virtual serial support
 
 menu.opt=Optimize
 menu.dbg=Debug symbols and core logs
+menu.compatibility=Hardware compatibility
 menu.rtlib=C Runtime Library
 menu.upload_method=Upload method""")
 
@@ -273,6 +274,17 @@ def build_debug(series, values):
     print()
 
 
+def build_compatibility(series, values):
+    print()
+    print("# Compatibility mode")
+    menu = f'{values["name"]}.menu.compatibility'
+    print(f'{menu}.disabled=Disabled (default)')
+    print(f'{menu}.disabled.build.flags.compatibility=')
+    print(f'{menu}.enabled=Enabled (may use more program space)')
+    print(f'{menu}.enabled.build.flags.compatibility=-DENSURE_COMPATIBILITY')
+    print()
+
+
 def build_runtimelib(series, values):
     print()
     print("# C Runtime Library")
@@ -299,6 +311,7 @@ def make_board(series, values):
     build_clock(series, values)
     build_optimization(series, values)
     build_debug(series, values)
+    build_compatibility(series, values)
     build_runtimelib(series, values)
 
 # ------------------------------

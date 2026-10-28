@@ -270,25 +270,32 @@ void HardwareTimer::resume(void)
  //CHANNEL 
 int HardwareTimer::getChannel(uint32_t channel)
 {
-  uint32_t return_value;
+  #ifdef ENSURE_COMPATIBILITY
+    uint32_t return_value;
 
-  switch (channel) {
-    case 1:
-      return_value = TIM_Channel_1;
-      break;
-    case 2:
-      return_value = TIM_Channel_2;
-      break;
-    case 3:
-      return_value = TIM_Channel_3;
-      break;
-    case 4:
-      return_value = TIM_Channel_4;
-      break;
-    default:
-      return_value = -1;
-  }
-  return return_value;
+    switch (channel) {
+      case 1:
+        return_value = TIM_Channel_1;
+        break;
+      case 2:
+        return_value = TIM_Channel_2;
+        break;
+      case 3:
+        return_value = TIM_Channel_3;
+        break;
+      case 4:
+        return_value = TIM_Channel_4;
+        break;
+      default:
+        return_value = -1;
+    }
+    return return_value;
+  #else
+    const uint32_t TIMER_CHANNEL_SHIFT = 2;
+    if(channel < 1 || channel > 4)
+      return -1;
+    return (channel-1) << TIMER_CHANNEL_SHIFT;
+  #endif
 }
 
 /**
@@ -524,39 +531,30 @@ void HardwareTimer::resumeChannel(uint32_t channel)
   */
 void HardwareTimer::TIM_OC_ConfigChannel_Static(TIM_TypeDef *tim, TIM_OCInitTypeDef *sConfig, uint32_t Channel)
 {
-   switch (Channel)
-  {
-    case TIM_Channel_1:
-    {
+    switch (Channel){
+    case TIM_Channel_1:{
       /* Configure the TIM Channel 1 in Output Compare */
       TIM_OC1Init(tim,sConfig);
       break;
     }
-
-    case TIM_Channel_2:
-    {
+    case TIM_Channel_2:{
       /* Configure the TIM Channel 2 in Output Compare */
       TIM_OC2Init(tim,sConfig);
       break;
     }
-
-    case TIM_Channel_3:
-    {
+    case TIM_Channel_3:{
       /* Configure the TIM Channel 3 in Output Compare */
       TIM_OC3Init(tim,sConfig);
       break;
     }
-
-    case TIM_Channel_4:
-    {
+    case TIM_Channel_4:{
       /* Configure the TIM Channel 4 in Output Compare */
       TIM_OC4Init(tim,sConfig);
       break;
     }
-
     default:
       break;
-  }   
+    }
 }
 
 /**
@@ -591,47 +589,36 @@ void HardwareTimer::TIM_OC_PreloadConfig_Static(TIM_TypeDef *htim, uint32_t Chan
     if(htim == nullptr || Channel > TIM_Channel_4 || (Channel & 0x03))
       return;
 
-    const uint8_t TIM_OCPE_BP = 2;
-    const uint16_t TIM_OCPE_ARR[] = {TIM_OC1PE, TIM_OC2PE, TIM_OC3PE, TIM_OC4PE};
     __IO uint16_t *const CHCTLR_REG = (Channel <= TIM_Channel_2 ? &htim->CHCTLR1 : &htim->CHCTLR2);
-
-    uint8_t channel_num = Channel >> TIM_OCPE_BP; // channel number 0..3
+    const uint32_t highByteBitOffset = 8U;
+    const uint32_t preloadShift = (Channel & TIM_Channel_2) ? highByteBitOffset : 0U; // Channels 2 and 4 use the high byte (bit 2 of Channel is set for them)
+    const uint16_t preloadMask = TIM_OC1PE << preloadShift;
     if(state == ENABLE)
-      *CHCTLR_REG |= TIM_OCPE_ARR[channel_num];   // set preload bit
+      *CHCTLR_REG |= preloadMask;
     else
-      *CHCTLR_REG &= ~TIM_OCPE_ARR[channel_num];  // clear preload bit
+      *CHCTLR_REG &= (uint16_t)~preloadMask;
   #endif  
 }
 
 /**
   * @brief  Configure input capture channels
-  * @param   timerX, TIM_ICInitTypeDef,  Arduino channel [1..4] 
+  * @param  tim: timer instance to configure
+  * @param  sConfig: input capture configuration
+  * @param  Channel: timer channel (TIM_Channel_1 through TIM_Channel_4)
   * @retval None
   */
 void HardwareTimer::TIM_IC_ConfigChannel_Static(TIM_TypeDef *tim, TIM_ICInitTypeDef *sConfig, uint32_t Channel)
 {
+  if(tim == nullptr || sConfig == nullptr || Channel > TIM_Channel_4 || (Channel & 0x03U))
+    return;
 
   sConfig->TIM_Channel = Channel;
-
-  TIM_ICInit( tim,  sConfig);
-
-  if(Channel == TIM_Channel_1)
-  {
-      TIM_SetIC1Prescaler(tim, sConfig->TIM_ICPrescaler);
-  }
-  else if(Channel == TIM_Channel_2)
-  {
-      TIM_SetIC2Prescaler(tim, sConfig->TIM_ICPrescaler);
-  }
-  else if(Channel == TIM_Channel_3)
-  {
-      TIM_SetIC3Prescaler(tim, sConfig->TIM_ICPrescaler);
-  }
-  else
-  {
-      TIM_SetIC4Prescaler(tim, sConfig->TIM_ICPrescaler);
-  }
-
+  #ifdef ENSURE_COMPATIBILITY
+    TIM_ICInit(tim,  sConfig); /* TIM_ICInit already calls TIM_SetICxPrescaler so no need to call it separately */
+  #else
+    TIM_TI_Config(tim, sConfig, Channel);
+    TIM_SetICPrescaler(tim, sConfig->TIM_ICPrescaler, Channel);
+  #endif
 }
 
 
@@ -997,12 +984,8 @@ TimerModes_t HardwareTimer::getMode(uint32_t channel)
   */
 void HardwareTimer::setPreloadEnable(bool value)
 {
-  if (value) {
-    TIM_ARRPreloadConfig( _timerObj.handle.Instance, ENABLE );
-
-  } else {
-    TIM_ARRPreloadConfig( _timerObj.handle.Instance, DISABLE );
-  }
+  FunctionalState state = value ? ENABLE : DISABLE;
+  TIM_ARRPreloadConfig(_timerObj.handle.Instance, state);
 }
 
 /**
@@ -1639,8 +1622,63 @@ void HardwareTimer::timerHandleDeinit()
     TIM_DeInit(_timerObj.handle.Instance);
 }
 
+/**
+  * @brief  Configure input selection, filter and polarity for one capture channel
+  * @param  TIMx: Timer peripheral to configure.
+  * @param  sConfig: Input capture configuration.
+  * @param  Channel: TIM_Channel_1 through TIM_Channel_4.
+  * @note   Disables the selected capture channel while updating its input
+  *         configuration, then enables it. Null pointers or invalid channel
+  *         constants leave the timer unchanged.
+  */
+void HardwareTimer::TIM_TI_Config(TIM_TypeDef *TIMx, const TIM_ICInitTypeDef *sConfig, uint32_t Channel) const
+{
+  if(TIMx == nullptr || sConfig == nullptr || Channel > TIM_Channel_4 || (Channel & 0x03U))
+    return;
 
+  // CHCTLR fields use byte offsets 0/8; CCER fields use bit offsets 0/4/8/12.
+  const uint8_t shift = (Channel & 0x04U) << 1;
+  __IO uint16_t *const reg = (Channel <= TIM_Channel_2) ? &TIMx->CHCTLR1 : &TIMx->CHCTLR2;
+  const uint16_t enableMask = TIM_CC1E << Channel;
+  const uint16_t polarityMask = TIM_CC1P << Channel;
+  const uint16_t inputMask = (TIM_CC1S | TIM_IC1F) << shift;
 
+  // Disable capture before changing the input, then enable it with the new polarity.
+  TIMx->CCER &= (uint16_t)~enableMask;
+  uint16_t input = *reg;
+  uint16_t ccer = TIMx->CCER;
+  input = (uint16_t)((input & ~inputMask) | ((sConfig->TIM_ICSelection | (sConfig->TIM_ICFilter << 4)) << shift));
+  ccer = (uint16_t)((ccer & ~polarityMask) | (sConfig->TIM_ICPolarity << Channel) | enableMask);
+  *reg = input;
+  TIMx->CCER = ccer;
+}
+
+/**
+  * @brief  Set the input capture prescaler for TIM_Channel_1 through TIM_Channel_4
+  */
+void HardwareTimer::TIM_SetICPrescaler(TIM_TypeDef *TIMx, uint16_t TIM_ICPSC, uint32_t Channel) const
+{
+  if(TIMx == nullptr || Channel > TIM_Channel_4 || (Channel & 0x03U))
+    return;
+
+    static_assert(
+      sizeof(TIM_TypeDef::CHCTLR1) == sizeof(uint16_t) && 
+      sizeof(TIM_TypeDef::CHCTLR2) == sizeof(uint16_t),
+      "CHCTLR1/CHCTLR2 are not 16-bit; define ENSURE_COMPATIBILITY");
+
+    static_assert(
+      TIM_Channel_1 == 0x0000 && TIM_Channel_2 == 0x0004 &&
+      TIM_Channel_3 == 0x0008 && TIM_Channel_4 == 0x000C,
+      "TIM_Channel_x values changed; define ENSURE_COMPATIBILITY");
+
+    /* Channels 1/2 are in CHCTLR1, channels 3/4 in CHCTLR2 */
+    __IO uint16_t *const reg = (Channel <= TIM_Channel_2) ? &TIMx->CHCTLR1 : &TIMx->CHCTLR2;
+    uint8_t shift = (Channel & 0x4) << 1;         // Channels 2 and 4 use the high byte (bit 2 of Channel is set for them)
+    const uint16_t TIM_ICPSC_BM = 0x000C;         // Bit mask for the prescaler field (0x0C)
+    const uint16_t mask = TIM_ICPSC_BM << shift;  // Shift either 0 or 8 bits depending on channel
+
+    *reg = (uint16_t)((*reg & ~mask) | ((TIM_ICPSC & TIM_ICPSC_BM) << shift));
+}
 
 
 /******************************************************************************/
