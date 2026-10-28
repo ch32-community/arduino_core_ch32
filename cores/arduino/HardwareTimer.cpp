@@ -1671,8 +1671,9 @@ void HardwareTimer::TIM_SetICPrescaler(TIM_TypeDef *TIMx, uint16_t TIM_ICPSC, ui
   #else
     /* Channels 1/2 are in CHCTLR1, channels 3/4 in CHCTLR2 */
     __IO uint16_t *const reg = (Channel <= TIM_Channel_2) ? &TIMx->CHCTLR1 : &TIMx->CHCTLR2;
-    uint8_t shift = (Channel & 0x4) << 1; // Channels 2 and 4 use the high byte (bit 2 of Channel is set for them)
-    const uint16_t mask = TIM_IC1PSC << shift;
+    uint8_t shift = (Channel & 0x4) << 1;         // Channels 2 and 4 use the high byte (bit 2 of Channel is set for them)
+    const uint16_t TIM_ICPSC_BM = TIM_IC1PSC;     // Bit mask for the prescaler field (0x03)
+    const uint16_t mask = TIM_ICPSC_BM << shift;  // Shift either 0 or 8 bits depending on channel
 
     *reg = (uint16_t)((*reg & ~mask) | (TIM_ICPSC << shift));
   #endif
