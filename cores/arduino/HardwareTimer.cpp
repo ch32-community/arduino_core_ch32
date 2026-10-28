@@ -1678,7 +1678,6 @@ void HardwareTimer::TIM_SetICPrescaler(TIM_TypeDef *TIMx, uint16_t TIM_ICPSC, ui
     const uint16_t mask = TIM_ICPSC_BM << shift;  // Shift either 0 or 8 bits depending on channel
 
     *reg = (uint16_t)((*reg & ~mask) | ((TIM_ICPSC & TIM_ICPSC_BM) << shift));
-  #endif
 }
 
 
