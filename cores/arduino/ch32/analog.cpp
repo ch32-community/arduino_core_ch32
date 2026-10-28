@@ -763,12 +763,14 @@ void pwm_start(PinName pin, uint32_t PWM_freq, uint32_t value, TimerCompareForma
   TIM_TypeDef *Instance = (TIM_TypeDef *)pinmap_peripheral(pin, PinMap_TIM);
   HardwareTimer *HT;
   TimerModes_t previousMode;
-  uint32_t index = get_timer_index(Instance);
-  if (HardwareTimer_Handle[index] == NULL) {
-    HardwareTimer_Handle[index]->__this = new HardwareTimer((TIM_TypeDef *)pinmap_peripheral(pin, PinMap_TIM));
+  if (get_timer_index(Instance) == UNKNOWN_TIMER) {
+    Error_Handler();
+    return;
   }
-
-  HT = (HardwareTimer *)(HardwareTimer_Handle[index]->__this);
+  HT = HardwareTimer::getInstance(Instance);
+  if (!HT) {
+    HT = new HardwareTimer(Instance);
+  }
 
   uint32_t channel = CH_PIN_CHANNEL(pinmap_function(pin, PinMap_TIM));
 
@@ -778,9 +780,7 @@ void pwm_start(PinName pin, uint32_t PWM_freq, uint32_t value, TimerCompareForma
   }
   HT->setOverflow(PWM_freq, HERTZ_FORMAT);
   HT->setCaptureCompare(channel, value, resolution);
-  if (previousMode != TIMER_OUTPUT_COMPARE_PWM1) {
-    HT->resume();
-  }
+  HT->resumeChannel(channel);
 }
 /**
   * @brief  This function will disable the PWM
@@ -791,16 +791,11 @@ void pwm_start(PinName pin, uint32_t PWM_freq, uint32_t value, TimerCompareForma
 void pwm_stop(PinName pin)
 {
   TIM_TypeDef *Instance = (TIM_TypeDef *)pinmap_peripheral(pin, PinMap_TIM);
-  HardwareTimer *HT;
-  uint32_t index = get_timer_index(Instance);
-  if (HardwareTimer_Handle[index] == NULL) {
-    HardwareTimer_Handle[index]->__this = new HardwareTimer((TIM_TypeDef *)pinmap_peripheral(pin, PinMap_TIM));
-  }
-
-  HT = (HardwareTimer *)(HardwareTimer_Handle[index]->__this);
-  if (HT != NULL) {
-    delete (HT);
-    HT = NULL;
+  HardwareTimer *HT = HardwareTimer::getInstance(Instance);
+  if (HT) {
+    // Other pins may share this timer, and it may be owned by the sketch.
+    const uint32_t channel = CH_PIN_CHANNEL(pinmap_function(pin, PinMap_TIM));
+    HT->pauseChannel(channel);
   }
 }
 #endif /* TIM_MODULE_ENABLED && !TIM_MODULE_ONLY */

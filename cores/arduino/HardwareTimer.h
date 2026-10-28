@@ -35,6 +35,13 @@
 
 #if defined(TIM_MODULE_ENABLED) && !defined(TIM_MODULE_ONLY)
 
+// Bit 0 selects TIM1, bit 1 TIM2, etc. Set this for the whole core build.
+#if defined(ENSURE_COMPATIBILITY) || !defined(HARDWARE_TIMER_ENABLED_MASK)
+#define HARDWARE_TIMER_ACTIVE_MASK 0x3FFU
+#else
+#define HARDWARE_TIMER_ACTIVE_MASK HARDWARE_TIMER_ENABLED_MASK
+#endif
+
 #define  TIMER_CHANNELS 4    // channel5 and channel 6 are not considered here has they don't have gpio output and they don't have interrupt
 
 
@@ -105,8 +112,12 @@ typedef enum {
 
 #ifdef __cplusplus
 
+#if defined(HARDWARE_TIMER_SIMPLE_CALLBACKS) && !defined(ENSURE_COMPATIBILITY)
+using callback_function_t = void (*)(void);
+#else
 #include <functional>
 using callback_function_t = std::function<void(void)>;
+#endif
 
 /* Class --------------------------------------------------------*/
 class HardwareTimer {
@@ -114,6 +125,12 @@ class HardwareTimer {
     HardwareTimer();
     HardwareTimer(TIM_TypeDef *instance);
     ~HardwareTimer();  // destructor
+
+    // Timer objects own their registration and must not be copied or moved.
+    HardwareTimer(const HardwareTimer &) = delete;
+    HardwareTimer &operator=(const HardwareTimer &) = delete;
+    static HardwareTimer *getInstance(TIM_TypeDef *instance);
+    static void dispatchInterrupt(TIM_TypeDef *instance, uint8_t events);
 
     void setup(TIM_TypeDef *instance); // Setup, only needed if no instance was passed to the constructor
 
@@ -183,12 +200,20 @@ class HardwareTimer {
     void TIM_IC_ConfigChannel_Static(TIM_TypeDef *htim, TIM_ICInitTypeDef *sConfig, uint32_t Channel);
 
   private:
+#ifdef ENSURE_COMPATIBILITY
      TimerModes_t  _ChannelMode[TIMER_CHANNELS];
+#else
+    uint16_t _ChannelMode[TIMER_CHANNELS]; // Includes TIMER_NOT_USED (0xFFFF).
+    HardwareTimer *_next = nullptr;
+    static HardwareTimer *_first;
+#endif
     timerObj_t _timerObj;
-    callback_function_t callbacks[1 + TIMER_CHANNELS]; //Callbacks: 0 for update, 1-4 for channels. (channel5/channel6, if any, doesn't have interrupt)
+    callback_function_t callbacks[1 + TIMER_CHANNELS] = {}; // 0: update, 1-4: channels
 };
 
+#ifdef ENSURE_COMPATIBILITY
 extern timerObj_t *HardwareTimer_Handle[TIMER_NUM];
+#endif
 
 extern timer_index_t get_timer_index(TIM_TypeDef *htim);
 

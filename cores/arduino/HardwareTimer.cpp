@@ -35,7 +35,44 @@
 #define MAX_RELOAD ((1 << 16) - 1) // Currently even 32b timers are used as 16b to have generic behavior
 
 /* Private Variables */
+#ifdef ENSURE_COMPATIBILITY
 timerObj_t *HardwareTimer_Handle[TIMER_NUM] = {NULL};
+#else
+HardwareTimer *HardwareTimer::_first = nullptr;
+#endif
+
+HardwareTimer *HardwareTimer::getInstance(TIM_TypeDef *instance)
+{
+#ifdef ENSURE_COMPATIBILITY
+  const timer_index_t index = get_timer_index(instance);
+  if (index == UNKNOWN_TIMER || !HardwareTimer_Handle[index]) {
+    return nullptr;
+  }
+  return static_cast<HardwareTimer *>(HardwareTimer_Handle[index]->__this);
+#else
+  for (HardwareTimer *timer = _first; timer; timer = timer->_next) {
+    if (timer->_timerObj.handle.Instance == instance) {
+      return timer;
+    }
+  }
+  return nullptr;
+#endif
+}
+
+// Keep lookup and callback dispatch out of the individual interrupt wrappers.
+void __attribute__((noinline)) HardwareTimer::dispatchInterrupt(TIM_TypeDef *instance, uint8_t events)
+{
+  HardwareTimer *timer = getInstance(instance);
+  if (!timer) {
+    return;
+  }
+  if (events & 1U) {
+    updateCallback(&timer->_timerObj.handle);
+  }
+  if (events & 2U) {
+    captureCompareCallback(&timer->_timerObj.handle);
+  }
+}
 
 /**
   * @brief  HardwareTimer constructor: make uninitialized timer
@@ -59,64 +96,9 @@ HardwareTimer::HardwareTimer()
   * @param  Timer instance ex: TIM1, ...
   * @retval None
   */
-HardwareTimer::HardwareTimer(TIM_TypeDef *instance)
+HardwareTimer::HardwareTimer(TIM_TypeDef *instance) : HardwareTimer()
 {
-  _timerObj.handle.Instance = nullptr;
   setup(instance);
-  
-#if defined(TIM1_BASE) 
-  NVIC_EnableIRQ(TIM1_UP_IRQn);
-  NVIC_EnableIRQ(TIM1_CC_IRQn);
-#endif
-
-#ifdef TIM2_BASE 
-  #if defined(CH32X035)
-    NVIC_EnableIRQ(TIM2_UP_IRQn);
-    NVIC_EnableIRQ(TIM2_CC_IRQn);
-  #else
-    NVIC_EnableIRQ(TIM2_IRQn);
-  #endif
-#endif
-
-#if defined(TIM3_BASE) && !defined(CH32VM00X)  //v006 has no interruption
-  NVIC_EnableIRQ(TIM3_IRQn);  
-#endif
-
-#ifdef TIM4_BASE
-  NVIC_EnableIRQ(TIM4_IRQn);
-#endif
-
-#ifdef CH32V30x
-
-#ifdef TIM5_BASE
-  NVIC_EnableIRQ(TIM5_IRQn);
-#endif
-
-#ifdef TIM6_BASE
-  NVIC_EnableIRQ(TIM6_IRQn);
-#endif
-
-#ifdef TIM7_BASE
-  NVIC_EnableIRQ(TIM7_IRQn);
-#endif
-
-#ifdef TIM8_BASE
-  NVIC_EnableIRQ(TIM8_UP_IRQn);
-  NVIC_EnableIRQ(TIM8_CC_IRQn);
-#endif
-
-#ifdef TIM9_BASE
-  NVIC_EnableIRQ(TIM9_UP_IRQn);
-  NVIC_EnableIRQ(TIM9_CC_IRQn);
-#endif
-
-#ifdef TIM10_BASE
-  NVIC_EnableIRQ(TIM10_UP_IRQn);
-  NVIC_EnableIRQ(TIM10_CC_IRQn);
-#endif
-
-#endif
-
 }
 
 /**
@@ -131,14 +113,14 @@ void HardwareTimer::setup(TIM_TypeDef *instance)
   uint32_t index = get_timer_index(instance);
   if (index == UNKNOWN_TIMER) {
     Error_Handler();
+    return;
   }
 
   // Already initialized?
-  if (_timerObj.handle.Instance) {
+  if (_timerObj.handle.Instance || getInstance(instance)) {
     Error_Handler();
+    return;
   }
-
-  HardwareTimer_Handle[index] = &_timerObj;
 
   _timerObj.handle.Instance = instance;
 
@@ -149,10 +131,6 @@ void HardwareTimer::setup(TIM_TypeDef *instance)
   /* Enable timer clock. Even if it is also done in HAL_TIM_Base_MspInit(),
      it is done there so that it is possible to write registers right now */
   enableTimerClock(&(_timerObj.handle));
-  // Initialize NULL callbacks
-  for (int i = 0; i < TIMER_CHANNELS + 1 ; i++) {
-    callbacks[i] = NULL;
-  }
 
   // Initialize channel mode and complementary
   for (int i = 0; i < TIMER_CHANNELS; i++) {
@@ -176,6 +154,25 @@ void HardwareTimer::setup(TIM_TypeDef *instance)
   TIM_ARRPreloadConfig( _timerObj.handle.Instance, ENABLE );
   TIM_TimeBaseInit( _timerObj.handle.Instance, &_timerObj.handle.Init);
 
+#ifdef ENSURE_COMPATIBILITY
+  HardwareTimer_Handle[index] = &_timerObj;
+#else
+  _next = _first;
+  _first = this;
+#endif
+
+  // Enable only this timer's vectors, including for default construction + setup.
+#if defined(CH32VM00X) && defined(TIM3_BASE)
+  if (instance == TIM3) { // TIM3 on these devices has no interrupt vector.
+    return;
+  }
+#endif
+  const IRQn_Type upIrq = getTimerUpIrq(instance);
+  NVIC_EnableIRQ(upIrq);
+  const IRQn_Type ccIrq = getTimerCCIrq(instance);
+  if (ccIrq != upIrq) {
+    NVIC_EnableIRQ(ccIrq);
+  }
 }
 
 
@@ -306,6 +303,18 @@ int HardwareTimer::getChannel(uint32_t channel)
  //CHANNEL P or N
 int HardwareTimer::getLLChannel(uint32_t channel)
 {
+  if (channel < 1 || channel > TIMER_CHANNELS) {
+    return -1;
+  }
+#ifndef ENSURE_COMPATIBILITY
+  const uint32_t shift = (channel - 1U) * 4U;
+#if defined(TIM_CC1NE)
+  if (isComplementaryChannel[channel - 1]) {
+    return channel <= 3 ? (TIM_CC1NE << shift) : -1;
+  }
+#endif
+  return TIM_CC1E << shift;
+#else
   uint32_t return_value;
 #if defined(TIM_CC1NE)
   if (isComplementaryChannel[channel - 1]) {
@@ -351,6 +360,7 @@ int HardwareTimer::getLLChannel(uint32_t channel)
     }
   }
   return return_value;
+#endif
 }
 
 /**
@@ -360,6 +370,9 @@ int HardwareTimer::getLLChannel(uint32_t channel)
   */
 int HardwareTimer::getIT(uint32_t channel)
 {
+#ifndef ENSURE_COMPATIBILITY
+  return (channel >= 1 && channel <= TIMER_CHANNELS) ? (TIM_IT_CC1 << (channel - 1U)) : -1;
+#else
   uint32_t return_value;
 
   switch (channel) {
@@ -379,6 +392,7 @@ int HardwareTimer::getIT(uint32_t channel)
       return_value = -1;
   }
   return return_value;
+#endif
 }
 
 /**
@@ -389,6 +403,9 @@ int HardwareTimer::getIT(uint32_t channel)
   */
 int HardwareTimer::getAssociatedChannel(uint32_t channel)
 {
+#ifndef ENSURE_COMPATIBILITY
+  return (channel >= 1 && channel <= TIMER_CHANNELS) ? (((channel - 1U) ^ 1U) + 1U) : -1;
+#else
   int timAssociatedInputChannel = -1;
   switch (channel) {
     case 1:
@@ -407,6 +424,7 @@ int HardwareTimer::getAssociatedChannel(uint32_t channel)
       break;
   }
   return timAssociatedInputChannel;
+#endif
 }
 
 /**
@@ -531,6 +549,7 @@ void HardwareTimer::resumeChannel(uint32_t channel)
   */
 void HardwareTimer::TIM_OC_ConfigChannel_Static(TIM_TypeDef *tim, TIM_OCInitTypeDef *sConfig, uint32_t Channel)
 {
+    // Keep the vendor's timer-specific complementary and idle-state handling.
     switch (Channel){
     case TIM_Channel_1:{
       /* Configure the TIM Channel 1 in Output Compare */
@@ -622,12 +641,6 @@ void HardwareTimer::TIM_IC_ConfigChannel_Static(TIM_TypeDef *tim, TIM_ICInitType
     // Avoid calling TIM_SetICxPrescaler again; that write is already done.
     sConfig->TIM_Channel = Channel;
     TIM_ICInit(tim, sConfig);
-
-    uint8_t shift = (Channel & 0x04U) << 1;
-    __IO uint16_t *ccmr = (Channel & 0x08U) ? &TIMx->CHCTLR2 : &TIMx->CHCTLR1;
-    uint16_t mask = (uint16_t)(TIM_IC1PSC << shift);
-
-    *ccmr = (uint16_t)((*ccmr & ~mask) | (TIM_ICPSC << shift));
   #endif
 }
 
@@ -972,7 +985,7 @@ void HardwareTimer::setMode(uint32_t channel, TimerModes_t mode, PinName pin)
 TimerModes_t HardwareTimer::getMode(uint32_t channel)
 {
   if ((1 <= channel) && (channel <= TIMER_CHANNELS)) {
-    return _ChannelMode[channel - 1];
+    return static_cast<TimerModes_t>(_ChannelMode[channel - 1]);
   } else {
     return TIMER_DISABLED;
   }
@@ -1258,7 +1271,7 @@ void HardwareTimer::attachInterrupt(uint32_t channel, callback_function_t callba
     Error_Handler();
   }
 
-  if ((channel == 0) || (channel > (TIMER_CHANNELS + 1))) {
+  if ((channel == 0) || (channel > TIMER_CHANNELS)) {
     Error_Handler();  // only channel 1..4 have an interrupt
   }
   if (callbacks[channel]) {
@@ -1288,7 +1301,7 @@ void HardwareTimer::detachInterrupt(uint32_t channel)
     Error_Handler();
   }
 
-  if ((channel == 0) || (channel > (TIMER_CHANNELS + 1))) {
+  if ((channel == 0) || (channel > TIMER_CHANNELS)) {
     Error_Handler();  // only channel 1..4 have an interrupt
   }
 
@@ -1313,7 +1326,7 @@ bool HardwareTimer::hasInterrupt()
   */
 bool HardwareTimer::hasInterrupt(uint32_t channel)
 {
-  if ((channel == 0) || (channel > (TIMER_CHANNELS + 1))) {
+  if ((channel == 0) || (channel > TIMER_CHANNELS)) {
     Error_Handler();  // only channel 1..4 have an interrupt
   }
   return callbacks[channel] != NULL;
@@ -1353,6 +1366,7 @@ void HardwareTimer::updateCallback(TIM_HandleTypeDef *htim)
 
   if (!htim) {
     Error_Handler();
+    return;
   }
 
   if(TIM_GetITStatus(htim->Instance, TIM_IT_Update) && (htim->Instance->DMAINTENR & TIM_IT_Update))
@@ -1377,8 +1391,28 @@ void HardwareTimer::captureCompareCallback(TIM_HandleTypeDef *htim)
 {
   if (!htim) {
     Error_Handler();
+    return;
   }
 
+#ifndef ENSURE_COMPATIBILITY
+  const uint16_t pending = htim->Instance->INTFR & htim->Instance->DMAINTENR &
+                           (TIM_IT_CC1 | TIM_IT_CC2 | TIM_IT_CC3 | TIM_IT_CC4);
+  if (!pending) {
+    return;
+  }
+  // Preserve the vendor path's priority: service the lowest pending channel.
+  uint32_t channel = 1;
+  uint16_t interrupt = TIM_IT_CC1;
+  while (!(pending & interrupt)) {
+    ++channel;
+    interrupt <<= 1;
+  }
+  TIM_ClearITPendingBit(htim->Instance, interrupt);
+  HardwareTimer *timer = static_cast<HardwareTimer *>(get_timer_obj(htim)->__this);
+  if (timer->callbacks[channel]) {
+    timer->callbacks[channel]();
+  }
+#else
  uint32_t channel = 0;
 
 if( (htim->Instance->DMAINTENR & TIM_IT_CC1) || (htim->Instance->DMAINTENR & TIM_IT_CC2) \
@@ -1407,10 +1441,11 @@ if( (htim->Instance->DMAINTENR & TIM_IT_CC1) || (htim->Instance->DMAINTENR & TIM
 
   timerObj_t *obj = get_timer_obj(htim);
   HardwareTimer *HT = (HardwareTimer *)(obj->__this);
-  if (HT->callbacks[channel]) { // TODO: This looks interesting (make sure 1-4 are valid inputs, seems fishy that 0 is not used)
+  if (channel && HT->callbacks[channel]) {
     HT->callbacks[channel]();
   }
 }
+#endif
 }
 
 /**
@@ -1480,9 +1515,23 @@ void HardwareTimer::updateRegistersIfNotRunning(TIM_TypeDef *TIMx)
   */
 HardwareTimer::~HardwareTimer()
 {
+  if (!_timerObj.handle.Instance) {
+    return;
+  }
+  pause();
+#ifdef ENSURE_COMPATIBILITY
   uint32_t index = get_timer_index(_timerObj.handle.Instance);
-  disableTimerClock(&(_timerObj.handle));
   HardwareTimer_Handle[index] = NULL;
+#else
+  HardwareTimer **link = &_first;
+  while (*link && *link != this) {
+    link = &(*link)->_next;
+  }
+  if (*link) {
+    *link = _next;
+  }
+#endif
+  disableTimerClock(&(_timerObj.handle));
   _timerObj.__this = NULL;
 }
 
@@ -1495,52 +1544,52 @@ timer_index_t get_timer_index(TIM_TypeDef *instance)
 {
   timer_index_t index = UNKNOWN_TIMER;
 
-#if defined(TIM1_BASE)
+#if defined(TIM1_BASE) && (HARDWARE_TIMER_ACTIVE_MASK & (1U << 0))
   if (instance == TIM1) {
     index = TIMER1_INDEX;
   }
 #endif
-#if defined(TIM2_BASE)
+#if defined(TIM2_BASE) && (HARDWARE_TIMER_ACTIVE_MASK & (1U << 1))
   if (instance == TIM2) {
     index = TIMER2_INDEX;
   }
 #endif
-#if defined(TIM3_BASE)
+#if defined(TIM3_BASE) && (HARDWARE_TIMER_ACTIVE_MASK & (1U << 2))
   if (instance == TIM3) {
     index = TIMER3_INDEX;
   }
 #endif
-#if defined(TIM4_BASE)
+#if defined(TIM4_BASE) && (HARDWARE_TIMER_ACTIVE_MASK & (1U << 3))
   if (instance == TIM4) {
     index = TIMER4_INDEX;
   }
 #endif
-#if defined(TIM5_BASE)
+#if defined(TIM5_BASE) && (HARDWARE_TIMER_ACTIVE_MASK & (1U << 4))
   if (instance == TIM5) {
     index = TIMER5_INDEX;
   }
 #endif
-#if defined(TIM6_BASE)
+#if defined(TIM6_BASE) && (HARDWARE_TIMER_ACTIVE_MASK & (1U << 5))
   if (instance == TIM6) {
     index = TIMER6_INDEX;
   }
 #endif
-#if defined(TIM7_BASE)
+#if defined(TIM7_BASE) && (HARDWARE_TIMER_ACTIVE_MASK & (1U << 6))
   if (instance == TIM7) {
     index = TIMER7_INDEX;
   }
 #endif
-#if defined(TIM8_BASE)
+#if defined(TIM8_BASE) && (HARDWARE_TIMER_ACTIVE_MASK & (1U << 7))
   if (instance == TIM8) {
     index = TIMER8_INDEX;
   }
 #endif
-#if defined(TIM9_BASE)
+#if defined(TIM9_BASE) && (HARDWARE_TIMER_ACTIVE_MASK & (1U << 8))
   if (instance == TIM9) {
     index = TIMER9_INDEX;
   }
 #endif
-#if defined(TIM10_BASE)
+#if defined(TIM10_BASE) && (HARDWARE_TIMER_ACTIVE_MASK & (1U << 9))
   if (instance == TIM10) {
     index = TIMER10_INDEX;
   }
@@ -1639,9 +1688,10 @@ void HardwareTimer::timerHandleDeinit()
 /******************************************************************************/
 /*                            TIMx IRQ HANDLER                                */
 /******************************************************************************/
+#ifdef ENSURE_COMPATIBILITY
 extern "C" {
 
-#if defined(TIM1_BASE)
+#if defined(TIM1_BASE) && (HARDWARE_TIMER_ACTIVE_MASK & (1U << 0))
   /**
     * @brief  TIM1 IRQHandler 
     * @param  None
@@ -1663,7 +1713,7 @@ extern "C" {
   }
 #endif //TIM1_BASE
 
-#if defined(TIM2_BASE)
+#if defined(TIM2_BASE) && (HARDWARE_TIMER_ACTIVE_MASK & (1U << 1))
 
   #if defined(CH32X035)
      /**
@@ -1706,7 +1756,7 @@ extern "C" {
 
 #endif //TIM2_BASE
 
-#if defined(TIM3_BASE)
+#if defined(TIM3_BASE) && (HARDWARE_TIMER_ACTIVE_MASK & (1U << 2))
   /**
     * @brief  TIM3 IRQHandler
     * @param  None
@@ -1722,7 +1772,7 @@ extern "C" {
   }
 #endif //TIM3_BASE
 
-#if defined(TIM4_BASE)
+#if defined(TIM4_BASE) && (HARDWARE_TIMER_ACTIVE_MASK & (1U << 3))
   /**
     * @brief  TIM4 IRQHandler
     * @param  None
@@ -1738,7 +1788,7 @@ extern "C" {
   }
 #endif //TIM4_BASE
 
-#if defined(TIM5_BASE)
+#if defined(TIM5_BASE) && (HARDWARE_TIMER_ACTIVE_MASK & (1U << 4))
   /**
     * @brief  TIM5 IRQHandler
     * @param  None
@@ -1754,7 +1804,7 @@ extern "C" {
   }
 #endif //TIM5_BASE
 
-#if defined(TIM6_BASE)
+#if defined(TIM6_BASE) && (HARDWARE_TIMER_ACTIVE_MASK & (1U << 5))
   /**
     * @brief  TIM6 IRQHandler
     * @param  None
@@ -1770,7 +1820,7 @@ extern "C" {
   }
 #endif //TIM6_BASE
 
-#if defined(TIM7_BASE)
+#if defined(TIM7_BASE) && (HARDWARE_TIMER_ACTIVE_MASK & (1U << 6))
   /**
     * @brief  TIM7 IRQHandler
     * @param  None
@@ -1786,7 +1836,7 @@ extern "C" {
   }
 #endif //TIM7_BASE
 
-#if defined(TIM8_BASE)
+#if defined(TIM8_BASE) && (HARDWARE_TIMER_ACTIVE_MASK & (1U << 7))
   /**
     * @brief  TIM8 IRQHandler
     * @param  None
@@ -1808,7 +1858,7 @@ extern "C" {
   }
 #endif //TIM8_BASE
 
-#if defined(TIM9_BASE)
+#if defined(TIM9_BASE) && (HARDWARE_TIMER_ACTIVE_MASK & (1U << 8))
   /**
     * @brief  TIM9 IRQHandler
     * @param  None
@@ -1830,7 +1880,7 @@ extern "C" {
   }
 #endif //TIM9_BASE
 
-#if defined(TIM10_BASE)
+#if defined(TIM10_BASE) && (HARDWARE_TIMER_ACTIVE_MASK & (1U << 9))
   /**
     * @brief  TIM10 IRQHandler
     * @param  None
@@ -1852,5 +1902,54 @@ extern "C" {
   }
 #endif //TIM10_BASE
 }
+
+
+#else
+extern "C" {
+#define TIMER_IRQ_HANDLER(name, timer, events) \
+  void name(void) __attribute__((interrupt("WCH-Interrupt-fast"))); \
+  void name(void) { HardwareTimer::dispatchInterrupt(timer, events); }
+#if defined(TIM1_BASE) && (HARDWARE_TIMER_ACTIVE_MASK & (1U << 0))
+TIMER_IRQ_HANDLER(TIM1_UP_IRQHandler, TIM1, 1)
+TIMER_IRQ_HANDLER(TIM1_CC_IRQHandler, TIM1, 2)
+#endif
+#if defined(TIM2_BASE) && (HARDWARE_TIMER_ACTIVE_MASK & (1U << 1))
+#if defined(CH32X035)
+TIMER_IRQ_HANDLER(TIM2_UP_IRQHandler, TIM2, 1)
+TIMER_IRQ_HANDLER(TIM2_CC_IRQHandler, TIM2, 2)
+#else
+TIMER_IRQ_HANDLER(TIM2_IRQHandler, TIM2, 3)
+#endif
+#endif
+#if defined(TIM3_BASE) && (HARDWARE_TIMER_ACTIVE_MASK & (1U << 2)) && !defined(CH32VM00X)
+TIMER_IRQ_HANDLER(TIM3_IRQHandler, TIM3, 3)
+#endif
+#if defined(TIM4_BASE) && (HARDWARE_TIMER_ACTIVE_MASK & (1U << 3))
+TIMER_IRQ_HANDLER(TIM4_IRQHandler, TIM4, 3)
+#endif
+#if defined(TIM5_BASE) && (HARDWARE_TIMER_ACTIVE_MASK & (1U << 4))
+TIMER_IRQ_HANDLER(TIM5_IRQHandler, TIM5, 3)
+#endif
+#if defined(TIM6_BASE) && (HARDWARE_TIMER_ACTIVE_MASK & (1U << 5))
+TIMER_IRQ_HANDLER(TIM6_IRQHandler, TIM6, 3)
+#endif
+#if defined(TIM7_BASE) && (HARDWARE_TIMER_ACTIVE_MASK & (1U << 6))
+TIMER_IRQ_HANDLER(TIM7_IRQHandler, TIM7, 3)
+#endif
+#if defined(TIM8_BASE) && (HARDWARE_TIMER_ACTIVE_MASK & (1U << 7))
+TIMER_IRQ_HANDLER(TIM8_UP_IRQHandler, TIM8, 1)
+TIMER_IRQ_HANDLER(TIM8_CC_IRQHandler, TIM8, 2)
+#endif
+#if defined(TIM9_BASE) && (HARDWARE_TIMER_ACTIVE_MASK & (1U << 8))
+TIMER_IRQ_HANDLER(TIM9_UP_IRQHandler, TIM9, 1)
+TIMER_IRQ_HANDLER(TIM9_CC_IRQHandler, TIM9, 2)
+#endif
+#if defined(TIM10_BASE) && (HARDWARE_TIMER_ACTIVE_MASK & (1U << 9))
+TIMER_IRQ_HANDLER(TIM10_UP_IRQHandler, TIM10, 1)
+TIMER_IRQ_HANDLER(TIM10_CC_IRQHandler, TIM10, 2)
+#endif
+#undef TIMER_IRQ_HANDLER
+}
+#endif // ENSURE_COMPATIBILITY
 
 #endif // TIM_MODULE_ENABLED && !TIM_MODULE_ONLY
