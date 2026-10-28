@@ -531,39 +531,30 @@ void HardwareTimer::resumeChannel(uint32_t channel)
   */
 void HardwareTimer::TIM_OC_ConfigChannel_Static(TIM_TypeDef *tim, TIM_OCInitTypeDef *sConfig, uint32_t Channel)
 {
-   switch (Channel)
-  {
-    case TIM_Channel_1:
-    {
+    switch (Channel){
+    case TIM_Channel_1:{
       /* Configure the TIM Channel 1 in Output Compare */
       TIM_OC1Init(tim,sConfig);
       break;
     }
-
-    case TIM_Channel_2:
-    {
+    case TIM_Channel_2:{
       /* Configure the TIM Channel 2 in Output Compare */
       TIM_OC2Init(tim,sConfig);
       break;
     }
-
-    case TIM_Channel_3:
-    {
+    case TIM_Channel_3:{
       /* Configure the TIM Channel 3 in Output Compare */
       TIM_OC3Init(tim,sConfig);
       break;
     }
-
-    case TIM_Channel_4:
-    {
+    case TIM_Channel_4:{
       /* Configure the TIM Channel 4 in Output Compare */
       TIM_OC4Init(tim,sConfig);
       break;
     }
-
     default:
       break;
-  }   
+    }
 }
 
 /**
@@ -598,15 +589,12 @@ void HardwareTimer::TIM_OC_PreloadConfig_Static(TIM_TypeDef *htim, uint32_t Chan
     if(htim == nullptr || Channel > TIM_Channel_4 || (Channel & 0x03))
       return;
 
-    const uint8_t TIM_OCPE_BP = 2;
-    const uint16_t TIM_OCPE_ARR[] = {TIM_OC1PE, TIM_OC2PE, TIM_OC3PE, TIM_OC4PE};
     __IO uint16_t *const CHCTLR_REG = (Channel <= TIM_Channel_2 ? &htim->CHCTLR1 : &htim->CHCTLR2);
-
-    uint8_t channel_num = Channel >> TIM_OCPE_BP; // channel number 0..3
+    const uint16_t preloadMask = TIM_OC1PE << ((Channel & 4U) * 2U);
     if(state == ENABLE)
-      *CHCTLR_REG |= TIM_OCPE_ARR[channel_num];   // set preload bit
+      *CHCTLR_REG |= preloadMask;
     else
-      *CHCTLR_REG &= ~TIM_OCPE_ARR[channel_num];  // clear preload bit
+      *CHCTLR_REG &= (uint16_t)~preloadMask;
   #endif  
 }
 
@@ -617,28 +605,30 @@ void HardwareTimer::TIM_OC_PreloadConfig_Static(TIM_TypeDef *htim, uint32_t Chan
   */
 void HardwareTimer::TIM_IC_ConfigChannel_Static(TIM_TypeDef *tim, TIM_ICInitTypeDef *sConfig, uint32_t Channel)
 {
+  #ifdef ENSURE_COMPATIBILITY
+    sConfig->TIM_Channel = Channel;
+    TIM_ICInit(tim,  sConfig);
 
-  sConfig->TIM_Channel = Channel;
+    if(Channel == TIM_Channel_1)
+        TIM_SetIC1Prescaler(tim, sConfig->TIM_ICPrescaler);
+    else if(Channel == TIM_Channel_2)
+        TIM_SetIC2Prescaler(tim, sConfig->TIM_ICPrescaler);
+    else if(Channel == TIM_Channel_3)
+        TIM_SetIC3Prescaler(tim, sConfig->TIM_ICPrescaler);
+    else /* Channel == TIM_Channel_4 */
+        TIM_SetIC4Prescaler(tim, sConfig->TIM_ICPrescaler);
+  #else
+    // TIM_ICInit also applies TIM_ICPrescaler for the selected channel.
+    // Avoid calling TIM_SetICxPrescaler again; that write is already done.
+    sConfig->TIM_Channel = Channel;
+    TIM_ICInit(tim, sConfig);
 
-  TIM_ICInit( tim,  sConfig);
+    uint8_t shift = (Channel & 0x04U) << 1;
+    __IO uint16_t *ccmr = (Channel & 0x08U) ? &TIMx->CHCTLR2 : &TIMx->CHCTLR1;
+    uint16_t mask = (uint16_t)(TIM_IC1PSC << shift);
 
-  if(Channel == TIM_Channel_1)
-  {
-      TIM_SetIC1Prescaler(tim, sConfig->TIM_ICPrescaler);
-  }
-  else if(Channel == TIM_Channel_2)
-  {
-      TIM_SetIC2Prescaler(tim, sConfig->TIM_ICPrescaler);
-  }
-  else if(Channel == TIM_Channel_3)
-  {
-      TIM_SetIC3Prescaler(tim, sConfig->TIM_ICPrescaler);
-  }
-  else
-  {
-      TIM_SetIC4Prescaler(tim, sConfig->TIM_ICPrescaler);
-  }
-
+    *ccmr = (uint16_t)((*ccmr & ~mask) | (TIM_ICPSC << shift));
+  #endif
 }
 
 
@@ -1004,12 +994,8 @@ TimerModes_t HardwareTimer::getMode(uint32_t channel)
   */
 void HardwareTimer::setPreloadEnable(bool value)
 {
-  if (value) {
-    TIM_ARRPreloadConfig( _timerObj.handle.Instance, ENABLE );
-
-  } else {
-    TIM_ARRPreloadConfig( _timerObj.handle.Instance, DISABLE );
-  }
+  FunctionalState state = value ? ENABLE : DISABLE;
+  TIM_ARRPreloadConfig(_timerObj.handle.Instance, state);
 }
 
 /**
