@@ -1694,7 +1694,11 @@ void HardwareTimer::TIM_OC_Init(TIM_TypeDef *TIMx, const TIM_OCInitTypeDef *sCon
   }
   TIMx->CTLR2 = ctlr2;
   *reg = mode;
-  *compare = sConfig->TIM_Pulse;
+  #if defined(CH32L10x)
+    *compare = (TIMx == TIM4) ? sConfig->TIM_Pulse : (uint16_t)sConfig->TIM_Pulse;
+  #else
+    *compare = sConfig->TIM_Pulse;
+  #endif
   TIMx->CCER = ccer;
 }
 
