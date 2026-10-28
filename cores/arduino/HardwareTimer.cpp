@@ -527,11 +527,17 @@ void HardwareTimer::resumeChannel(uint32_t channel)
 
 /**
   * @brief  Configure comparison output channels
-  * @param   timerX, TIM_OCInitTypeDef,  Arduino channel [1..4] 
+  * @param  tim: Timer peripheral to configure.
+  * @param  sConfig: Output compare configuration.
+  * @param  Channel: TIM_Channel_1 through TIM_Channel_4.
   * @retval None
   */
 void HardwareTimer::TIM_OC_ConfigChannel_Static(TIM_TypeDef *tim, TIM_OCInitTypeDef *sConfig, uint32_t Channel)
 {
+  if(tim == nullptr || sConfig == nullptr || Channel > TIM_Channel_4 || (Channel & 0x03U))
+    return;
+
+  #ifdef ENSURE_COMPATIBILITY
     switch (Channel){
     case TIM_Channel_1:{
       /* Configure the TIM Channel 1 in Output Compare */
@@ -556,6 +562,9 @@ void HardwareTimer::TIM_OC_ConfigChannel_Static(TIM_TypeDef *tim, TIM_OCInitType
     default:
       break;
     }
+  #else
+    TIM_OC_Init(tim, sConfig, Channel);
+  #endif
 }
 
 /**
@@ -1635,6 +1644,58 @@ void HardwareTimer::timerHandleDeinit()
 {
     TIM_Cmd(_timerObj.handle.Instance, DISABLE);
     TIM_DeInit(_timerObj.handle.Instance);
+}
+
+/**
+  * @brief  Initialize output compare for one timer channel.
+  * @param  TIMx: Timer peripheral to configure.
+  * @param  sConfig: Output compare configuration
+  * @param  Channel: TIM_Channel_1 through TIM_Channel_4, not Arduino channel numbers.
+  * @note   Disables the selected output while configuring it.
+  */
+void HardwareTimer::TIM_OC_Init(TIM_TypeDef *TIMx, const TIM_OCInitTypeDef *sConfig, uint32_t Channel) const
+{
+  if(TIMx == nullptr || sConfig == nullptr || Channel > TIM_Channel_4 || (Channel & 0x03U))
+    return;
+
+  const uint8_t modeShift = (Channel & 0x04U) << 1;
+  const uint8_t idleShift = Channel >> 1;
+  __IO uint16_t *const reg = (Channel <= TIM_Channel_2) ? &TIMx->CHCTLR1 : &TIMx->CHCTLR2;
+  // The compare register width differs between chip families; retain its native type.
+  auto *const compare = (Channel == TIM_Channel_1) ? &TIMx->CH1CVR :
+                       (Channel == TIM_Channel_2) ? &TIMx->CH2CVR :
+                       (Channel == TIM_Channel_3) ? &TIMx->CH3CVR : &TIMx->CH4CVR;
+  const bool advanced = (TIMx == TIM1)
+    #if defined(CH32X035)
+      || (TIMx == TIM2)
+    #endif
+    #if defined(CH32V30x)
+      || (TIMx == TIM8)
+      || (TIMx == TIM9)
+      || (TIMx == TIM10)
+    #endif
+    ;
+
+  TIMx->CCER &= (uint16_t)~(TIM_CC1E << Channel);
+  uint16_t ccer = TIMx->CCER;
+  uint16_t ctlr2 = TIMx->CTLR2;
+  uint16_t mode = *reg;
+  mode = (uint16_t)((mode & ~((TIM_OC1M | TIM_CC1S) << modeShift)) | (sConfig->TIM_OCMode << modeShift));
+  ccer = (uint16_t)((ccer & ~(TIM_CC1P << Channel)) |
+                    ((sConfig->TIM_OCPolarity | sConfig->TIM_OutputState) << Channel));
+
+  if(advanced) {
+    ctlr2 = (uint16_t)((ctlr2 & ~(TIM_OIS1 << idleShift)) | (sConfig->TIM_OCIdleState << idleShift));
+    if(Channel != TIM_Channel_4) {
+      ccer = (uint16_t)((ccer & ~((TIM_CC1NP | TIM_CC1NE) << Channel)) |
+                        ((sConfig->TIM_OCNPolarity | sConfig->TIM_OutputNState) << Channel));
+      ctlr2 = (uint16_t)((ctlr2 & ~(TIM_OIS1N << idleShift)) | (sConfig->TIM_OCNIdleState << idleShift));
+    }
+  }
+  TIMx->CTLR2 = ctlr2;
+  *reg = mode;
+  *compare = sConfig->TIM_Pulse;
+  TIMx->CCER = ccer;
 }
 
 /**
