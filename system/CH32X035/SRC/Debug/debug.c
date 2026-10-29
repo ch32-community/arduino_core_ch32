@@ -90,8 +90,8 @@ void Delay_Ms(uint32_t n)
  */
 void USART_Printf_Init(uint32_t baudrate)
 {
-    GPIO_InitTypeDef  GPIO_InitStructure;
-    USART_InitTypeDef USART_InitStructure;
+    GPIO_InitTypeDef  GPIO_InitStructure = {};
+    USART_InitTypeDef USART_InitStructure = {};
 
 #if(DEBUG == DEBUG_UART1)
     RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART1 | RCC_APB2Periph_GPIOB, ENABLE);
