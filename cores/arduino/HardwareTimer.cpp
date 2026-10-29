@@ -1760,23 +1760,23 @@ void HardwareTimer::TIM_SetICPrescaler(TIM_TypeDef *TIMx, uint16_t TIM_ICPSC, ui
   if(TIMx == nullptr || Channel > TIM_Channel_4 || (Channel & 0x03U))
     return;
 
-    static_assert(
-      sizeof(TIM_TypeDef::CHCTLR1) == sizeof(uint16_t) && 
-      sizeof(TIM_TypeDef::CHCTLR2) == sizeof(uint16_t),
-      "CHCTLR1/CHCTLR2 are not 16-bit; define ENSURE_COMPATIBILITY");
+  static_assert(
+    sizeof(TIM_TypeDef::CHCTLR1) == sizeof(uint16_t) &&
+    sizeof(TIM_TypeDef::CHCTLR2) == sizeof(uint16_t),
+    "CHCTLR1/CHCTLR2 are not 16-bit; define ENSURE_COMPATIBILITY");
 
-    static_assert(
-      TIM_Channel_1 == 0x0000 && TIM_Channel_2 == 0x0004 &&
-      TIM_Channel_3 == 0x0008 && TIM_Channel_4 == 0x000C,
-      "TIM_Channel_x values changed; define ENSURE_COMPATIBILITY");
+  static_assert(
+    TIM_Channel_1 == 0x0000 && TIM_Channel_2 == 0x0004 &&
+    TIM_Channel_3 == 0x0008 && TIM_Channel_4 == 0x000C,
+    "TIM_Channel_x values changed; define ENSURE_COMPATIBILITY");
 
-    /* Channels 1/2 are in CHCTLR1, channels 3/4 in CHCTLR2 */
-    __IO uint16_t *const reg = (Channel <= TIM_Channel_2) ? &TIMx->CHCTLR1 : &TIMx->CHCTLR2;
-    uint8_t shift = (Channel & 0x4) << 1;         // Channels 2 and 4 use the high byte (bit 2 of Channel is set for them)
-    const uint16_t TIM_ICPSC_BM = 0x000C;         // Bit mask for the prescaler field (0x0C)
-    const uint16_t mask = TIM_ICPSC_BM << shift;  // Shift either 0 or 8 bits depending on channel
+  /* Channels 1/2 are in CHCTLR1, channels 3/4 in CHCTLR2 */
+  __IO uint16_t *const reg = (Channel <= TIM_Channel_2) ? &TIMx->CHCTLR1 : &TIMx->CHCTLR2;
+  uint8_t shift = (Channel & 0x4) << 1;         // Channels 2 and 4 use the high byte (bit 2 of Channel is set for them)
+  const uint16_t TIM_ICPSC_BM = 0x000C;         // Bit mask for the prescaler field (0x0C)
+  const uint16_t mask = TIM_ICPSC_BM << shift;  // Shift either 0 or 8 bits depending on channel
 
-    *reg = (uint16_t)((*reg & ~mask) | ((TIM_ICPSC & TIM_ICPSC_BM) << shift));
+  *reg = (uint16_t)((*reg & ~mask) | ((TIM_ICPSC & TIM_ICPSC_BM) << shift));
 }
 
 
