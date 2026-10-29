@@ -246,7 +246,7 @@ void OPA_CMP_Init(CMP_InitTypeDef *CMP_InitStruct)
 void OPA_CMP_StructInit(CMP_InitTypeDef *CMP_InitStruct)
 {
     CMP_InitStruct->CMP_NUM = CMP1;
-    CMP_InitStruct->Mode = OUT_IO_TIM2_CH1;
+    CMP_InitStruct->Mode = OUT_IO_TIM2;
     CMP_InitStruct->NSEL = CMP_CHN0;
     CMP_InitStruct->PSEL = CMP_CHP1;
     CMP_InitStruct->HYEN = CMP_HYEN1;
