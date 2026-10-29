@@ -13,9 +13,18 @@ from multiprocessing import Pool
 
 REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+# USB device modes implemented by the current CH32 TinyUSB port. These apply
+# only to TinyUSB examples; other sketches retain their configured FQBN.
+TINYUSB_OPTIONS = {
+    'CH32V20x': 'tinyusb_usbd',
+    'CH32V30x': 'tinyusb_usbfs',
+}
+
 SUCCEEDED = "\033[32msucceeded\033[0m"
 FAILED = "\033[31mfailed\033[0m"
 SKIPPED = "\033[35mskipped\033[0m"
+WARNING = "\033[33mwarnings\033[0m "
+
 build_format = '| {:35} | {:9} | {:6} |'
 build_separator = '-' * 59
 
@@ -98,16 +107,84 @@ def local_core_build():
                 os.rmdir(core_link)
 
 
+def is_tinyusb_example(sketch):
+    examples = os.path.join(REPO_ROOT, 'libraries', 'Adafruit_TinyUSB_Arduino', 'examples')
+    try:
+        return os.path.commonpath([examples, os.path.abspath(sketch)]) == examples
+    except ValueError:  # Paths on different Windows drives cannot match.
+        return False
+
+
+def sketch_fqbn(variant, sketch):
+    fqbn = variant[1]
+    family = variant[2] if len(variant) > 2 else variant[0]
+    if is_tinyusb_example(sketch) and family in TINYUSB_OPTIONS:
+        parts = fqbn.split(':', 3)
+        options = parts[3].split(',') if len(parts) == 4 else []
+        if not any(option.startswith('usb=') for option in options):
+            options.append('usb=' + TINYUSB_OPTIONS[family])
+        return ':'.join(parts[:3]) + ':' + ','.join(options)
+    return fqbn
+
+
+def sketch_skip_directories(sketch):
+    """Read sketch markers plus inherited metadata owned by this repository."""
+    sketchdir = os.path.dirname(os.path.abspath(sketch))
+    yield sketchdir
+    try:
+        relative = os.path.relpath(sketchdir, REPO_ROOT)
+    except ValueError:
+        return
+    if relative == os.pardir or relative.startswith(os.pardir + os.sep):
+        return
+    metadata_root = os.path.join(REPO_ROOT, 'ci', 'skips')
+    directory = os.path.join(metadata_root, relative)
+    while True:
+        yield directory
+        if directory == metadata_root:
+            break
+        directory = os.path.dirname(directory)
+
+
 def sketch_is_skipped(variant, sketch):
     name = variant[0]
     family = variant[2] if len(variant) > 2 else name
+    # Upstream TinyUSB uses board IDs such as CH32V20x_EVT in its markers.
+    skip_names = {family, name, variant[1].split(':')[2]}
+    if is_tinyusb_example(sketch):
+        options = sketch_fqbn(variant, sketch).split(':')[-1].split(',')
+        if 'usb=none' in options:
+            return True
+
+    for directory in sketch_skip_directories(sketch):
+        skip_marker = any(
+            os.path.exists(os.path.join(directory, f".{key}.test.skip"))
+            for key in skip_names
+        )
+        only_markers = glob.glob(os.path.join(directory, ".*.test.only"))
+        matches_only = any(
+            os.path.exists(os.path.join(directory, f".{key}.test.only"))
+            for key in skip_names
+        )
+        if skip_marker or (only_markers and not matches_only):
+            return True
+
+        skip_txt = os.path.join(directory, '.skip.txt')
+        if os.path.exists(skip_txt):
+            with open(skip_txt, encoding='utf-8') as f:
+                names = {line.partition('#')[0].strip() for line in f}
+            if '*' in names or names & skip_names:
+                return True
+    return False
 
 
 # return [succeeded, failed, skipped], output
 def build_sketch(variant, sketch, local_build):
     ret = [0, 0, 0]
-    fqbn = variant[1]
+    fqbn = sketch_fqbn(variant, sketch)
     start_time = time.monotonic()
+
+    if sketch_is_skipped(variant, sketch):
         ret[2] = 1
         success = SKIPPED
     else:
@@ -121,6 +198,28 @@ def build_sketch(variant, sketch, local_build):
         # get stderr into a form where warning/error was output to stderr
         if build_result.returncode != 0:
             success = FAILED
+            ret[1] = 1
+        else:
+            ret[0] = 1
+            if build_result.stderr:
+                success = WARNING
+            else:
+                success = SUCCEEDED
+
+    build_duration = time.monotonic() - start_time
+    output = [build_format.format(
+        os.path.basename(sketch), success, '{:5.2f}s'.format(build_duration)
+    )]
+
+    if success != SKIPPED:
+        # Build failed
+        if build_result.returncode != 0:
+            output.append(build_result.stdout.decode("utf-8"))
+
+        # Build with warnings
+        if build_result.stderr:
+            output.append(build_result.stderr.decode("utf-8"))
+    return ret, "\n".join(output)
 
 
 def build_sketch_task(task):
@@ -134,6 +233,32 @@ def build_variant(variant, local_build):
     print()
     print(build_separator)
     print('| {:^56} |'.format('Board ' + variant[0]))
+    print(build_separator)
+    print(build_format.format('Example', '\033[39mResult\033[0m', 'Time'))
+    print(build_separator)
+
+    family = variant[2] if len(variant) > 2 else variant[0]
+    options = variant[1].split(':', 3)
+    usb_disabled = len(options) == 4 and 'usb=none' in options[3].split(',')
+    tinyusb_supported = family in TINYUSB_OPTIONS and not usb_disabled
+    examples = [
+        sketch for sketch in all_examples
+        if tinyusb_supported or not is_tinyusb_example(sketch)
+    ]
+    # Unsupported TinyUSB examples do not belong in this board's results.
+    if not examples:
+        return [0, 0, 0]
+
+    ordered_examples = sorted(
+        examples,
+        key=lambda sketch: (
+            not sketch_is_skipped(variant, sketch),
+            os.path.basename(sketch).casefold(),
+            sketch.casefold(),
+        ),
+    )
+    results = [None] * len(ordered_examples)
+    pending_output = {}
     next_to_print = 0
     with Pool(processes=os.cpu_count()) as pool:
         pool_args = (
@@ -141,6 +266,16 @@ def build_variant(variant, local_build):
             for index, sketch in enumerate(ordered_examples)
         )
         for index, ret, output in pool.imap_unordered(
+            build_sketch_task, pool_args, chunksize=1
+        ):
+            results[index] = ret
+            pending_output[index] = output
+            while next_to_print in pending_output:
+                print(pending_output.pop(next_to_print), flush=True)
+                next_to_print += 1
+
+    # Sum each result column (succeeded, failed, skipped).
+    return list(map(sum, zip(*results)))
 
 if __name__ == '__main__':
     # Resolve all sketch paths from the repository, even when invoked elsewhere.
@@ -148,6 +283,23 @@ if __name__ == '__main__':
 
     # build all variants if input not existed
     if len(sys.argv) > 1:
+        build_boards = list(filter(lambda x: sys.argv[1] in x[0], all_boards))
+    else:
+        build_boards = all_boards
+
+    all_examples = []
+    for library_dir in ('libraries', os.path.join('ci', 'libraries')):
+        if os.path.isdir(library_dir):
+            all_examples.extend(
+                sketch for sketch in glob.iglob(
+                    os.path.join(library_dir, '**', '*.ino'), recursive=True
+                )
+                if (
+                    os.path.splitext(os.path.basename(sketch))[0]
+                    == os.path.basename(os.path.dirname(sketch))
+                )
+            )
+    all_examples.sort(key=lambda sketch: (os.path.basename(sketch).casefold(), sketch.casefold()))
 
     total_time = time.monotonic()
     total_result = [0, 0, 0]
@@ -159,3 +311,7 @@ if __name__ == '__main__':
 
     # Build Summary
     total_time = time.monotonic() - total_time
+    print(build_separator)
+    print(F"Build Summary: {total_result[0]} {SUCCEEDED}, {total_result[1]} {FAILED}, {total_result[2]} {SKIPPED} and took {total_time:.2f}s")
+    print(build_separator)
+    sys.exit(total_result[1])
