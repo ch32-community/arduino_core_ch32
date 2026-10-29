@@ -1,8 +1,8 @@
 /********************************** (C) COPYRIGHT  *******************************
  * File Name          : ch32x035_gpio.c
  * Author             : WCH
- * Version            : V1.0.0
- * Date               : 2023/04/06
+ * Version            : V1.0.1
+ * Date               : 2025/09/05
  * Description        : This file provides all the GPIO firmware functions.
 *********************************************************************************
 * Copyright (c) 2021 Nanjing Qinheng Microelectronics Co., Ltd.

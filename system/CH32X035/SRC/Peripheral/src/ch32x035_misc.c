@@ -2,7 +2,7 @@
  * File Name          : ch32x035_misc.c
  * Author             : WCH
  * Version            : V1.0.0
- * Date               : 2023/04/06
+ * Date               : 2023/12/26
  * Description        : This file provides all the miscellaneous firmware functions .
 *********************************************************************************
 * Copyright (c) 2021 Nanjing Qinheng Microelectronics Co., Ltd.
@@ -20,15 +20,9 @@ __IO uint32_t NVIC_Priority_Group = 0;
  *
  * @param   NVIC_PriorityGroup - specifies the priority grouping bits length.
  *            NVIC_PriorityGroup_0 - 0 bits for pre-emption priority
- *                                   4 bits for subpriority
- *            NVIC_PriorityGroup_1 - 1 bits for pre-emption priority
  *                                   3 bits for subpriority
- *            NVIC_PriorityGroup_2 - 2 bits for pre-emption priority
+ *            NVIC_PriorityGroup_1 - 1 bits for pre-emption priority
  *                                   2 bits for subpriority
- *            NVIC_PriorityGroup_3 - 3 bits for pre-emption priority
- *                                   1 bits for subpriority
- *            NVIC_PriorityGroup_4 - 4 bits for pre-emption priority
- *                                   0 bits for subpriority
  *
  * @return  none
  */
@@ -45,6 +39,13 @@ void NVIC_PriorityGroupConfig(uint32_t NVIC_PriorityGroup)
  *
  * @param   NVIC_InitStruct - pointer to a NVIC_InitTypeDef structure that contains the
  *        configuration information for the specified NVIC peripheral.
+ *            interrupt nesting enable(CSR-0x804 bit1 = 1)
+ *              NVIC_IRQChannelPreemptionPriority - range from 0 to 1.
+ *              NVIC_IRQChannelSubPriority - range from 0 to 3.
+ *
+ *            interrupt nesting disable(CSR-0x804 bit1 = 0)
+ *              NVIC_IRQChannelPreemptionPriority - range is 0.
+ *              NVIC_IRQChannelSubPriority - range from 0 to 7.
  *
  * @return  none
  */
