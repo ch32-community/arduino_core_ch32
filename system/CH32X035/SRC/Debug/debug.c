@@ -14,6 +14,10 @@
 
 static uint8_t  p_us = 0;
 static uint16_t p_ms = 0;
+
+#define DEBUG_DATA0_ADDRESS  ((volatile uint32_t*)0xE0000380)
+#define DEBUG_DATA1_ADDRESS  ((volatile uint32_t*)0xE0000384)
+
 /*********************************************************************
  * @fn      Delay_Init
  *
@@ -140,6 +144,22 @@ void USART_Printf_Init(uint32_t baudrate)
 }
 
 /*********************************************************************
+ * @fn      SDI_Printf_Enable
+ *
+ * @brief   Initializes the SDI printf Function.
+ *
+ * @param   None
+ *
+ * @return  None
+ */
+void SDI_Printf_Enable(void)
+{
+    *(DEBUG_DATA0_ADDRESS) = 0;
+    Delay_Init();
+    Delay_Ms(1);
+}
+
+/*********************************************************************
  * @fn      _write
  *
  * @brief   Support Printf Function
@@ -153,8 +173,58 @@ void USART_Printf_Init(uint32_t baudrate)
 __attribute__((used))
 int _write(int fd, char *buf, int size)
 {
-    int i;
+    int i = 0;
 
+#if (SDI_PRINT == SDI_PR_OPEN)
+    int writeSize = size;
+    do
+    {
+
+        /**
+         * data0 + data1 = 8 bytes
+         * data0 The lowest byte storage length, the maximum is 7
+         *
+         */
+
+        while( (*(DEBUG_DATA0_ADDRESS) != 0u))
+        {
+
+        }
+
+        if(writeSize>7)
+        {
+            *(DEBUG_DATA1_ADDRESS) =      \
+              ((uint8_t)(buf[i+3])) |     \
+              ((uint8_t)(buf[i+4]) << 8) |  \
+              ((uint8_t)(buf[i+5]) << 16) | \
+              ((uint8_t)(buf[i+6]) << 24);
+            *(DEBUG_DATA0_ADDRESS) =      \
+              (7u) |                      \
+              ((uint8_t)(buf[i]) << 8) |    \
+              ((uint8_t)(buf[i+1]) << 16) | \
+              ((uint8_t)(buf[i+2]) << 24);   
+
+            i += 7;
+            writeSize -= 7;
+        }
+        else
+        {
+            uint8_t tmp = (uint8_t)writeSize;
+            *(DEBUG_DATA1_ADDRESS) =                       \
+                ((tmp > 3 ? (uint8_t)buf[i+3] : 0)) |      \
+                ((tmp > 4 ? (uint8_t)buf[i+4] : 0) << 8) | \
+                ((tmp > 5 ? (uint8_t)buf[i+5] : 0) << 16) |\
+                ((tmp > 6 ? (uint8_t)buf[i+6] : 0) << 24);
+            *(DEBUG_DATA0_ADDRESS) = 
+                (tmp) | ((uint8_t)buf[i] << 8) |           \
+                ((tmp > 1 ? (uint8_t)buf[i+1] : 0) << 16) |\
+                ((tmp > 2 ? (uint8_t)buf[i+2] : 0) << 24);
+            writeSize = 0;
+        }
+
+    } while (writeSize);
+
+#else
     for(i = 0; i < size; i++){
 #if(DEBUG == DEBUG_UART1)
         while(USART_GetFlagStatus(USART1, USART_FLAG_TC) == RESET);
@@ -167,7 +237,7 @@ int _write(int fd, char *buf, int size)
         USART_SendData(USART3, *buf++);
 #endif
     }
-
+#endif
     return size;
 }
 #endif
@@ -192,5 +262,6 @@ void *_sbrk(ptrdiff_t incr)
     curbrk += incr;
     return curbrk - incr;
 }
+
 void _fini() {}
 void _init() {}
