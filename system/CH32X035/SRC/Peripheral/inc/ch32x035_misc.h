@@ -2,7 +2,7 @@
  * File Name          : ch32x035_misc.h
  * Author             : WCH
  * Version            : V1.0.0
- * Date               : 2023/04/06
+ * Date               : 2023/12/26
  * Description        : This file contains all the functions prototypes for the
  *                      miscellaneous firmware library functions.
 *********************************************************************************
