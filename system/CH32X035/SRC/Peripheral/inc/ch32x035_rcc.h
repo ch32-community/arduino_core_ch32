@@ -46,7 +46,6 @@ typedef struct
 #define RCC_AHBPeriph_DMA1             ((uint32_t)0x00000001)
 #define RCC_AHBPeriph_SRAM             ((uint32_t)0x00000004)
 #define RCC_AHBPeriph_USBFS            ((uint32_t)0x00001000)
-#define RCC_AHBPeriph_IO2W             ((uint32_t)0x00002000)
 #define RCC_AHBPeriph_USBPD            ((uint32_t)0x00020000)
 
 /* APB2_peripheral */
