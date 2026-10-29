@@ -187,6 +187,8 @@ class HardwareTimer {
     timerObj_t _timerObj;
     callback_function_t callbacks[1 + TIMER_CHANNELS]; //Callbacks: 0 for update, 1-4 for channels. (channel5/channel6, if any, doesn't have interrupt)
 
+    uint32_t ticksToMicroseconds(uint32_t ticks, uint32_t prescaler);
+    void TIM_OC_Init(TIM_TypeDef *TIMx, const TIM_OCInitTypeDef *sConfig, uint32_t Channel) const;
     void TIM_TI_Config(TIM_TypeDef *TIMx, const TIM_ICInitTypeDef *sConfig, uint32_t Channel) const;
     void TIM_SetICPrescaler(TIM_TypeDef *TIMx, uint16_t TIM_ICPSC, uint32_t Channel) const;
 };

@@ -4,6 +4,7 @@ import subprocess
 from subprocess import Popen, PIPE
 import time
 import glob
+import tempfile
 from multiprocessing import Pool
 
 SUCCEEDED = "\033[32msucceeded\033[0m"
@@ -63,7 +64,7 @@ def build_sketch(variant, sketch):
         ret[2] = 1
         success = SKIPPED
     else:
-        build_result = subprocess.run("arduino-cli compile --warnings all --fqbn {} {}".format(fqbn, sketch),
+        build_result = subprocess.run(F"arduino-cli compile --warnings all --jobs 1 --fqbn {fqbn} {sketch}",
                                       shell=True, stdout=PIPE, stderr=PIPE)
         # get stderr into a form where warning/error was output to stderr
         if build_result.returncode != 0:
@@ -90,6 +91,12 @@ def build_sketch(variant, sketch):
         if build_result.stderr:
             output.append(build_result.stderr.decode("utf-8"))
     return ret, "\n".join(output)
+
+
+def initialize_build_worker(cache_root):
+    # Concurrent CLI processes must not publish/read the same partially built core.a.
+    # Reuse a private cache for successive sketches handled by this worker.
+    os.environ["ARDUINO_BUILD_CACHE_PATH"] = os.path.join(cache_root, str(os.getpid()))
 
 
 def build_sketch_task(task):
@@ -121,7 +128,11 @@ def build_variant(variant):
     results = [None] * len(ordered_examples)
     pending_output = {}
     next_to_print = 0
-    with Pool(processes=os.cpu_count()) as pool:
+    with tempfile.TemporaryDirectory(prefix="ch32-example-cache-") as cache_root, Pool(
+        processes=os.cpu_count(),
+        initializer=initialize_build_worker,
+        initargs=(cache_root,),
+    ) as pool:
         pool_args = (
             (index, variant, sketch)
             for index, sketch in enumerate(ordered_examples)
