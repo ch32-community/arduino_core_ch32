@@ -1,0 +1,5 @@
+# TinyUSB example: MassStorage/msc_internal_flash_samd
+# Family exclusions are inherited from the library-level .skip.txt.
+# Upstream restricts this example to other board architectures; see its .test.only markers.
+# Remove or replace * with board family names when the requirements are provided.
+*
