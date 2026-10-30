@@ -1,6 +1,14 @@
 #ifndef CH32_SERIAL_ROUTING_H
 #define CH32_SERIAL_ROUTING_H
 
+// Variants can choose a default object; otherwise use UART1.
+#ifndef BOARD_DEFAULT_SERIAL
+  #define BOARD_DEFAULT_SERIAL Serial1
+#endif
+#ifndef Serial
+  #define Serial BOARD_DEFAULT_SERIAL
+#endif
+
 // Applied after the variant defaults, in both C and C++ translation units.
 // 0: board default, -1: USB CDC, 1..8: hardware UART.
 #if defined(SERIAL_UART_INSTANCE) && SERIAL_UART_INSTANCE != 0

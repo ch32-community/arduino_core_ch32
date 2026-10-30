@@ -5,9 +5,6 @@
 
 #if defined(USE_TINYUSB)
 #include "Adafruit_USBD_CDC.h"
-#ifndef Serial
-#define Serial SerialTinyUSB
-#endif
 #endif
 
 #if defined(UART_MODULE_ENABLED) && !defined(UART_MODULE_ONLY)
