@@ -140,16 +140,33 @@
 
 
 // UART Definitions
-#ifndef SERIAL_UART_INSTANCE
-  #define SERIAL_UART_INSTANCE  1
+// Hardware ports are available independently of the default Serial alias.
+#if defined(UART_MODULE_ENABLED) && !defined(UART_MODULE_ONLY)
+  #define HAVE_HWSERIAL1
+  #define HAVE_HWSERIAL2
 #endif
-// Default pin used for generic 'Serial' instance
-// Mandatory for Firmata
-#ifndef PIN_SERIAL_RX
-  #define PIN_SERIAL_RX         PA10
+
+// Default Serial object, used when the routing menu selects Board Default.
+#ifndef BOARD_DEFAULT_SERIAL
+  #if defined(USE_TINYUSB)
+    #define BOARD_DEFAULT_SERIAL SerialTinyUSB
+  #else
+    #define BOARD_DEFAULT_SERIAL Serial1
+  #endif
 #endif
-#ifndef PIN_SERIAL_TX
-  #define PIN_SERIAL_TX         PA9
+
+#ifndef PIN_SERIAL1_RX
+  #define PIN_SERIAL1_RX     PA10  /* UART1 default RX pin */
+#endif
+#ifndef PIN_SERIAL1_TX
+  #define PIN_SERIAL1_TX     PA9  /* UART1 default TX pin */
+#endif
+
+#ifndef PIN_SERIAL2_RX
+  #define PIN_SERIAL2_RX     PA3  /* UART2 default RX pin */
+#endif
+#ifndef PIN_SERIAL2_TX
+  #define PIN_SERIAL2_TX     PA2  /* UART2 default TX pin */
 #endif
 
 /*----------------------------------------------------------------------------
