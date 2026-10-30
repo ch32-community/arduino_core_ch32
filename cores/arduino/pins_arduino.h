@@ -163,12 +163,16 @@ PinName analogInputToPinName(uint32_t pin);
 /* return first occurrence of linked PinName (PYx) */
 #define digitalPinFirstOccurence(p) (pinNametoDigitalPin(digitalPinToPinName(p)))
 
-/* Specific for Firmata */
+/* Selected Serial pins as native PinName values, also usable by C debug code. */
+PinName serialRxPinName(void);
+PinName serialTxPinName(void);
+
+/* Specific for Firmata: reserve only the pins of the selected hardware UART. */
 #if defined(PIN_SERIAL_RX) && defined(PIN_SERIAL_TX)
-#define pinIsSerial(p)              ((digitalPinToPinName(p) == \
-                                      digitalPinToPinName(PIN_SERIAL_RX & PNUM_MASK)) ||\
-                                     (digitalPinToPinName(p) == \
-                                      digitalPinToPinName(PIN_SERIAL_TX & PNUM_MASK)))
+#define pinIsSerial(p)              ((digitalPinToPinName(p) == serialRxPinName()) || \
+                                     (digitalPinToPinName(p) == serialTxPinName()))
+#else
+#define pinIsSerial(p)              false
 #endif
 /* Convenient macro to handle Analog for Firmata */
 #define pinIsAnalogInput digitalpinIsAnalogInput
