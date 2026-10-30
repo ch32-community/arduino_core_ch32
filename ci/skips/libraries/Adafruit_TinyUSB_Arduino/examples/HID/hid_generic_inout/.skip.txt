@@ -1,0 +1,4 @@
+# TinyUSB example: HID/hid_generic_inout
+# Family exclusions are inherited from the library-level .skip.txt.
+# No additional local exclusions. Upstream skip/only markers still apply.
+# Add one family (e.g. CH32V20x), board ID, or * per line to skip this example.

@@ -1,0 +1,5 @@
+# TinyUSB example: Video/video_capture
+# Family exclusions are inherited from the library-level .skip.txt.
+# Requires video classes; CFG_TUD_VIDEO and CFG_TUD_VIDEO_STREAMING are disabled in the current CH32 configuration.
+# Remove or replace * with board family names when the requirements are provided.
+*
