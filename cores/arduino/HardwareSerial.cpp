@@ -31,12 +31,17 @@
 #if defined(UART_MODULE_ENABLED) && !defined(UART_MODULE_ONLY)
 
 #if ENABLE_RX_BUFFER
+// Only begin() references the receive routine. The vector wrappers use this
+// zero-initialized callback, so unused serial builds can discard RX processing.
+typedef void (*SerialRxHandler)(USART_TypeDef *, HardwareSerial *);
+static SerialRxHandler volatile serial_rx_handler;
+
 // Interrupt handlers for all CH32 series MCUs
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-static inline __attribute__((always_inline)) void uart_rx_isr(USART_TypeDef *uart, HardwareSerial *obj) {
+static void uart_rx_isr(USART_TypeDef *uart, HardwareSerial *obj) {
   if (USART_GetITStatus(uart, USART_IT_RXNE) != RESET) {
     USART_ClearITPendingBit(uart, USART_IT_RXNE);
     
@@ -50,46 +55,50 @@ static inline __attribute__((always_inline)) void uart_rx_isr(USART_TypeDef *uar
   }
 }
 
-#define DEFINE_UART_RX_ISR(IRQ_NAME, UARTx, Serialx)                     \
+#define DEFINE_UART_RX_ISR(IRQ_NAME, UARTx, instance)                    \
+  static HardwareSerial * volatile instance;                             \
   void IRQ_NAME(void) __attribute__((interrupt("WCH-Interrupt-fast")));  \
   void IRQ_NAME(void) {                                                  \
-    uart_rx_isr(UARTx, &Serialx);                                        \
+    HardwareSerial *obj = instance;                                      \
+    if (obj) {                                                           \
+      serial_rx_handler(UARTx, obj);                                     \
+    }                                                                    \
   }
 
 #if defined(USART1) && defined(HAVE_HWSERIAL1)
-  DEFINE_UART_RX_ISR(USART1_IRQHandler, USART1, Serial1);
+  DEFINE_UART_RX_ISR(USART1_IRQHandler, USART1, serial1_rx_instance);
 #endif
 
 #if defined(USART2) && defined(HAVE_HWSERIAL2)
-  DEFINE_UART_RX_ISR(USART2_IRQHandler, USART2, Serial2);
+  DEFINE_UART_RX_ISR(USART2_IRQHandler, USART2, serial2_rx_instance);
 #endif
 
 #if defined(USART3) && defined(HAVE_HWSERIAL3)
-  DEFINE_UART_RX_ISR(USART3_IRQHandler, USART3, Serial3);
+  DEFINE_UART_RX_ISR(USART3_IRQHandler, USART3, serial3_rx_instance);
 #endif
 
 #if defined(USART4) && defined(HAVE_HWSERIAL4)
-  DEFINE_UART_RX_ISR(USART4_IRQHandler, USART4, Serial4);
+  DEFINE_UART_RX_ISR(USART4_IRQHandler, USART4, serial4_rx_instance);
 #endif
 
 #if defined(UART4) && defined(HAVE_HWSERIAL4) && !defined(USART4)
-  DEFINE_UART_RX_ISR(UART4_IRQHandler, UART4, Serial4);
+  DEFINE_UART_RX_ISR(UART4_IRQHandler, UART4, serial4_rx_instance);
 #endif
 
 #if defined(UART5) && defined(HAVE_HWSERIAL5)
-  DEFINE_UART_RX_ISR(UART5_IRQHandler, UART5, Serial5);
+  DEFINE_UART_RX_ISR(UART5_IRQHandler, UART5, serial5_rx_instance);
 #endif
 
 #if defined(UART6) && defined(HAVE_HWSERIAL6)   // note: V30x has UART 4-8, no USART5-8 in supported series (even though mentioned in various GPIO/remap sources)
-  DEFINE_UART_RX_ISR(UART6_IRQHandler, UART6, Serial6);
+  DEFINE_UART_RX_ISR(UART6_IRQHandler, UART6, serial6_rx_instance);
 #endif
 
 #if defined(UART7) && defined(HAVE_HWSERIAL7)
-  DEFINE_UART_RX_ISR(UART7_IRQHandler, UART7, Serial7);
+  DEFINE_UART_RX_ISR(UART7_IRQHandler, UART7, serial7_rx_instance);
 #endif
 
 #if defined(UART8) && defined(HAVE_HWSERIAL8)
-  DEFINE_UART_RX_ISR(UART8_IRQHandler, UART8, Serial8);
+  DEFINE_UART_RX_ISR(UART8_IRQHandler, UART8, serial8_rx_instance);
 #endif
 
 #ifdef __cplusplus
@@ -132,9 +141,6 @@ void HardwareSerial::begin(unsigned long baud, byte config)
   uint32_t databits = 0;
   uint32_t stopbits = 0;
   uint32_t parity = 0;
-
-  _baud = baud;
-  _config = config;
 
 #if ENABLE_RX_BUFFER
   // Clear buffers for all CH32 series MCUs
@@ -467,42 +473,79 @@ void HardwareSerial::setHandler(void *handler)
    _serial.uart  = (USART_TypeDef *) handler;
 }
 
-// SerialEvent functions are weak, so when the user doesn't define them,
-// the linker just sets their address to 0 (which is checked below).
+// Function-local statics have no startup constructor. When an accessor is
+// unused, --gc-sections can remove its object, RX buffer and constructor code.
+// Making a port available in a variant must not instantiate it.
 #if defined(HAVE_HWSERIAL1)
-  HardwareSerial Serial1(USART1);
+HardwareSerial &getSerial1()
+{
+  static HardwareSerial serial(USART1);
+  return serial;
+}
 #endif
 
 #if defined(HAVE_HWSERIAL2)
-  HardwareSerial Serial2(USART2);
+HardwareSerial &getSerial2()
+{
+  static HardwareSerial serial(USART2);
+  return serial;
+}
 #endif
 
 #if defined(HAVE_HWSERIAL3)
-  HardwareSerial Serial3(USART3);
+HardwareSerial &getSerial3()
+{
+  static HardwareSerial serial(USART3);
+  return serial;
+}
 #endif
 
 #if defined(HAVE_HWSERIAL4)
   #if defined(USART4)
-    HardwareSerial Serial4(USART4);
+HardwareSerial &getSerial4()
+{
+  static HardwareSerial serial(USART4);
+  return serial;
+}
   #else
-    HardwareSerial Serial4(UART4);
+HardwareSerial &getSerial4()
+{
+  static HardwareSerial serial(UART4);
+  return serial;
+}
   #endif
 #endif
 
 #if defined(HAVE_HWSERIAL5) && defined(UART5)
-  HardwareSerial Serial5(UART5);
+HardwareSerial &getSerial5()
+{
+  static HardwareSerial serial(UART5);
+  return serial;
+}
 #endif
 
 #if defined(HAVE_HWSERIAL6) && defined(UART6)
-  HardwareSerial Serial6(UART6);
+HardwareSerial &getSerial6()
+{
+  static HardwareSerial serial(UART6);
+  return serial;
+}
 #endif
 
 #if defined(HAVE_HWSERIAL7) && defined(UART7)
-  HardwareSerial Serial7(UART7);
+HardwareSerial &getSerial7()
+{
+  static HardwareSerial serial(UART7);
+  return serial;
+}
 #endif
 
 #if defined(HAVE_HWSERIAL8) && defined(UART8)
-  HardwareSerial Serial8(UART8);
+HardwareSerial &getSerial8()
+{
+  static HardwareSerial serial(UART8);
+  return serial;
+}
 #endif
 
 #endif // UART_MODULE_ENABLED && !UART_MODULE_ONLY
