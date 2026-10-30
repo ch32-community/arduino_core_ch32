@@ -141,13 +141,21 @@ typedef enum {
   #define ENABLE_RX_BUFFER 0
 #endif
 
+struct HardwareSerialIrq;
+
 class HardwareSerial : public Stream {
 
-  serial_t _serial;  
+  serial_t _serial;
+#if ENABLE_RX_BUFFER
+  HardwareSerialIrq *_rx_irq;
+#endif
 public:
     HardwareSerial(void *peripheral);
     HardwareSerial(void *peripheral, uint32_t rx, uint32_t tx);
     HardwareSerial(void *peripheral, PinName rx, PinName tx);
+    // Internal port factories bind their IRQ without referencing other ports.
+    HardwareSerial(void *peripheral, uint32_t rx, uint32_t tx, HardwareSerialIrq *irq);
+    HardwareSerial(void *peripheral, PinName rx, PinName tx, HardwareSerialIrq *irq);
     
     void begin(unsigned long baud)
     {
