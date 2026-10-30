@@ -27,6 +27,7 @@
 #include <stdio.h>
 #include "Arduino.h"
 #include "HardwareSerial.h"
+#include "HardwareSerial/HardwareSerial_private.h"
 
 #if defined(UART_MODULE_ENABLED) && !defined(UART_MODULE_ONLY)
 
