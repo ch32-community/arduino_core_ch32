@@ -25,8 +25,8 @@ extern "C" {
 /* If DEBUG_UART is not defined assume this is the one linked to PIN_SERIAL_TX */
 #if !defined(DEBUG_UART)
 #if defined(PIN_SERIAL_TX)
-#define DEBUG_UART          pinmap_peripheral(digitalPinToPinName(PIN_SERIAL_TX), PinMap_UART_TX)
-#define DEBUG_PINNAME_TX    digitalPinToPinName(PIN_SERIAL_TX)
+#define DEBUG_UART          pinmap_peripheral(serialTxPinName(), PinMap_UART_TX)
+#define DEBUG_PINNAME_TX    serialTxPinName()
 #else
 /* No debug UART defined */
 #define DEBUG_UART          NP
