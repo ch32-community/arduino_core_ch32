@@ -27,7 +27,6 @@
 #include <stdio.h>
 #include "Arduino.h"
 #include "HardwareSerial.h"
-#include "HardwareSerial/HardwareSerial_private.h"
 
 #if defined(UART_MODULE_ENABLED) && !defined(UART_MODULE_ONLY)
 
@@ -50,6 +49,11 @@ static void uart_rx_isr(USART_TypeDef *uart, HardwareSerial *obj) {
 }
 
 #endif // ENABLE_RX_BUFFER
+
+PinName hardware_serial_pin_for(void *peripheral, bool tx)
+{
+  return pinmap_pin(peripheral, tx ? PinMap_UART_TX : PinMap_UART_RX);
+}
 
 HardwareSerial::HardwareSerial(void *peripheral, uint32_t rx, uint32_t tx,
                                HardwareSerialIrq *irq)
