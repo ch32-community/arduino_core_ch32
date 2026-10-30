@@ -108,7 +108,9 @@ class HardwareSerial : public Stream {
 
   serial_t _serial;  
 public:
-    HardwareSerial(void *peripheral); 
+    HardwareSerial(void *peripheral);
+    HardwareSerial(void *peripheral, uint32_t rx, uint32_t tx);
+    HardwareSerial(void *peripheral, PinName rx, PinName tx);
     
     void begin(unsigned long baud)
     {

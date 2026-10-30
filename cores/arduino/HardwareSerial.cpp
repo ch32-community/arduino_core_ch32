@@ -107,20 +107,27 @@ static void uart_rx_isr(USART_TypeDef *uart, HardwareSerial *obj) {
 #endif // ENABLE_RX_BUFFER
 
 HardwareSerial::HardwareSerial(void *peripheral)
+  : HardwareSerial(peripheral, pinmap_pin(peripheral, PinMap_UART_RX),
+                   pinmap_pin(peripheral, PinMap_UART_TX))
+{
+}
+
+HardwareSerial::HardwareSerial(void *peripheral, uint32_t rx, uint32_t tx)
+  : HardwareSerial(peripheral, digitalPinToPinName(rx), digitalPinToPinName(tx))
+{
+}
+
+HardwareSerial::HardwareSerial(void *peripheral, PinName rx, PinName tx)
 {
   setHandler(peripheral);
 
-  // MxRD: find the first pin in the map, instead of predefined values, to support multiple simultaneous serial ports.
-  setRx(pinmap_pin(peripheral, PinMap_UART_RX));
-  setTx(pinmap_pin(peripheral, PinMap_UART_TX));
-  
 #if ENABLE_RX_BUFFER
   // Initialize buffer pointers for all CH32 series MCUs
   _rx_buffer_head = 0;
   _rx_buffer_tail = 0;
 #endif
-  
-  init(_serial.pin_rx, _serial.pin_tx);
+
+  init(rx, tx);
 }
 
 void HardwareSerial::init(PinName _rx, PinName _tx, PinName _rts, PinName _cts)
@@ -498,7 +505,7 @@ void HardwareSerial::setHandler(void *handler)
 #if defined(HAVE_HWSERIAL1)
 HardwareSerial &getSerial1()
 {
-  static HardwareSerial serial(USART1);
+  static HardwareSerial serial(USART1, PIN_SERIAL1_RX, PIN_SERIAL1_TX);
   return serial;
 }
 #endif
@@ -506,7 +513,7 @@ HardwareSerial &getSerial1()
 #if defined(HAVE_HWSERIAL2)
 HardwareSerial &getSerial2()
 {
-  static HardwareSerial serial(USART2);
+  static HardwareSerial serial(USART2, PIN_SERIAL2_RX, PIN_SERIAL2_TX);
   return serial;
 }
 #endif
@@ -514,7 +521,7 @@ HardwareSerial &getSerial2()
 #if defined(HAVE_HWSERIAL3)
 HardwareSerial &getSerial3()
 {
-  static HardwareSerial serial(USART3);
+  static HardwareSerial serial(USART3, PIN_SERIAL3_RX, PIN_SERIAL3_TX);
   return serial;
 }
 #endif
@@ -523,13 +530,13 @@ HardwareSerial &getSerial3()
   #if defined(USART4)
 HardwareSerial &getSerial4()
 {
-  static HardwareSerial serial(USART4);
+  static HardwareSerial serial(USART4, PIN_SERIAL4_RX, PIN_SERIAL4_TX);
   return serial;
 }
   #else
 HardwareSerial &getSerial4()
 {
-  static HardwareSerial serial(UART4);
+  static HardwareSerial serial(UART4, PIN_SERIAL4_RX, PIN_SERIAL4_TX);
   return serial;
 }
   #endif
@@ -538,7 +545,7 @@ HardwareSerial &getSerial4()
 #if defined(HAVE_HWSERIAL5) && defined(UART5)
 HardwareSerial &getSerial5()
 {
-  static HardwareSerial serial(UART5);
+  static HardwareSerial serial(UART5, PIN_SERIAL5_RX, PIN_SERIAL5_TX);
   return serial;
 }
 #endif
@@ -546,7 +553,7 @@ HardwareSerial &getSerial5()
 #if defined(HAVE_HWSERIAL6) && defined(UART6)
 HardwareSerial &getSerial6()
 {
-  static HardwareSerial serial(UART6);
+  static HardwareSerial serial(UART6, PIN_SERIAL6_RX, PIN_SERIAL6_TX);
   return serial;
 }
 #endif
@@ -554,7 +561,7 @@ HardwareSerial &getSerial6()
 #if defined(HAVE_HWSERIAL7) && defined(UART7)
 HardwareSerial &getSerial7()
 {
-  static HardwareSerial serial(UART7);
+  static HardwareSerial serial(UART7, PIN_SERIAL7_RX, PIN_SERIAL7_TX);
   return serial;
 }
 #endif
@@ -562,7 +569,7 @@ HardwareSerial &getSerial7()
 #if defined(HAVE_HWSERIAL8) && defined(UART8)
 HardwareSerial &getSerial8()
 {
-  static HardwareSerial serial(UART8);
+  static HardwareSerial serial(UART8, PIN_SERIAL8_RX, PIN_SERIAL8_TX);
   return serial;
 }
 #endif
