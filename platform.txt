@@ -86,9 +86,7 @@ compiler.elf2lst.extra_flags=
 #build.usb_flags=-DUSBCON {build.usb_speed} -DUSBD_VID={build.vid} -DUSBD_PID={build.pid} -DHAL_PCD_MODULE_ENABLED
 build.usb_flags=
 
-# Serial Flags
-# ---------
-#build.serial_flags=-DSERIAL_UART_INSTANCE=0
+# Serial routing from the board menu.
 build.serial_flags=
 
 # Specify defaults for vid/pid, since an empty value is impossible to
@@ -102,7 +100,6 @@ build.pid=0
 build.info.flags=-DARDUINO_ARCH_CH32 -D{build.series} -DARDUINO={runtime.ide.version} -D{build.chip} -DVARIANT_H="{build.variant_h}" {build.serial_flags} {build.usb_flags}
 
 # Defaults config
-build.xSerial=
 build.enable_usb=
 build.usb_speed=
 build.enable_virtio=

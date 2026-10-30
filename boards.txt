@@ -2,7 +2,7 @@
 
 menu.pnum=Board select
 menu.clock=Clock select
-menu.xserial=U(S)ART select
+menu.xserial=Serial routing
 menu.usb=USB support (if available)
 menu.xusb=USB speed (if available)
 menu.virtio=Virtual serial support
@@ -326,16 +326,13 @@ CH32VM00X_EVT.menu.rtlib.full=Newlib Standard
 CH32VM00X_EVT.menu.rtlib.full.build.flags.ldflags=--specs=nosys.specs
 
 
-# Serial port selection
-CH32VM00X_EVT.menu.xserial.serial1=Serial=Board Default (Default)
-CH32VM00X_EVT.menu.xserial.serial1=Serial=Serial1 (default)
+# Serial routing (all supported SerialN ports remain available)
+CH32VM00X_EVT.menu.xserial.default=Board Default (Default)
+CH32VM00X_EVT.menu.xserial.default.build.serial_flags=-DSERIAL_UART_INSTANCE=0
+CH32VM00X_EVT.menu.xserial.serial1=Serial=Serial1
 CH32VM00X_EVT.menu.xserial.serial1.build.serial_flags=-DSERIAL_UART_INSTANCE=1
-CH32VM00X_EVT.menu.xserial.serial2=Serial=Serial2 (V005/6/7)
+CH32VM00X_EVT.menu.xserial.serial2=Serial=Serial2
 CH32VM00X_EVT.menu.xserial.serial2.build.serial_flags=-DSERIAL_UART_INSTANCE=2
-CH32VM00X_EVT.menu.xserial.serialMulti=Dual Serial1-Serial2 (V005/6/7)
-CH32VM00X_EVT.menu.xserial.serialMulti.build.serial_flags=-DSERIAL_UART_INSTANCES=2
-CH32VM00X_EVT.menu.xserial.none=No Serial (smallest sketch)
-CH32VM00X_EVT.menu.xserial.none.build.serial_flags=-DHWSERIAL_NONE
 
 
 
@@ -456,9 +453,10 @@ CH32X035_EVT.menu.rtlib.full=Newlib Standard
 CH32X035_EVT.menu.rtlib.full.build.flags.ldflags=--specs=nosys.specs
 
 
-# Serial port selection
-CH32X035_EVT.menu.xserial.serial1=Serial=Board Default (Default)
-CH32X035_EVT.menu.xserial.serial1=Serial=Serial1 (default)
+# Serial routing (all supported SerialN ports remain available)
+CH32X035_EVT.menu.xserial.default=Board Default (Default)
+CH32X035_EVT.menu.xserial.default.build.serial_flags=-DSERIAL_UART_INSTANCE=0
+CH32X035_EVT.menu.xserial.serial1=Serial=Serial1
 CH32X035_EVT.menu.xserial.serial1.build.serial_flags=-DSERIAL_UART_INSTANCE=1
 CH32X035_EVT.menu.xserial.serial2=Serial=Serial2
 CH32X035_EVT.menu.xserial.serial2.build.serial_flags=-DSERIAL_UART_INSTANCE=2
@@ -466,10 +464,6 @@ CH32X035_EVT.menu.xserial.serial3=Serial=Serial3 (X035 only)
 CH32X035_EVT.menu.xserial.serial3.build.serial_flags=-DSERIAL_UART_INSTANCE=3
 CH32X035_EVT.menu.xserial.serial4=Serial=Serial4
 CH32X035_EVT.menu.xserial.serial4.build.serial_flags=-DSERIAL_UART_INSTANCE=4
-CH32X035_EVT.menu.xserial.serialMulti=Multiple (Serial1-Serial4)
-CH32X035_EVT.menu.xserial.serialMulti.build.serial_flags=-DSERIAL_UART_INSTANCES=4
-CH32X035_EVT.menu.xserial.none=No Serial (smallest sketch)
-CH32X035_EVT.menu.xserial.none.build.serial_flags=-DHWSERIAL_NONE
 
 
 # USB support
@@ -587,18 +581,15 @@ CH32V10x_EVT.menu.rtlib.full=Newlib Standard
 CH32V10x_EVT.menu.rtlib.full.build.flags.ldflags=--specs=nosys.specs
 
 
-# Serial port selection
-CH32V10x_EVT.menu.xserial.serial1=Serial=Board Default (Default)
-CH32V10x_EVT.menu.xserial.serial1=Serial=Serial1 (default)
+# Serial routing (all supported SerialN ports remain available)
+CH32V10x_EVT.menu.xserial.default=Board Default (Default)
+CH32V10x_EVT.menu.xserial.default.build.serial_flags=-DSERIAL_UART_INSTANCE=0
+CH32V10x_EVT.menu.xserial.serial1=Serial=Serial1
 CH32V10x_EVT.menu.xserial.serial1.build.serial_flags=-DSERIAL_UART_INSTANCE=1
 CH32V10x_EVT.menu.xserial.serial2=Serial=Serial2
 CH32V10x_EVT.menu.xserial.serial2.build.serial_flags=-DSERIAL_UART_INSTANCE=2
 CH32V10x_EVT.menu.xserial.serial3=Serial=Serial3
 CH32V10x_EVT.menu.xserial.serial3.build.serial_flags=-DSERIAL_UART_INSTANCE=3
-CH32V10x_EVT.menu.xserial.serialMulti=Multiple (Serial1-Serial3)
-CH32V10x_EVT.menu.xserial.serialMulti.build.serial_flags=-DSERIAL_UART_INSTANCES=3
-CH32V10x_EVT.menu.xserial.none=No Serial (smallest sketch)
-CH32V10x_EVT.menu.xserial.none.build.serial_flags=-DHWSERIAL_NONE
 
 
 
@@ -728,9 +719,10 @@ CH32V20x_EVT.menu.pnum.CH32V203G6_LANA_TNY.build.IQ_math_RV32=
 CH32V20x_EVT.menu.pnum.CH32V203G6_LANA_TNY.build.ch_extra_lib=-lprintf
 
 
-# Serial port selection
-CH32V20x_EVT.menu.xserial.serial1=Serial=Board Default (Default)
-CH32V20x_EVT.menu.xserial.serial1=Serial=Serial1 (default)
+# Serial routing (all supported SerialN ports remain available)
+CH32V20x_EVT.menu.xserial.default=Board Default (Default)
+CH32V20x_EVT.menu.xserial.default.build.serial_flags=-DSERIAL_UART_INSTANCE=0
+CH32V20x_EVT.menu.xserial.serial1=Serial=Serial1
 CH32V20x_EVT.menu.xserial.serial1.build.serial_flags=-DSERIAL_UART_INSTANCE=1
 CH32V20x_EVT.menu.xserial.serial2=Serial=Serial2
 CH32V20x_EVT.menu.xserial.serial2.build.serial_flags=-DSERIAL_UART_INSTANCE=2
@@ -738,11 +730,8 @@ CH32V20x_EVT.menu.xserial.serial3=Serial=Serial3 (only C8/RB)
 CH32V20x_EVT.menu.xserial.serial3.build.serial_flags=-DSERIAL_UART_INSTANCE=3
 CH32V20x_EVT.menu.xserial.serial4=Serial=Serial4 (only C8/RB)
 CH32V20x_EVT.menu.xserial.serial4.build.serial_flags=-DSERIAL_UART_INSTANCE=4
-CH32V20x_EVT.menu.xserial.serialMulti=Multiple (Serial1-Serial4)
-CH32V20x_EVT.menu.xserial.serialMulti.build.serial_flags=-DSERIAL_UART_INSTANCES=4
-CH32V20x_EVT.menu.xserial.none=No Serial (smallest sketch)
-CH32V20x_EVT.menu.xserial.none.build.serial_flags=-DHWSERIAL_NONE
-
+CH32V20x_EVT.menu.xserial.usb=Serial=USB CDC (requires TinyUSB)
+CH32V20x_EVT.menu.xserial.usb.build.serial_flags=-DSERIAL_UART_INSTANCE=-2
 
 # USB support
 CH32V20x_EVT.menu.usb.none=None
@@ -873,9 +862,10 @@ CH32V30x_EVT.menu.pnum.CH32V307VCT6.build.IQ_math_RV32=
 CH32V30x_EVT.menu.pnum.CH32V307VCT6.build.ch_extra_lib=-lprintfloat
 
 
-# Serial port selection
-CH32V30x_EVT.menu.xserial.serial1=Serial=Board Default (Default)
-CH32V30x_EVT.menu.xserial.serial1=Serial=Serial1 (default)
+# Serial routing (all supported SerialN ports remain available)
+CH32V30x_EVT.menu.xserial.default=Board Default (Default)
+CH32V30x_EVT.menu.xserial.default.build.serial_flags=-DSERIAL_UART_INSTANCE=0
+CH32V30x_EVT.menu.xserial.serial1=Serial=Serial1
 CH32V30x_EVT.menu.xserial.serial1.build.serial_flags=-DSERIAL_UART_INSTANCE=1
 CH32V30x_EVT.menu.xserial.serial2=Serial=Serial2
 CH32V30x_EVT.menu.xserial.serial2.build.serial_flags=-DSERIAL_UART_INSTANCE=2
@@ -891,10 +881,8 @@ CH32V30x_EVT.menu.xserial.serial7=Serial=Serial7 (V303/V307)
 CH32V30x_EVT.menu.xserial.serial7.build.serial_flags=-DSERIAL_UART_INSTANCE=7
 CH32V30x_EVT.menu.xserial.serial8=Serial=Serial8 (V303/V307)
 CH32V30x_EVT.menu.xserial.serial8.build.serial_flags=-DSERIAL_UART_INSTANCE=8
-CH32V30x_EVT.menu.xserial.serialMulti=Multiple (Serial1-Serial8)
-CH32V30x_EVT.menu.xserial.serialMulti.build.serial_flags=-DSERIAL_UART_INSTANCES=8
-CH32V30x_EVT.menu.xserial.none=No Serial (smallest sketch)
-CH32V30x_EVT.menu.xserial.none.build.serial_flags=-DHWSERIAL_NONE
+CH32V30x_EVT.menu.xserial.usb=Serial=USB CDC (requires TinyUSB)
+CH32V30x_EVT.menu.xserial.usb.build.serial_flags=-DSERIAL_UART_INSTANCE=-2
 
 
 # USB support
@@ -1109,9 +1097,10 @@ CH32L10x_EVT.menu.rtlib.full=Newlib Standard
 CH32L10x_EVT.menu.rtlib.full.build.flags.ldflags=--specs=nosys.specs
 
 
-# Serial port selection
-CH32L10x_EVT.menu.xserial.serial1=Serial=Board Default (Default)
-CH32L10x_EVT.menu.xserial.serial1=Serial=Serial1 (default)
+# Serial routing (all supported SerialN ports remain available)
+CH32L10x_EVT.menu.xserial.default=Board Default (Default)
+CH32L10x_EVT.menu.xserial.default.build.serial_flags=-DSERIAL_UART_INSTANCE=0
+CH32L10x_EVT.menu.xserial.serial1=Serial=Serial1
 CH32L10x_EVT.menu.xserial.serial1.build.serial_flags=-DSERIAL_UART_INSTANCE=1
 CH32L10x_EVT.menu.xserial.serial2=Serial=Serial2
 CH32L10x_EVT.menu.xserial.serial2.build.serial_flags=-DSERIAL_UART_INSTANCE=2
