@@ -123,7 +123,8 @@ template<unsigned Port> HardwareSerial &hardware_serial_instance() {
   return serial;
 }
 
-// Runtime peripheral constructors necessarily instantiate every candidate port.
+// Runtime-selected peripherals may need every candidate; constant arguments
+// can be pruned by the compiler.
 // Keep this resolver and those constructors inline so unused APIs emit no ISRs.
 inline HardwareSerialIrq *hardware_serial_irq_for(void *peripheral) {
 #if defined(HAVE_HWSERIAL1) && defined(USART1)
