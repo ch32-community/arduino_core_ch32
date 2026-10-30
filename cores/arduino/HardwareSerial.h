@@ -31,6 +31,43 @@
 #include "Stream.h"
 #include "uart.h"
 
+// Per-port pin overrides are only valid for UARTs exposed by the selected
+// variant. Catch misspelled/nonexistent port selections at compile time.
+#if (defined(PIN_SERIAL1_RX) || defined(PIN_SERIAL1_TX)) && !defined(HAVE_HWSERIAL1)
+  #error "PIN_SERIAL1_RX/TX configured, but this board does not expose Serial1"
+#endif
+#if (defined(PIN_SERIAL2_RX) || defined(PIN_SERIAL2_TX)) && !defined(HAVE_HWSERIAL2)
+  #error "PIN_SERIAL2_RX/TX configured, but this board does not expose Serial2"
+#endif
+#if (defined(PIN_SERIAL3_RX) || defined(PIN_SERIAL3_TX)) && !defined(HAVE_HWSERIAL3)
+  #error "PIN_SERIAL3_RX/TX configured, but this board does not expose Serial3"
+#endif
+#if (defined(PIN_SERIAL4_RX) || defined(PIN_SERIAL4_TX)) && !defined(HAVE_HWSERIAL4)
+  #error "PIN_SERIAL4_RX/TX configured, but this board does not expose Serial4"
+#endif
+#if (defined(PIN_SERIAL5_RX) || defined(PIN_SERIAL5_TX)) && !defined(HAVE_HWSERIAL5)
+  #error "PIN_SERIAL5_RX/TX configured, but this board does not expose Serial5"
+#endif
+#if (defined(PIN_SERIAL6_RX) || defined(PIN_SERIAL6_TX)) && !defined(HAVE_HWSERIAL6)
+  #error "PIN_SERIAL6_RX/TX configured, but this board does not expose Serial6"
+#endif
+#if (defined(PIN_SERIAL7_RX) || defined(PIN_SERIAL7_TX)) && !defined(HAVE_HWSERIAL7)
+  #error "PIN_SERIAL7_RX/TX configured, but this board does not expose Serial7"
+#endif
+#if (defined(PIN_SERIAL8_RX) || defined(PIN_SERIAL8_TX)) && !defined(HAVE_HWSERIAL8)
+  #error "PIN_SERIAL8_RX/TX configured, but this board does not expose Serial8"
+#endif
+#if (defined(PIN_SERIAL1_RX) != defined(PIN_SERIAL1_TX)) || \
+    (defined(PIN_SERIAL2_RX) != defined(PIN_SERIAL2_TX)) || \
+    (defined(PIN_SERIAL3_RX) != defined(PIN_SERIAL3_TX)) || \
+    (defined(PIN_SERIAL4_RX) != defined(PIN_SERIAL4_TX)) || \
+    (defined(PIN_SERIAL5_RX) != defined(PIN_SERIAL5_TX)) || \
+    (defined(PIN_SERIAL6_RX) != defined(PIN_SERIAL6_TX)) || \
+    (defined(PIN_SERIAL7_RX) != defined(PIN_SERIAL7_TX)) || \
+    (defined(PIN_SERIAL8_RX) != defined(PIN_SERIAL8_TX))
+  #error "Define both PIN_SERIALn_RX and PIN_SERIALn_TX for a serial pin override"
+#endif
+
 // Define constants and variables for buffering incoming serial data.  We're
 // using a ring buffer (I think), in which head is the index of the location
 // to which to write the next incoming character and tail is the index of the
