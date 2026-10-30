@@ -53,28 +53,30 @@ static __inline__ uint8_t __ch32_irq_off_ret1(void)
 
 static __inline__ uint8_t __ch32_irq_on_ret1(void)
 {
-  __asm__ volatile ("" ::: "memory");
-  __enable_irq();  // MxRD: compiler barrier before re-enabling interrupts
+  __asm__ volatile ("" ::: "memory");  // MxRD: compiler barrier before and after enabling interrupts
+  __enable_irq();
+  __asm__ volatile ("" ::: "memory");  // MxRD: compiler barrier before and after enabling interrupts
   return 1;
 }
 
 static __inline__ void __ch32_irq_restore(const uint32_t *state)
 {
   if (*state) {
-    __asm__ volatile ("" ::: "memory");  // MxRD: compiler barrier before re-enabling interrupts
+    __asm__ volatile ("" ::: "memory");  // MxRD: compiler barrier before and after enabling interrupts
     __enable_irq();
+    __asm__ volatile ("" ::: "memory");  // MxRD: compiler barrier before and after enabling interrupts
   } else {
     __disable_irq();
     __asm__ volatile ("" ::: "memory");  // MxRD: compiler barrier after disabling interrupts
   }
-  //__asm__ volatile ("" ::: "memory");  // MxRD: compiler barrier after restoring disabled interrupts
 }
 
 static __inline__ void __ch32_irq_force_on(const uint32_t *state)
 {
   (void)state;
-  __asm__ volatile ("" ::: "memory");  // MxRD: compiler barrier before re-enabling interrupts
+  __asm__ volatile ("" ::: "memory");  // MxRD: compiler barrier before and after enabling interrupts
   __enable_irq();
+  __asm__ volatile ("" ::: "memory");  // MxRD: compiler barrier before and after enabling interrupts
 }
 
 static __inline__ void __ch32_irq_force_off(const uint32_t *state)
