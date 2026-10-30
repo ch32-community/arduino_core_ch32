@@ -30,6 +30,7 @@ usb_list = {
 board_list = {
     'CH32V00x': {
         'name': 'CH32V00x_EVT',
+        'serial_ports': [1],
         'info': '',
         'usb': [],
         'hsi': [48, 24, 8],
@@ -40,6 +41,7 @@ board_list = {
     },
     'CH32VM00X': {
         'name': 'CH32VM00X_EVT',
+        'serial_ports': [1, 2],
         'info': 'including V/M 002 004 005 006 007',
         'usb': [],
         'hsi': [48, 24, 8],
@@ -50,6 +52,7 @@ board_list = {
     },
     'CH32X035': {
         'name': 'CH32X035_EVT',
+        'serial_ports': [1, 2, 3, 4],
         'info': '',
         'usb': [],
         'hsi': [48, 24, 16, 12, 8],
@@ -60,6 +63,7 @@ board_list = {
     },
     'CH32V10x': {
         'name': 'CH32V10x_EVT',
+        'serial_ports': [1, 2, 3],
         'info': '-lprintf, CH32V10x_3V3: 3.3V power supply  CH32V10x_5V: 5V power supply',
         'usb': [],
         'hsi': [72, 56, 48, 8],
@@ -70,6 +74,7 @@ board_list = {
     },
     'CH32V20x': {
         'name': 'CH32V20x_EVT',
+        'serial_ports': [1, 2, 3, 4],
         'info': '',
         'usb': ['tinyusb_usbd', 'tinyusb_usbfs'],
         'hsi': [144, 120, 96, 72, 56, 48, 0],
@@ -86,6 +91,7 @@ board_list = {
     },
     'CH32V30x': {
         'name': 'CH32V30x_EVT',
+        'serial_ports': [1, 2, 3, 4, 5, 6, 7, 8],
         'info': '-lprintfloat, CH32V30x_C: connected product_line  CH32V30x: normal product_line',
         'usb': ['tinyusb_usbhs', 'tinyusb_usbfs'],
         'hsi': [144, 120, 96, 72, 56, 48, 0],
@@ -96,6 +102,7 @@ board_list = {
     },
     'CH32L10x': {
         'name': 'CH32L10x_EVT',
+        'serial_ports': [1, 2, 3, 4],
         'info': '-lprintf',
         'usb': [],
         'hsi': [96, 72, 56, 48, 0, 'HSI_LP'],
@@ -112,7 +119,7 @@ def build_global_menu():
 
 menu.pnum=Board Select
 menu.clock=Clock Select
-menu.xserial=U(S)ART support
+menu.xserial=Serial routing
 menu.usb=USB support (if available)
 menu.xusb=USB speed (if available)
 menu.virtio=Virtual serial support
@@ -176,6 +183,23 @@ def build_usb(series, values):
     for usb in values['usb']:
         print(f'{menu}.{usb}={usb_list[usb]["name"]}')
         print(f'{menu}.{usb}.build.usb_flags={usb_list[usb]["usb_flags"]}')
+
+
+def build_serial(series, values):
+    if len(values['serial_ports']) == 1 and not values['usb']:
+        return
+    print()
+    print('# Serial routing (all supported SerialN ports remain available)')
+    menu = f'{values["name"]}.menu.xserial'
+    print(f'{menu}.default=Board Default (Default)')
+    print(f'{menu}.default.build.serial_flags=-DSERIAL_UART_INSTANCE=0')
+    for port in values['serial_ports']:
+        print(f'{menu}.serial{port}=Serial=Serial{port}')
+        print(f'{menu}.serial{port}.build.serial_flags=-DSERIAL_UART_INSTANCE={port}')
+    if values['usb']:
+        print(f'{menu}.usb=Serial=USB CDC (requires TinyUSB)')
+        print(f'{menu}.usb.build.serial_flags=-DSERIAL_UART_INSTANCE=-1')
+    print()
 
 
 def build_upload(series, values):
@@ -295,6 +319,7 @@ def make_board(series, values):
     build_header(series, values)
     build_pnum(series, values)
     build_usb(series, values)
+    build_serial(series, values)
     build_upload(series, values)
     build_clock(series, values)
     build_optimization(series, values)
@@ -304,7 +329,8 @@ def make_board(series, values):
 # ------------------------------
 # main
 # ------------------------------
-build_global_menu()
+if __name__ == '__main__':
+    build_global_menu()
 
-for k, v in board_list.items():
-    make_board(k, v)
+    for k, v in board_list.items():
+        make_board(k, v)
