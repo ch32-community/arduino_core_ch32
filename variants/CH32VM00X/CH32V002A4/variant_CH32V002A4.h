@@ -112,24 +112,8 @@
 // When SPI is enabled alternative pins UART_3 (RX'/TX'=PC1/PC0) are used, but these conflict with I2C
 // If I2C is enabled we cannot use these alternatives but there are no other combinations available.
 // Using both I2C/SPI and UART is too much (but flash gets limited then also)
-#ifndef SERIAL_UART_INSTANCES
-  #define SERIAL_UART_INSTANCES 1
-#endif
-
-#if (SERIAL_UART_INSTANCES == 1)
-  //  Using only one Serial port
-  #ifndef SERIAL_UART_INSTANCE
-    #define SERIAL_UART_INSTANCE 1   // use Serial1 as default for Serial
-  #endif
-#else
-  // Using multple Serial ports
-  // When having multiple Serial instances SERIAL_UART_INSTANCE cannot be defined as it will skip defining the other ports.
-  #undef SERIAL_UART_INSTANCE
-  #define ENABLE_HWSERIAL1 1
-  //#define ENABLE_HWSERIAL2 1
-  #define Serial Serial1
-  #error No Serial2 on CH32V002 (do not select Dual Serial)
-  // Note: cannot use single quote ' in #error
+#ifndef BOARD_DEFAULT_SERIAL
+  #define BOARD_DEFAULT_SERIAL 1
 #endif
 
 // Default pins for each hardware serial port.

@@ -119,24 +119,8 @@
 // CH32L103: 
 //    RX: PA10=RX1, PA3=RX2, PB11=RX3, PB1=RX4
 //    TX: PA9=TX1, PA2=TX2, PB10=TX3, PB0=TX4
-#ifndef SERIAL_UART_INSTANCES
-  #define SERIAL_UART_INSTANCES 1
-#endif
-
-#if (SERIAL_UART_INSTANCES == 1)
-  //  Using only one Serial port
-  #ifndef SERIAL_UART_INSTANCE
-    #define SERIAL_UART_INSTANCE 1   // use Serial1 as default for Serial
-  #endif
-#else
-  // Using multple Serial ports
-  // When having multiple Serial instances SERIAL_UART_INSTANCE cannot be defined as it will skip defining the other ports.
-  #undef SERIAL_UART_INSTANCE
-  #define ENABLE_HWSERIAL1 1
-  #define ENABLE_HWSERIAL2 1
-  #define ENABLE_HWSERIAL3 1
-  #define ENABLE_HWSERIAL4 1
-  #define Serial Serial1
+#ifndef BOARD_DEFAULT_SERIAL
+  #define BOARD_DEFAULT_SERIAL 1
 #endif
 
 // Default pins for each hardware serial port.
