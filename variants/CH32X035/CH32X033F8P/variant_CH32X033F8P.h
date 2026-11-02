@@ -134,35 +134,26 @@
   #define Serial Serial2
 #endif
 
-// Default pin used for generic 'Serial' instance
-// Mandatory for Firmata, no longer used by HardwareSerial.
-#if SERIAL_UART_INSTANCE==1
-    // Use UART1 alternative pins RX1_1/TX1_1 (PA11/PA10)
-    #ifndef PIN_SERIAL_RX
-      #define PIN_SERIAL_RX         PA11
-    #endif
-    #ifndef PIN_SERIAL_TX
-      #define PIN_SERIAL_TX         PA10
-    #endif
-#elif SERIAL_UART_INSTANCE==2 || SERIAL_UART_INSTANCES>1
-    // Use UART2 RX2/TX2 (PA3/PA2)
-    #ifndef PIN_SERIAL_RX
-      #define PIN_SERIAL_RX         PA3
-    #endif
-    #ifndef PIN_SERIAL_TX
-      #define PIN_SERIAL_TX         PA2
-    #endif
-#elif SERIAL_UART_INSTANCE==3
-    // Don't Use UART3 on PC18/PC19, they are SWDIO/SWCLK.
-    #error No Serial3 on CH32X033F8P
-#elif SERIAL_UART_INSTANCE==4
-    // Use UART4 RX2/TX2 PB1=RX4, PB0=TX4=MOSI=PA7 
-    #ifndef PIN_SERIAL_RX
-      #define PIN_SERIAL_RX         PB1
-    #endif
-    #ifndef PIN_SERIAL_TX
-      #define PIN_SERIAL_TX         PB0
-    #endif
+// Default pins for each hardware serial port.
+#ifndef PIN_SERIAL1_RX
+  #define PIN_SERIAL1_RX     PA11  /* UART1 default RX pin */
+#endif
+#ifndef PIN_SERIAL1_TX
+  #define PIN_SERIAL1_TX     PA10  /* UART1 default TX pin */
+#endif
+
+#ifndef PIN_SERIAL2_RX
+  #define PIN_SERIAL2_RX     PA3  /* UART2 default RX pin */
+#endif
+#ifndef PIN_SERIAL2_TX
+  #define PIN_SERIAL2_TX     PA2  /* UART2 default TX pin */
+#endif
+
+#ifndef PIN_SERIAL4_RX
+  #define PIN_SERIAL4_RX     PB1  /* UART4 default RX pin */
+#endif
+#ifndef PIN_SERIAL4_TX
+  #define PIN_SERIAL4_TX     PB0  /* UART4 default TX pin */
 #endif
 
 
