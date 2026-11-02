@@ -68,9 +68,10 @@
 
 
 // UART Definitions
-#ifndef SERIAL_UART_INSTANCE
-  #define SERIAL_UART_INSTANCE  1
+#ifndef BOARD_DEFAULT_SERIAL
+  #define BOARD_DEFAULT_SERIAL 1
 #endif
+
 // Default pins for hardware serial port 1.
 #ifndef PIN_SERIAL1_RX
   #define PIN_SERIAL1_RX         PD6

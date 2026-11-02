@@ -81,22 +81,8 @@
 //    RX: PD6=RX1, PA5=RX2_1
 //    TX: PD5=TX1, PA4=TX2_1
 // CH32V006E8 QSOP24 USART2 has RX/TX as alternative functions U2RX_1/U2TX_1 on PA5/PA4 (pins 16/15).
-#ifndef SERIAL_UART_INSTANCES
-  #define SERIAL_UART_INSTANCES 1
-#endif
-
-#if (SERIAL_UART_INSTANCES == 1)
-  //  Using only one Serial port
-  #ifndef SERIAL_UART_INSTANCE
-    #define SERIAL_UART_INSTANCE 1   // use Serial1 as default for Serial
-  #endif
-#else
-  // Using multple Serial ports
-  // When having multiple Serial instances SERIAL_UART_INSTANCE cannot be defined as it will skip defining the other ports.
-  #undef SERIAL_UART_INSTANCE
-  #define ENABLE_HWSERIAL1 1
-  #define ENABLE_HWSERIAL2 1
-  #define Serial Serial1
+#ifndef BOARD_DEFAULT_SERIAL
+  #define BOARD_DEFAULT_SERIAL 1
 #endif
 
 // Default pins for each hardware serial port.

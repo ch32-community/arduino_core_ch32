@@ -82,24 +82,8 @@
 //    RX: PD1=RX1=SCL=SWIO (!)
 //    TX: PD0=TX1=SDA
 // CH32V002D4U6 QFN12 has RX1/TX1, but beware: RX is shared with SWIO! Use "power-off clear" in Link Utility to program after bricking
-#ifndef SERIAL_UART_INSTANCES
-  #define SERIAL_UART_INSTANCES 1
-#endif
-
-#if (SERIAL_UART_INSTANCES == 1)
-  //  Using only one Serial port
-  #ifndef SERIAL_UART_INSTANCE
-    #define SERIAL_UART_INSTANCE 1   // use Serial1 as default for Serial
-  #endif
-#else
-  // Using multple Serial ports
-  // When having multiple Serial instances SERIAL_UART_INSTANCE cannot be defined as it will skip defining the other ports.
-  #undef SERIAL_UART_INSTANCE
-  #define ENABLE_HWSERIAL1 1
-  //#define ENABLE_HWSERIAL2 1
-  #define Serial Serial1
-  #error No Serial2 on CH32V002 (do not select Dual Serial)
-  // Note: cannot use single quote ' in #error
+#ifndef BOARD_DEFAULT_SERIAL
+  #define BOARD_DEFAULT_SERIAL 1
 #endif
 
 // Default pins for each hardware serial port.
