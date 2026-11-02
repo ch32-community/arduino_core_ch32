@@ -111,27 +111,8 @@
 //    RX: PA11=RX1=SDA, PA3=RX2, PC19=RX3=SWCLK, PB1=RX4
 //    TX: PA10=TX1=SCL, PA2=TX2, PC18=TX3=SWDIO, PB0=TX4=MOSI=PA7
 // For CH32X033F8P6 serial pins RX2=PA3/TX2=PA2 or alternative RX1_1=PA11/TX1_1=PA10
-#ifndef SERIAL_UART_INSTANCES
-  // Define the number of UART instances that can be used.
-  // For CH32X033F8P6 SSOP20 not all ports are always usable. Possible conflicts: Serial1 w/ I2C, Serial4 w/ SPI
-  #define SERIAL_UART_INSTANCES 1
-#endif
-
-#if (SERIAL_UART_INSTANCES == 1)
-  //  Using only one Serial port
-  #ifndef SERIAL_UART_INSTANCE
-    #define SERIAL_UART_INSTANCE 2   // use Serial2 as default for Serial - UART2: PA2=TX2, PA3=RX2
-  #endif
-#else
-  // Use multiple instances.
-  // CH32X033/035 has 4 UARTS,    // UART3 not usable on X033, only on X035
-  // When having multiple Serial instances SERIAL_UART_INSTANCE cannot be defined as it will skip defining the other ports.
-  #undef SERIAL_UART_INSTANCE
-  #define ENABLE_HWSERIAL1 1
-  #define ENABLE_HWSERIAL2 1
-  //#define ENABLE_HWSERIAL3 1
-  #define ENABLE_HWSERIAL4 1
-  #define Serial Serial2
+#ifndef BOARD_DEFAULT_SERIAL
+  #define BOARD_DEFAULT_SERIAL 2
 #endif
 
 // Default pins for each hardware serial port.
