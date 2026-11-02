@@ -163,36 +163,33 @@
   #define Serial Serial1
 #endif
 
-// Default pin used for generic 'Serial' instance
-// Mandatory for Firmata, no longer used by HardwareSerial.
-#if SERIAL_UART_INSTANCE==1 || SERIAL_UART_INSTANCES>1
-    #ifndef PIN_SERIAL_RX
-        #define PIN_SERIAL_RX     PA10
-    #endif
-    #ifndef PIN_SERIAL_TX
-        #define PIN_SERIAL_TX     PA9
-    #endif
-#elif  SERIAL_UART_INSTANCE==2
-    #ifndef PIN_SERIAL_RX
-      #define PIN_SERIAL_RX       PA3
-    #endif
-    #ifndef PIN_SERIAL_TX
-      #define PIN_SERIAL_TX       PA2
-    #endif
-#elif  SERIAL_UART_INSTANCE==3
-    #ifndef PIN_SERIAL_RX
-      #define PIN_SERIAL_RX       PB11
-    #endif
-    #ifndef PIN_SERIAL_TX
-      #define PIN_SERIAL_TX       PB10
-    #endif
-#elif  SERIAL_UART_INSTANCE==4
-    #ifndef PIN_SERIAL_RX
-      #define PIN_SERIAL_RX       PB1
-    #endif
-    #ifndef PIN_SERIAL_TX
-      #define PIN_SERIAL_TX       PB0
-    #endif
+// Default pins for each hardware serial port.
+#ifndef PIN_SERIAL1_RX
+  #define PIN_SERIAL1_RX     PA10  /* UART1 default RX pin */
+#endif
+#ifndef PIN_SERIAL1_TX
+  #define PIN_SERIAL1_TX     PA9  /* UART1 default TX pin */
+#endif
+
+#ifndef PIN_SERIAL2_RX
+  #define PIN_SERIAL2_RX     PA3  /* UART2 default RX pin */
+#endif
+#ifndef PIN_SERIAL2_TX
+  #define PIN_SERIAL2_TX     PA2  /* UART2 default TX pin */
+#endif
+
+#ifndef PIN_SERIAL3_RX
+  #define PIN_SERIAL3_RX     PB11  /* UART3 default RX pin */
+#endif
+#ifndef PIN_SERIAL3_TX
+  #define PIN_SERIAL3_TX     PB10  /* UART3 default TX pin */
+#endif
+
+#ifndef PIN_SERIAL4_RX
+  #define PIN_SERIAL4_RX     PB1  /* UART4 default RX pin */
+#endif
+#ifndef PIN_SERIAL4_TX
+  #define PIN_SERIAL4_TX     PB0  /* UART4 default TX pin */
 #endif
 
 
