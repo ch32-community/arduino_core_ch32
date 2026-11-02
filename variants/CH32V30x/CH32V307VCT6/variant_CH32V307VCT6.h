@@ -136,28 +136,8 @@
 // CH32V30x: Serial1-Serial8 on V307 amd V303RC/VC, only 1-3 on V303CB/RB, only 1/3 on V305FB, 1-5 ON V305GB/CC/RB.
 //    RX: PA10=RX1, PA3=RX2, PB11=RX3, PC11=RX4, PD2=RX5, PC1=RX6, PC3=RX7, PC5=RX8
 //    TX: PA9=TX1, PA2=TX2, PB10=TX3, PC10=TX4, PC12=TX5, PC0=TX6, PC2=TX7, PC4=TX8
-#ifndef SERIAL_UART_INSTANCES
-  #define SERIAL_UART_INSTANCES 1
-#endif
-
-#if (SERIAL_UART_INSTANCES == 1)
-  //  Using only one Serial port
-  #ifndef SERIAL_UART_INSTANCE
-    #define SERIAL_UART_INSTANCE 1   // use Serial1 as default for Serial
-  #endif
-#else
-  // Using multple Serial ports
-  // When having multiple Serial instances SERIAL_UART_INSTANCE cannot be defined as it will skip defining the other ports.
-  #undef SERIAL_UART_INSTANCE
-  #define ENABLE_HWSERIAL1 1
-  #define ENABLE_HWSERIAL2 1
-  #define ENABLE_HWSERIAL3 1
-  #define ENABLE_HWSERIAL4 1
-  #define ENABLE_HWSERIAL5 1
-  #define ENABLE_HWSERIAL6 1
-  #define ENABLE_HWSERIAL7 1
-  #define ENABLE_HWSERIAL8 1
-  #define Serial Serial1
+#ifndef BOARD_DEFAULT_SERIAL
+  #define BOARD_DEFAULT_SERIAL 1
 #endif
 
 // Default pins for each hardware serial port.
