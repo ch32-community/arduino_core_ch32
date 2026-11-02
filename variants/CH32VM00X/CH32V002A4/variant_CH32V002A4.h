@@ -132,26 +132,21 @@
   // Note: cannot use single quote ' in #error
 #endif
 
-// Default pin used for generic 'Serial' instance
-// Mandatory for Firmata, no longer used by HardwareSerial.
-#if SERIAL_UART_INSTANCE==1 || SERIAL_UART_INSTANCES>1
-  #ifndef PIN_SERIAL_RX
+// Default pins for each hardware serial port.
+#ifndef PIN_SERIAL1_RX
   #if defined(I2C_MODULE_ENABLED)
-    #define PIN_SERIAL_RX         PD6
+    #define PIN_SERIAL1_RX         PD6
   #else  
-    #define PIN_SERIAL_RX         PC1   // use pin-remap UART_3
+    #define PIN_SERIAL1_RX         PC1   // use pin-remap UART_3
   #endif // I2C_MODULE_ENABLED
   #endif
-  #ifndef PIN_SERIAL_TX
+  #ifndef PIN_SERIAL1_TX
   #if defined(I2C_MODULE_ENABLED)
-    #define PIN_SERIAL_TX         PD5
+    #define PIN_SERIAL1_TX         PD5
   #else  
-    #define PIN_SERIAL_TX         PC0   // use pin-remap UART_3
+    #define PIN_SERIAL1_TX         PC0   // use pin-remap UART_3
   #endif // I2C_MODULE_ENABLED
   #endif
-#elif  SERIAL_UART_INSTANCE==2
-    #error No Serial2 on CH32V002 (select Serial1 instead)
-#endif
 
 
 
