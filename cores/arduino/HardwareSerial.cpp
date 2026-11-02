@@ -229,14 +229,70 @@ void HardwareSerial::begin(unsigned long baud, byte config)
   uart_init(&_serial, (uint32_t)baud, databits, parity, stopbits);
 
 #if ENABLE_RX_BUFFER
-  if (_rx_irq) {
-    // Publish the callback and owner before enabling receive interrupts.
-    hardware_serial_rx_handler = uart_rx_isr;
-    _rx_irq->instance = this;
-    USART_ITConfig(_serial.uart, USART_IT_RXNE, ENABLE);
-    NVIC_SetPriority(_rx_irq->irq, 2);
-    NVIC_EnableIRQ(_rx_irq->irq);
+  // Enable only ports with a receive interrupt handler in this build.
+#if defined(USART1) && defined(HAVE_HWSERIAL1)
+  if (_serial.uart == USART1) {
+    USART_ITConfig(USART1, USART_IT_RXNE, ENABLE);
+    NVIC_SetPriority(USART1_IRQn, 2);
+    NVIC_EnableIRQ(USART1_IRQn);
   }
+#endif
+#if defined(USART2) && defined(HAVE_HWSERIAL2)
+  if (_serial.uart == USART2) {
+    USART_ITConfig(USART2, USART_IT_RXNE, ENABLE);
+    NVIC_SetPriority(USART2_IRQn, 2);
+    NVIC_EnableIRQ(USART2_IRQn);
+  }
+#endif
+#if defined(USART3) && defined(HAVE_HWSERIAL3)
+  if (_serial.uart == USART3) {
+    USART_ITConfig(USART3, USART_IT_RXNE, ENABLE);
+    NVIC_SetPriority(USART3_IRQn, 2);
+    NVIC_EnableIRQ(USART3_IRQn);
+  }
+#endif
+#if defined(USART4) && defined(HAVE_HWSERIAL4)
+  if (_serial.uart == USART4) {
+    USART_ITConfig(USART4, USART_IT_RXNE, ENABLE);
+    NVIC_SetPriority(USART4_IRQn, 2);
+    NVIC_EnableIRQ(USART4_IRQn);
+  }
+#endif
+#if defined(UART4) && defined(HAVE_HWSERIAL4) && !defined(USART4)
+  if (_serial.uart == UART4) {
+    USART_ITConfig(UART4, USART_IT_RXNE, ENABLE);
+    NVIC_SetPriority(UART4_IRQn, 2);
+    NVIC_EnableIRQ(UART4_IRQn);
+  }
+#endif
+#if defined(UART5) && defined(HAVE_HWSERIAL5)
+  if (_serial.uart == UART5) {
+    USART_ITConfig(UART5, USART_IT_RXNE, ENABLE);
+    NVIC_SetPriority(UART5_IRQn, 2);
+    NVIC_EnableIRQ(UART5_IRQn);
+  }
+#endif
+#if defined(UART6) && defined(HAVE_HWSERIAL6)
+  if (_serial.uart == UART6) {
+    USART_ITConfig(UART6, USART_IT_RXNE, ENABLE);
+    NVIC_SetPriority(UART6_IRQn, 2);
+    NVIC_EnableIRQ(UART6_IRQn);
+  }
+#endif
+#if defined(UART7) && defined(HAVE_HWSERIAL7)
+  if (_serial.uart == UART7) {
+    USART_ITConfig(UART7, USART_IT_RXNE, ENABLE);
+    NVIC_SetPriority(UART7_IRQn, 2);
+    NVIC_EnableIRQ(UART7_IRQn);
+  }
+#endif
+#if defined(UART8) && defined(HAVE_HWSERIAL8)
+  if (_serial.uart == UART8) {
+    USART_ITConfig(UART8, USART_IT_RXNE, ENABLE);
+    NVIC_SetPriority(UART8_IRQn, 2);
+    NVIC_EnableIRQ(UART8_IRQn);
+  }
+#endif
 #endif
 }
 
