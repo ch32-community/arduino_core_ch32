@@ -102,17 +102,12 @@
   // Note: cannot use single quote ' in #error
 #endif
 
-// Default pin used for generic 'Serial' instance
-// Mandatory for Firmata, no longer used by HardwareSerial.
-#if SERIAL_UART_INSTANCE==1 || SERIAL_UART_INSTANCES>1
-    #ifndef PIN_SERIAL_RX
-        #define PIN_SERIAL_RX     PD1
-    #endif
-    #ifndef PIN_SERIAL_TX
-        #define PIN_SERIAL_TX     PD0
-    #endif
-#elif  SERIAL_UART_INSTANCE==2
-    #error No Serial2 on CH32V002 (select Serial1 instead)
+// Default pins for each hardware serial port.
+#ifndef PIN_SERIAL1_RX
+  #define PIN_SERIAL1_RX     PD1  /* UART1 default RX pin */
+#endif
+#ifndef PIN_SERIAL1_TX
+  #define PIN_SERIAL1_TX     PD0  /* UART1 default TX pin */
 #endif
 
 

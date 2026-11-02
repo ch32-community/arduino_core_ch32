@@ -99,22 +99,19 @@
   #define Serial Serial1
 #endif
 
-// Default pin used for generic 'Serial' instance
-// Mandatory for Firmata, no longer used by HardwareSerial.
-#if SERIAL_UART_INSTANCE==1 || SERIAL_UART_INSTANCES>1
-    #ifndef PIN_SERIAL_RX
-        #define PIN_SERIAL_RX     PD6
-    #endif
-    #ifndef PIN_SERIAL_TX
-        #define PIN_SERIAL_TX     PD5
-    #endif
-#elif  SERIAL_UART_INSTANCE==2
-    #ifndef PIN_SERIAL_RX
-      #define PIN_SERIAL_RX       PA5
-    #endif
-    #ifndef PIN_SERIAL_TX
-      #define PIN_SERIAL_TX       PA4
-    #endif
+// Default pins for each hardware serial port.
+#ifndef PIN_SERIAL1_RX
+  #define PIN_SERIAL1_RX     PD6  /* UART1 default RX pin */
+#endif
+#ifndef PIN_SERIAL1_TX
+  #define PIN_SERIAL1_TX     PD5  /* UART1 default TX pin */
+#endif
+
+#ifndef PIN_SERIAL2_RX
+  #define PIN_SERIAL2_RX     PA5  /* UART2 default RX pin */
+#endif
+#ifndef PIN_SERIAL2_TX
+  #define PIN_SERIAL2_TX     PA4  /* UART2 default TX pin */
 #endif
 
 
