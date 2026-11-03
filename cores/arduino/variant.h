@@ -55,21 +55,23 @@
 
     // A variant exposes a hardware port by supplying both of its default pins.
     // Keep all exposed ports available independently of the Serial alias.
-    #if SERIAL_UART_INSTANCE == 1 && !defined(ENABLE_HWSERIAL1)
-        #define ENABLE_HWSERIAL1
-    #elif SERIAL_UART_INSTANCE == 2 && !defined(ENABLE_HWSERIAL2)
-        #define ENABLE_HWSERIAL2
-    #elif SERIAL_UART_INSTANCE == 3 && !defined(ENABLE_HWSERIAL3)
-        #define ENABLE_HWSERIAL3
-    #elif SERIAL_UART_INSTANCE == 4 && !defined(ENABLE_HWSERIAL4)
-        #define ENABLE_HWSERIAL4
-    #elif SERIAL_UART_INSTANCE == 5 && !defined(ENABLE_HWSERIAL5)
-        #define ENABLE_HWSERIAL5
-    #elif SERIAL_UART_INSTANCE == 6 && !defined(ENABLE_HWSERIAL6)
-        #define ENABLE_HWSERIAL6
-    #elif SERIAL_UART_INSTANCE == 7 && !defined(ENABLE_HWSERIAL7)
-        #define ENABLE_HWSERIAL7
-    #elif SERIAL_UART_INSTANCE == 8 && !defined(ENABLE_HWSERIAL8)
-        #define ENABLE_HWSERIAL8
+    #if !defined(HWSERIAL_NONE)
+        #if SERIAL_UART_INSTANCE == 1 && !defined(ENABLE_HWSERIAL1)
+            #define ENABLE_HWSERIAL1
+        #elif SERIAL_UART_INSTANCE == 2 && !defined(ENABLE_HWSERIAL2)
+            #define ENABLE_HWSERIAL2
+        #elif SERIAL_UART_INSTANCE == 3 && !defined(ENABLE_HWSERIAL3)
+            #define ENABLE_HWSERIAL3
+        #elif SERIAL_UART_INSTANCE == 4 && !defined(ENABLE_HWSERIAL4)
+            #define ENABLE_HWSERIAL4
+        #elif SERIAL_UART_INSTANCE == 5 && !defined(ENABLE_HWSERIAL5)
+            #define ENABLE_HWSERIAL5
+        #elif SERIAL_UART_INSTANCE == 6 && !defined(ENABLE_HWSERIAL6)
+            #define ENABLE_HWSERIAL6
+        #elif SERIAL_UART_INSTANCE == 7 && !defined(ENABLE_HWSERIAL7)
+            #define ENABLE_HWSERIAL7
+        #elif SERIAL_UART_INSTANCE == 8 && !defined(ENABLE_HWSERIAL8)
+            #define ENABLE_HWSERIAL8
+        #endif
     #endif
 #endif
