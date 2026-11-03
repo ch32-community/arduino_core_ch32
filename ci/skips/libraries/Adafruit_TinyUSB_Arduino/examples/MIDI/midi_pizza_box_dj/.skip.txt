@@ -1,0 +1,5 @@
+# TinyUSB example: MIDI/midi_pizza_box_dj
+# Family exclusions are inherited from the library-level .skip.txt.
+# Upstream restricts this example to other board architectures; see its .test.only markers.
+# Remove or replace * with board family names when the requirements are provided.
+*

@@ -1,0 +1,9 @@
+# These families have no USB peripheral.
+CH32V00x
+CH32VM00X
+
+# USB hardware exists, but the current CH32 TinyUSB port does not support these families.
+# V103 is explicitly marked non-working; L103/X035 have no MCU mapping in tusb_config_ch32.h.
+CH32V10x
+CH32L10x
+CH32X035

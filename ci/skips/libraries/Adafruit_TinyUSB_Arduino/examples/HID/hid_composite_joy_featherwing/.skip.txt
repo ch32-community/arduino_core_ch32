@@ -1,0 +1,5 @@
+# TinyUSB example: HID/hid_composite_joy_featherwing
+# Family exclusions are inherited from the library-level .skip.txt.
+# Requires the optional Adafruit seesaw Library and a Joy FeatherWing; the CI workflow does not install that library.
+# Remove or replace * with board family names when the requirements are provided.
+*

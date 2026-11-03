@@ -1,0 +1,5 @@
+# TinyUSB example: WebUSB/webusb_rgb
+# Family exclusions are inherited from the library-level .skip.txt.
+# Requires the optional Adafruit NeoPixel library, which is not installed by the CI workflow.
+# Remove or replace * with board family names when the requirements are provided.
+*

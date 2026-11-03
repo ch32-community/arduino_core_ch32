@@ -1,14 +1,24 @@
 ## Code size
 
+{% macro region_delta(target, category) -%}
+{%- set ns = namespace(values=[]) -%}
+{%- for region in target.regions -%}
+{%- if category in region.name | upper -%}
+{%- set _ = ns.values.append(region.delta_str ~ " B") -%}
+{%- endif -%}
+{%- endfor -%}
+{{ ns.values | join(", ") if ns.values else "—" }}
+{%- endmacro %}
+
 {% set changed_targets = targets | selectattr('has_changes') | list %}
 {{ targets | length }} example/MCU builds compared, {{ changed_targets | length }} changed.
 
-| Build | Status | Details |
-|-------|:------:|---------|
+| Build | Flash Δ | RAM Δ | Status | Details |
+|-------|--------:|------:|:------:|---------|
 {% for target in changed_targets | sort(attribute='name') %}
-| `{{ target.name }}` | Changed | {% if target.comparison_url %}[Compare]({{ target.comparison_url }}){% else %}-{% endif %} |
+| `{{ target.name }}` | {{ region_delta(target, 'FLASH') }} | {{ region_delta(target, 'RAM') }} | Changed | {% if target.comparison_url %}[Compare]({{ target.comparison_url }}){% else %}-{% endif %} |
 {% else %}
-| - | No memory changes detected | - |
+| - | - | - | No memory changes detected | - |
 {% endfor %}
 
 <details>

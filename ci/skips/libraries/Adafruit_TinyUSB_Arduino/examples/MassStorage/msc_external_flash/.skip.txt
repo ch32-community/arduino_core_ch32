@@ -1,0 +1,5 @@
+# TinyUSB example: MassStorage/msc_external_flash
+# Family exclusions are inherited from the library-level .skip.txt.
+# Requires board-specific EXTERNAL_FLASH_USE_* definitions and optional SPIFlash/SdFat libraries, not provided by these variants.
+# Remove or replace * with board family names when the requirements are provided.
+*

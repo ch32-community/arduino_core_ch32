@@ -1,0 +1,5 @@
+# TinyUSB example: DualRole/HID/hid_device_report
+# Family exclusions are inherited from the library-level .skip.txt.
+# Requires USB host support; CFG_TUH_ENABLED is not enabled by the current CH32 TinyUSB configuration.
+# Remove or replace * with board family names when the requirements are provided.
+*

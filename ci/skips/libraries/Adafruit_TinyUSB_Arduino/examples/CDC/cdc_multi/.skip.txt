@@ -1,0 +1,5 @@
+# TinyUSB example: CDC/cdc_multi
+# Family exclusions are inherited from the library-level .skip.txt.
+# Requires CFG_TUD_CDC >= 2; the current CH32 configuration enables one CDC instance.
+# Remove or replace * with board family names when the requirements are provided.
+*
