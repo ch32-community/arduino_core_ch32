@@ -125,6 +125,8 @@ CH32V00x_EVT.menu.rtlib.full=Newlib Standard
 CH32V00x_EVT.menu.rtlib.full.build.flags.ldflags=--specs=nosys.specs
 
 # Serial port selection - allow disabling of UART module
+CH32V00x_EVT.menu.xserial.boardDefault=Serial=Board Default (default)
+CH32V00x_EVT.menu.xserial.boardDefault.build.serial_flags=-DSERIAL_UART_INSTANCE=0
 CH32V00x_EVT.menu.xserial.serial1=Serial=Serial1
 CH32V00x_EVT.menu.xserial.serial1.build.serial_flags=-DSERIAL_UART_INSTANCE=1
 CH32V00x_EVT.menu.xserial.none=No Serial (smallest sketch)
