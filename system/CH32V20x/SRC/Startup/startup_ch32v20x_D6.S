@@ -98,7 +98,8 @@ _vector_base:
 
     .option rvc;
 
-/* MxRD 261030: moved from startup_ch32v20x_D6.S to ch32v20x_misc.c (see issue openwch#204)
+/* MxRD 261103: moved from startup_ch32v20x_D6.S to ch32v20x_misc.c (see PR ch32-community#85) */
+#if 0
     .section    .text.vector_handler, "ax", @progbits
     .weak   NMI_Handler
     .weak   HardFault_Handler
@@ -209,7 +210,7 @@ USBHD_IRQHandler:  1:  j 1b
 USBHDWakeUp_IRQHandler:  1:  j 1b
 UART4_IRQHandler:  1:  j 1b
 DMA1_Channel8_IRQHandler:  1:  j 1b
-*/
+#endif  // #if 0
 
 	.section	.text.handle_reset,"ax",@progbits
 	.weak	handle_reset
@@ -266,5 +267,3 @@ handle_reset:
 	la t0, main
 	csrw mepc, t0
 	mret
-
-
