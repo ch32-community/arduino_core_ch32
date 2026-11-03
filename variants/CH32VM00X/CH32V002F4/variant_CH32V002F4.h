@@ -108,6 +108,10 @@
 //    RX: PD6=RX1
 //    TX: PD5=TX1
 // CH32V002F4 TSSOP20/QFN20 has RX1/TX1
+#if defined(SERIAL_UART_ENABLE_ALL)
+  #error "CH32V002A4 only supports Serial1; Dual Serial is unavailable"
+#endif
+
 #ifndef BOARD_DEFAULT_SERIAL
   #define BOARD_DEFAULT_SERIAL 1
 #endif

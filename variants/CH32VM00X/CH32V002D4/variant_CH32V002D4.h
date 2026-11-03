@@ -82,6 +82,10 @@
 //    RX: PD1=RX1=SCL=SWIO (!)
 //    TX: PD0=TX1=SDA
 // CH32V002D4U6 QFN12 has RX1/TX1, but beware: RX is shared with SWIO! Use "power-off clear" in Link Utility to program after bricking
+#if defined(SERIAL_UART_ENABLE_ALL)
+  #error "CH32V002A4 only supports Serial1; Dual Serial is unavailable"
+#endif
+
 #ifndef BOARD_DEFAULT_SERIAL
   #define BOARD_DEFAULT_SERIAL 1
 #endif

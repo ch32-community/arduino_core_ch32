@@ -112,6 +112,10 @@
 // When SPI is enabled alternative pins UART_3 (RX'/TX'=PC1/PC0) are used, but these conflict with I2C
 // If I2C is enabled we cannot use these alternatives but there are no other combinations available.
 // Using both I2C/SPI and UART is too much (but flash gets limited then also)
+#if defined(SERIAL_UART_ENABLE_ALL)
+  #error "CH32V002A4 only supports Serial1; Dual Serial is unavailable"
+#endif
+
 #ifndef BOARD_DEFAULT_SERIAL
   #define BOARD_DEFAULT_SERIAL 1
 #endif
