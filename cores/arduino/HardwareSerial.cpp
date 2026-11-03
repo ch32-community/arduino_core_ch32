@@ -105,12 +105,6 @@ HardwareSerial::HardwareSerial(void *peripheral)
   setRx(pinmap_pin(peripheral, PinMap_UART_RX));
   setTx(pinmap_pin(peripheral, PinMap_UART_TX));
   
-#if ENABLE_RX_BUFFER
-  // Initialize buffer pointers for all CH32 series MCUs
-  _rx_buffer_head = 0;
-  _rx_buffer_tail = 0;
-#endif
-  
   init(_serial.pin_rx, _serial.pin_tx);
 }
 
