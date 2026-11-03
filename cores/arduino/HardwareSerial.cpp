@@ -118,12 +118,6 @@ HardwareSerial::HardwareSerial(void *peripheral)
   setTx(digitalPinToPinName(PIN_SERIAL_TX));  
 #endif
   
-#if ENABLE_RX_BUFFER
-  // Initialize buffer pointers for all CH32 series MCUs
-  _rx_buffer_head = 0;
-  _rx_buffer_tail = 0;
-#endif
-  
   init(_serial.pin_rx, _serial.pin_tx);
 }
 

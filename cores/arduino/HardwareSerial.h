@@ -162,8 +162,8 @@ public:
 #if ENABLE_RX_BUFFER
 public:
     // RX Buffer variables - for all CH32 series MCUs
-    volatile rx_buffer_index_t _rx_buffer_head;
-    volatile rx_buffer_index_t _rx_buffer_tail;
+    volatile rx_buffer_index_t _rx_buffer_head = 0;
+    volatile rx_buffer_index_t _rx_buffer_tail = 0;
     unsigned char _rx_buffer[SERIAL_RX_BUFFER_SIZE];
 #endif
 
