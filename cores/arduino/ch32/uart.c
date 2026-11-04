@@ -114,6 +114,8 @@ void uart_init(serial_t *obj, uint32_t baudrate, uint32_t databits, uint32_t par
   if (obj == NULL) {
     return;
   }
+  obj->index = UART_NUM;
+  obj->uart = NP;
   UART_HandleTypeDef *huart = &(obj->handle);  
   
   /* Determine the U(S)ART peripheral to use (USART1, USART2, ...) */
@@ -249,6 +251,7 @@ void uart_init(serial_t *obj, uint32_t baudrate, uint32_t databits, uint32_t par
 
   else {
     // The requested peripheral is not enabled in this build.
+    obj->uart = NP;
     return;
   }
 
@@ -297,6 +300,10 @@ void uart_init(serial_t *obj, uint32_t baudrate, uint32_t databits, uint32_t par
   */
 void uart_deinit(serial_t *obj)
 {
+  if ((obj == NULL) || (obj->index >= UART_NUM)) {
+    return;
+  }
+
   /* Reset UART and disable clock */
   switch (obj->index) 
   {
@@ -517,7 +524,7 @@ uint8_t serial_tx_active(serial_t *obj)
   */
 int uart_getc(serial_t *obj, unsigned char *c)
 {
-  if (obj == NULL) {
+  if ((obj == NULL) || (obj->index >= UART_NUM)) {
     return -1;
   }
 
@@ -547,7 +554,7 @@ int uart_putc(serial_t *obj, unsigned char c)
 {
   uint32_t tickstart = GetTick();
 
-  if (obj == NULL) {
+  if ((obj == NULL) || (obj->index >= UART_NUM)) {
     return -1;
   }
 
