@@ -117,6 +117,18 @@ CH32V00x_EVT.menu.rtlib.full=Newlib Standard
 CH32V00x_EVT.menu.rtlib.full.build.flags.ldflags=--specs=nosys.specs
 
 
+# Serial port selection
+# Using SERIAL_UART_INSTANCE=0 means board default; SERIAL_UART_PINMAP=2 means use second pinmap, eg. PIN_RX1_2
+CH32V00x_EVT.menu.xserial.boardDefault=Serial=Board Default (default)
+CH32V00x_EVT.menu.xserial.boardDefault.build.serial_flags=-DSERIAL_UART_INSTANCE=0
+CH32V00x_EVT.menu.xserial.serial1=Serial=Serial1 (TX/RX=PD5/PD6)
+CH32V00x_EVT.menu.xserial.serial1.build.serial_flags=-DSERIAL_UART_INSTANCE=1
+CH32V00x_EVT.menu.xserial.serial1_2=Serial=Serial1_2 (TX/RX=PD6/PD5)
+CH32V00x_EVT.menu.xserial.serial1_2.build.serial_flags=-DSERIAL_UART_INSTANCE=1 -DSERIAL_UART_PINMAP=2
+CH32V00x_EVT.menu.xserial.none=No Serial (smallest sketch)
+CH32V00x_EVT.menu.xserial.none.build.serial_flags=-DHWSERIAL_NONE
+
+
 
 
 ##############################################################################
