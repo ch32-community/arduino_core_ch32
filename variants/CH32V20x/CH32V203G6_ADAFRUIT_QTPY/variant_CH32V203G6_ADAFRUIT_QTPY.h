@@ -139,7 +139,7 @@
 #endif
 
 // Default pins for each hardware serial port.
-// UART1 RX/TX pins are not exposed on this board.
+// UART1 has no default pins on this board.
 #ifndef PIN_SERIAL2_RX
   #define PIN_SERIAL2_RX     PA_3  /* UART2 default RX pin */
 #endif
