@@ -13,9 +13,6 @@
 
 #include "pins_arduino.h"
 
-
-
-
 // Digital PinName array
 const PinName digitalPin[] = {
   PA_0,  //D0/A0

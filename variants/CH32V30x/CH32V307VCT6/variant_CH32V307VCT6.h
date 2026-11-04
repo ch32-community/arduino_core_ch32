@@ -16,9 +16,9 @@
 #define                         ADC_MODULE_ENABLED
 #define                         UART_MODULE_ENABLED
 #define                         DAC_MODULE_ENABLED
-#define                         SPI_MODULE_ENABLED  
+#define                         SPI_MODULE_ENABLED
 #define                         I2C_MODULE_ENABLED
-#define                         TIM_MODULE_ENABLED    
+#define                         TIM_MODULE_ENABLED
 
 /* CH32V307VCT6 Pins */
 #define PA0                     PIN_A0
@@ -81,20 +81,17 @@
 // #define ADC_CTLR_ADCAL          
 #define ADC_RESOLUTION          12
 
-
 // On-board LED pin number
 #ifndef LED_BUILTIN
   #define LED_BUILTIN           PNUM_NOT_DEFINED
 #endif
-
-
 
 // On-board user button
 #ifndef USER_BTN
   #define USER_BTN              PNUM_NOT_DEFINED
 #endif
 
-// SPI definitions
+// SPI definitions (SPI1 by default, PA4..PA7)
 #ifndef PIN_SPI_SS
   #define PIN_SPI_SS            PA4
 #endif
@@ -118,9 +115,9 @@
   #define PIN_SPI_SCK           PA5
 #endif
 
-// I2C definitions
-  #define PIN_WIRE_SDA          PB11
-  #define PIN_WIRE_SCL          PB10
+// I2C definitions (I2C2 by default, PB10/PB11)
+#define PIN_WIRE_SDA          PB11
+#define PIN_WIRE_SCL          PB10
 
 // Timer Definitions
 // Use TIM6/TIM7 when possible as servo and tone don't need GPIO output pin
@@ -131,9 +128,8 @@
   #define TIMER_SERVO           TIM2
 #endif
 
-
 // UART Definitions
-// CH32V30x: Serial1-Serial8 on V307 amd V303RC/VC, only 1-3 on V303CB/RB, only 1/3 on V305FB, 1-5 ON V305GB/CC/RB.
+// CH32V307: USART1-3, UART4-8
 //    RX: PA10=RX1, PA3=RX2, PB11=RX3, PC11=RX4, PD2=RX5, PC1=RX6, PC3=RX7, PC5=RX8
 //    TX: PA9=TX1, PA2=TX2, PB10=TX3, PC10=TX4, PC12=TX5, PC0=TX6, PC2=TX7, PC4=TX8
 #ifndef BOARD_DEFAULT_SERIAL
@@ -142,7 +138,7 @@
 
 // Default pins for each hardware serial port.
 #ifndef PIN_SERIAL1_RX
-  #define PIN_SERIAL1_RX     PA10  /* UART1 default RX pin */
+  #define PIN_SERIAL1_RX     PA10 /* UART1 default RX pin */
 #endif
 #ifndef PIN_SERIAL1_TX
   #define PIN_SERIAL1_TX     PA9  /* UART1 default TX pin */
@@ -156,24 +152,24 @@
 #endif
 
 #ifndef PIN_SERIAL3_RX
-  #define PIN_SERIAL3_RX     PB11  /* UART3 default RX pin */
+  #define PIN_SERIAL3_RX     PB11 /* UART3 default RX pin */
 #endif
 #ifndef PIN_SERIAL3_TX
-  #define PIN_SERIAL3_TX     PB10  /* UART3 default TX pin */
+  #define PIN_SERIAL3_TX     PB10 /* UART3 default TX pin */
 #endif
 
 #ifndef PIN_SERIAL4_RX
-  #define PIN_SERIAL4_RX     PC11  /* UART4 default RX pin */
+  #define PIN_SERIAL4_RX     PC11 /* UART4 default RX pin */
 #endif
 #ifndef PIN_SERIAL4_TX
-  #define PIN_SERIAL4_TX     PC10  /* UART4 default TX pin */
+  #define PIN_SERIAL4_TX     PC10 /* UART4 default TX pin */
 #endif
 
 #ifndef PIN_SERIAL5_RX
   #define PIN_SERIAL5_RX     PD2  /* UART5 default RX pin */
 #endif
 #ifndef PIN_SERIAL5_TX
-  #define PIN_SERIAL5_TX     PC12  /* UART5 default TX pin */
+  #define PIN_SERIAL5_TX     PC12 /* UART5 default TX pin */
 #endif
 
 #ifndef PIN_SERIAL6_RX
