@@ -103,10 +103,10 @@ HardwareSerial::HardwareSerial(void *peripheral, uint32_t tx, uint32_t rx)
 }
 
 HardwareSerial::HardwareSerial(void *peripheral, PinName tx, PinName rx)
-  : _serial{}, _peripheral(peripheral)
+  : _serial{}
 {
   init(rx, tx);
-  _serial.uart = (USART_TypeDef *)peripheral;
+  setHandler(peripheral);
 }
 
 HardwareSerial::HardwareSerial(void *peripheral)
