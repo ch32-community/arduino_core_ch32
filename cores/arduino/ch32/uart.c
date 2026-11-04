@@ -50,34 +50,34 @@ extern "C" {
 
 /* @brief uart caracteristics */
 typedef enum {
-#if defined(USART1_BASE)
+#if defined(USART1_BASE) && defined(ENABLE_HWSERIAL1)
   UART1_INDEX,
 #endif
-#if defined(USART2_BASE)
+#if defined(USART2_BASE) && defined(ENABLE_HWSERIAL2)
   UART2_INDEX,
 #endif
-#if defined(USART3_BASE)
+#if defined(USART3_BASE) && defined(ENABLE_HWSERIAL3)
   UART3_INDEX,
 #endif
-#if defined(UART4_BASE) 
+#if defined(UART4_BASE) && defined(ENABLE_HWSERIAL4)
   UART4_INDEX,
 #endif
-#if defined(UART5_BASE) 
+#if defined(UART5_BASE) && defined(ENABLE_HWSERIAL5)
   UART5_INDEX,
 #endif
-#if defined(UART6_BASE) 
+#if defined(UART6_BASE) && defined(ENABLE_HWSERIAL6)
   UART6_INDEX,
 #endif
-#if defined(UART7_BASE) 
+#if defined(UART7_BASE) && defined(ENABLE_HWSERIAL7)
   UART7_INDEX,
 #endif
-#if defined(UART8_BASE) 
+#if defined(UART8_BASE) && defined(ENABLE_HWSERIAL8)
   UART8_INDEX,
 #endif
   UART_NUM
 } uart_index_t;
 
-static UART_HandleTypeDef *uart_handlers[UART_NUM] = {NULL};
+static UART_HandleTypeDef *uart_handlers[UART_NUM > 0 ? UART_NUM : 1] = {NULL};
 
 
 static serial_t serial_debug =
@@ -167,8 +167,8 @@ void uart_init(serial_t *obj, uint32_t baudrate, uint32_t databits, uint32_t par
     return;
   }
 
-  /* Enable USART clock */
-#if defined(USART1_BASE)
+  /* Enable clocks only for hardware serial ports enabled by the variant. */
+#if defined(USART1_BASE) && defined(ENABLE_HWSERIAL1)
   else if (obj->uart == USART1) 
   {
     #if defined(CH32L10x) || defined(CH32VM00X)
@@ -180,7 +180,7 @@ void uart_init(serial_t *obj, uint32_t baudrate, uint32_t databits, uint32_t par
     obj->irq = USART1_IRQn;
   }
 #endif
-#if defined(USART2_BASE)
+#if defined(USART2_BASE) && defined(ENABLE_HWSERIAL2)
   else if (obj->uart == USART2) 
   {
     #if defined(CH32L10x) 
@@ -194,7 +194,7 @@ void uart_init(serial_t *obj, uint32_t baudrate, uint32_t databits, uint32_t par
     obj->irq = USART2_IRQn;
   }
 #endif
-#if defined(USART3_BASE) 
+#if defined(USART3_BASE) && defined(ENABLE_HWSERIAL3)
   else if (obj->uart == USART3) 
   {
     #if defined(CH32L10x)
@@ -206,7 +206,7 @@ void uart_init(serial_t *obj, uint32_t baudrate, uint32_t databits, uint32_t par
     obj->irq = USART3_IRQn;
   }
 #endif
-#if defined(UART4_BASE) && !defined(CH32V10x) && !defined(CH32L10x)
+#if defined(UART4_BASE) && defined(ENABLE_HWSERIAL4) && !defined(CH32V10x) && !defined(CH32L10x)
   else if (obj->uart == UART4) 
   {
     RCC_APB1PeriphClockCmd(RCC_APB1Periph_UART4, ENABLE);
@@ -214,7 +214,7 @@ void uart_init(serial_t *obj, uint32_t baudrate, uint32_t databits, uint32_t par
     obj->irq = UART4_IRQn;
   }
 #endif
-#if defined(UART5_BASE) && !defined(CH32V10x) && !defined(CH32L10x)
+#if defined(UART5_BASE) && defined(ENABLE_HWSERIAL5) && !defined(CH32V10x) && !defined(CH32L10x)
   else if (obj->uart == UART5) 
   {
     RCC_APB1PeriphClockCmd(RCC_APB1Periph_UART5, ENABLE);
@@ -222,7 +222,7 @@ void uart_init(serial_t *obj, uint32_t baudrate, uint32_t databits, uint32_t par
     obj->irq = UART5_IRQn;
   }
 #endif
-#if defined(UART6_BASE)
+#if defined(UART6_BASE) && defined(ENABLE_HWSERIAL6)
   else if (obj->uart == UART6) 
   {
     RCC_APB1PeriphClockCmd(RCC_APB1Periph_UART6, ENABLE);   
@@ -230,7 +230,7 @@ void uart_init(serial_t *obj, uint32_t baudrate, uint32_t databits, uint32_t par
     obj->irq = UART6_IRQn;
   }
 #endif
-#if defined(UART7_BASE)
+#if defined(UART7_BASE) && defined(ENABLE_HWSERIAL7)
   else if (obj->uart == UART7) 
   {
     RCC_APB1PeriphClockCmd(RCC_APB1Periph_UART7, ENABLE); 
@@ -238,7 +238,7 @@ void uart_init(serial_t *obj, uint32_t baudrate, uint32_t databits, uint32_t par
     obj->irq = UART7_IRQn;
   }
 #endif
-#if defined(UART8_BASE)
+#if defined(UART8_BASE) && defined(ENABLE_HWSERIAL8)
   else if (obj->uart == UART8) 
   {
     RCC_APB1PeriphClockCmd(RCC_APB1Periph_UART8, ENABLE);
@@ -246,6 +246,11 @@ void uart_init(serial_t *obj, uint32_t baudrate, uint32_t databits, uint32_t par
     obj->irq = UART8_IRQn;
   }
 #endif
+
+  else {
+    // The requested peripheral is not enabled in this build.
+    return;
+  }
 
   /* Configure UART GPIO pins */
   pinmap_pinout(obj->pin_tx, PinMap_UART_TX);
@@ -295,7 +300,7 @@ void uart_deinit(serial_t *obj)
   /* Reset UART and disable clock */
   switch (obj->index) 
   {
-#if defined(USART1_BASE)
+#if defined(USART1_BASE) && defined(ENABLE_HWSERIAL1)
     case UART1_INDEX:
       #if defined(CH32L10x) || defined(CH32VM00X)
       RCC_PB2PeriphResetCmd(RCC_PB2Periph_USART1, ENABLE);
@@ -306,7 +311,7 @@ void uart_deinit(serial_t *obj)
       #endif
       break;
 #endif
-#if defined(USART2_BASE)
+#if defined(USART2_BASE) && defined(ENABLE_HWSERIAL2)
     case UART2_INDEX:
       #if defined(CH32L10x) 
       RCC_PB1PeriphResetCmd(RCC_PB1Periph_USART2, ENABLE);
@@ -320,7 +325,7 @@ void uart_deinit(serial_t *obj)
       #endif
       break;
 #endif
-#if defined(USART3_BASE)
+#if defined(USART3_BASE) && defined(ENABLE_HWSERIAL3)
     case UART3_INDEX:
       #if defined(CH32L10x)
       RCC_PB1PeriphResetCmd(RCC_PB1Periph_USART3, ENABLE);
@@ -331,7 +336,7 @@ void uart_deinit(serial_t *obj)
       #endif
       break;
 #endif
-#if defined(UART4_BASE)
+#if defined(UART4_BASE) && defined(ENABLE_HWSERIAL4)
     case UART4_INDEX:
       #if defined(CH32L10x)
       RCC_PB1PeriphResetCmd(RCC_PB1Periph_UART4, ENABLE);
@@ -343,7 +348,7 @@ void uart_deinit(serial_t *obj)
       break;
 #endif
 
-#if defined(UART5_BASE)
+#if defined(UART5_BASE) && defined(ENABLE_HWSERIAL5)
     case UART5_INDEX:
       #if defined(CH32L10x)
       RCC_PB1PeriphResetCmd(RCC_PB1Periph_UART5, ENABLE);
@@ -355,7 +360,7 @@ void uart_deinit(serial_t *obj)
       break;
 #endif
 
-#if defined(UART6_BASE)
+#if defined(UART6_BASE) && defined(ENABLE_HWSERIAL6)
     case UART6_INDEX:
       #if defined(CH32L10x)
       RCC_PB1PeriphResetCmd(RCC_PB1Periph_UART6, ENABLE);
@@ -367,7 +372,7 @@ void uart_deinit(serial_t *obj)
       break;
 #endif
 
-#if defined(UART7_BASE)
+#if defined(UART7_BASE) && defined(ENABLE_HWSERIAL7)
     case UART7_INDEX:
       #if defined(CH32L10x)
       RCC_PB1PeriphResetCmd(RCC_PB1Periph_UART7, ENABLE);
@@ -379,7 +384,7 @@ void uart_deinit(serial_t *obj)
       break;
 #endif
 
-#if defined(UART8_BASE)
+#if defined(UART8_BASE) && defined(ENABLE_HWSERIAL8)
     case UART8_INDEX:
       #if defined(CH32L10x)
       RCC_PB1PeriphResetCmd(RCC_PB1Periph_UART8, ENABLE);
