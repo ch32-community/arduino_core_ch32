@@ -75,10 +75,10 @@
 
 // Default pins for hardware serial port 1.
 #ifndef PIN_SERIAL1_RX
-  #define PIN_SERIAL1_RX         PD6
+  #define PIN_SERIAL1_RX         PD_6
 #endif
 #ifndef PIN_SERIAL1_TX
-  #define PIN_SERIAL1_TX         PD5
+  #define PIN_SERIAL1_TX         PD_5
 #endif
 
 // Useful mapped pins for each hardware serial port.
