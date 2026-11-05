@@ -393,49 +393,29 @@ void uart_deinit(serial_t *obj)
 
 #if defined(UART5_BASE) && defined(ENABLE_HWSERIAL5)
     case UART5_INDEX:
-      // #if defined(CH32L10x)
-      // RCC_PB1PeriphResetCmd(RCC_PB1Periph_UART5, ENABLE);
-      // RCC_PB1PeriphResetCmd(RCC_PB1Periph_UART5, DISABLE);
-      // #else
       RCC_APB1PeriphResetCmd(RCC_APB1Periph_UART5, ENABLE);
       RCC_APB1PeriphResetCmd(RCC_APB1Periph_UART5, DISABLE);
-      // #endif    
       break;
 #endif
 
 #if defined(UART6_BASE) && defined(ENABLE_HWSERIAL6)
     case UART6_INDEX:
-      // #if defined(CH32L10x)
-      // RCC_PB1PeriphResetCmd(RCC_PB1Periph_UART6, ENABLE);
-      // RCC_PB1PeriphResetCmd(RCC_PB1Periph_UART6, DISABLE);
-      // #else
       RCC_APB1PeriphResetCmd(RCC_APB1Periph_UART6, ENABLE);
       RCC_APB1PeriphResetCmd(RCC_APB1Periph_UART6, DISABLE);
-      // #endif
       break;
 #endif
 
 #if defined(UART7_BASE) && defined(ENABLE_HWSERIAL7)
     case UART7_INDEX:
-      // #if defined(CH32L10x)
-      // RCC_PB1PeriphResetCmd(RCC_PB1Periph_UART7, ENABLE);
-      // RCC_PB1PeriphResetCmd(RCC_PB1Periph_UART7, DISABLE);
-      // #else
       RCC_APB1PeriphResetCmd(RCC_APB1Periph_UART7, ENABLE);
       RCC_APB1PeriphResetCmd(RCC_APB1Periph_UART7, DISABLE);
-      // #endif
       break;
 #endif
 
 #if defined(UART8_BASE) && defined(ENABLE_HWSERIAL8)
     case UART8_INDEX:
-      // #if defined(CH32L10x)
-      // RCC_PB1PeriphResetCmd(RCC_PB1Periph_UART8, ENABLE);
-      // RCC_PB1PeriphResetCmd(RCC_PB1Periph_UART8, DISABLE);
-      // #else
       RCC_APB1PeriphResetCmd(RCC_APB1Periph_UART8, ENABLE);
       RCC_APB1PeriphResetCmd(RCC_APB1Periph_UART8, DISABLE);
-      // #endif
       break;
 #endif
   }
@@ -581,13 +561,6 @@ int uart_getc(serial_t *obj, unsigned char *c)
     return -1; 
   }
 
-/* // MxRD: this is redundant since serial_rx_active(obj) already checked the same flag. 
-   // It returned false to indicate that USART_FLAG_RXNE was not RESET.
-  if (!USART_GetFlagStatus(uart_handlers[obj->index]->Instance, USART_FLAG_RXNE)){
-    return -1;
-  }
-*/ 
-
   *c = (unsigned char)USART_ReceiveData(uart_handlers[obj->index]->Instance);
 
   return 0;
@@ -597,7 +570,7 @@ int uart_getc(serial_t *obj, unsigned char *c)
 /**
   * @brief  Write byte to uart
   * @param  obj : pointer to serial_t structure
-  * @retval number of bytes written: 1, or 0 on error / timeout
+  * @retval error status
   */
 int uart_putc(serial_t *obj, unsigned char c)
 {
