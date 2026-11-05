@@ -189,7 +189,7 @@ void uart_init(serial_t *obj, uint32_t baudrate, uint32_t databits, uint32_t par
 #if defined(USART2_BASE) && defined(ENABLE_HWSERIAL2)
   else if (obj->uart == USART2) 
   {
-    #if defined(CH32L10x) 
+    #if defined(CH32L10x)   // L103 has USART1 on Peripheral Bus 2 (PB2), USART1/2/3 are on PB1
     RCC_PB1PeriphClockCmd(RCC_PB1Periph_USART2, ENABLE);
     #elif defined(CH32VM00X)
     RCC_PB2PeriphClockCmd(RCC_PB2Periph_USART2, ENABLE);
@@ -216,7 +216,11 @@ void uart_init(serial_t *obj, uint32_t baudrate, uint32_t databits, uint32_t par
   #if defined(USART4_BASE)
   else if (obj->uart == USART4) 
   {
+  #if defined(CH32L10x)
+    RCC_PB1PeriphClockCmd(RCC_PB1Periph_USART4, ENABLE);
+  #else
     RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART4, ENABLE);
+  #endif
     obj->index = UART4_INDEX;
     obj->irq = USART4_IRQn;
   }
@@ -572,7 +576,7 @@ int uart_putc(serial_t *obj, unsigned char c)
   uint32_t tickstart = GetTick();
 
   if ((obj == NULL) || (obj->index >= UART_NUM)) {
-    return -1;
+    return 0;  // see openwch#278 (was -1)
   }
 
   while (serial_tx_active(obj))
@@ -585,7 +589,7 @@ int uart_putc(serial_t *obj, unsigned char c)
 
   USART_SendData(uart_handlers[obj->index]->Instance, c);
 
-  return 0;
+  return 1;  // see openwch#278 (was 0)
 }
 
 
