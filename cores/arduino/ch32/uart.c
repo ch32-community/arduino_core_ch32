@@ -47,6 +47,18 @@ extern "C" {
 #endif
 
 
+#if (defined(USART1_BASE) && defined(ENABLE_HWSERIAL1)) || \
+    (defined(USART2_BASE) && defined(ENABLE_HWSERIAL2)) || \
+    (defined(USART3_BASE) && defined(ENABLE_HWSERIAL3)) || \
+    ((defined(USART4_BASE) || defined(UART4_BASE)) && defined(ENABLE_HWSERIAL4)) || \
+    (defined(UART5_BASE) && defined(ENABLE_HWSERIAL5)) || \
+    (defined(UART6_BASE) && defined(ENABLE_HWSERIAL6)) || \
+    (defined(UART7_BASE) && defined(ENABLE_HWSERIAL7)) || \
+    (defined(UART8_BASE) && defined(ENABLE_HWSERIAL8))
+#define UART_HAS_ENABLED_PORTS 1
+#else
+#define UART_HAS_ENABLED_PORTS 0    // defined when option No Serial is selected
+#endif
 
 /* @brief uart caracteristics */
 typedef enum {
@@ -318,6 +330,9 @@ void uart_init(serial_t *obj, uint32_t baudrate, uint32_t databits, uint32_t par
   */
 void uart_deinit(serial_t *obj)
 {
+#if !UART_HAS_ENABLED_PORTS
+  (void)obj;
+#else
   if ((obj == NULL) || (obj->index >= UART_NUM)) {
     return;
   }
@@ -430,6 +445,7 @@ void uart_deinit(serial_t *obj)
   {
     serial_debug.index = UART_NUM;
   }
+#endif // #if !UART_HAS_ENABLED_PORTS
 }
 
 
@@ -463,6 +479,11 @@ void uart_debug_init(void)
   */
 size_t uart_debug_write(uint8_t *data, uint32_t size)
 {
+#if !UART_HAS_ENABLED_PORTS
+  (void)data;
+  (void)size;
+  return 0;
+#else
   uint32_t tickstart = GetTick();
   serial_t *obj = NULL;
 
@@ -514,6 +535,7 @@ size_t uart_debug_write(uint8_t *data, uint32_t size)
     USART_SendData(uart_handlers[serial_debug.index]->Instance,*data++);
   }
   return size;  //it shouled be 0
+#endif // #if !UART_HAS_ENABLED_PORTS
 }
 
 /**
@@ -545,6 +567,11 @@ uint8_t serial_tx_active(serial_t *obj)
   */
 int uart_getc(serial_t *obj, unsigned char *c)
 {
+#if !UART_HAS_ENABLED_PORTS
+  (void)obj;
+  (void)c;
+  return -1;
+#else
   if ((obj == NULL) || (obj->index >= UART_NUM)) {
     return -1;
   }
@@ -564,6 +591,7 @@ int uart_getc(serial_t *obj, unsigned char *c)
   *c = (unsigned char)USART_ReceiveData(uart_handlers[obj->index]->Instance);
 
   return 0;
+#endif // #if !UART_HAS_ENABLED_PORTS
 }
 
 /**
@@ -573,6 +601,11 @@ int uart_getc(serial_t *obj, unsigned char *c)
   */
 int uart_putc(serial_t *obj, unsigned char c)
 {
+#if !UART_HAS_ENABLED_PORTS
+  (void)obj;
+  (void)c;
+  return 0;
+#else
   uint32_t tickstart = GetTick();
 
   if ((obj == NULL) || (obj->index >= UART_NUM)) {
@@ -590,6 +623,7 @@ int uart_putc(serial_t *obj, unsigned char c)
   USART_SendData(uart_handlers[obj->index]->Instance, c);
 
   return 1;  // see openwch#278 (was 0)
+#endif // #if !UART_HAS_ENABLED_PORTS
 }
 
 
