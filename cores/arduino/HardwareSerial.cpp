@@ -97,21 +97,21 @@ static inline __attribute__((always_inline)) void uart_rx_isr(USART_TypeDef *uar
 #endif
 #endif // ENABLE_RX_BUFFER
 
-HardwareSerial::HardwareSerial(void *peripheral)
+HardwareSerial::HardwareSerial(void *peripheral, uint32_t tx, uint32_t rx)
+  : HardwareSerial(peripheral, digitalPinToPinName(tx), digitalPinToPinName(rx))
 {
-  setHandler(peripheral);
+}
 
-  // MxRD: find the first pin in the map, instead of predefined values, to support multiple simultaneous serial ports.
-  setRx(pinmap_pin(peripheral, PinMap_UART_RX));
-  setTx(pinmap_pin(peripheral, PinMap_UART_TX));
-  
-#if ENABLE_RX_BUFFER
-  // Initialize buffer pointers for all CH32 series MCUs
-  _rx_buffer_head = 0;
-  _rx_buffer_tail = 0;
-#endif
-  
-  init(_serial.pin_rx, _serial.pin_tx);
+HardwareSerial::HardwareSerial(void *peripheral, PinName tx, PinName rx)
+{
+  init(rx, tx);
+  setHandler(peripheral);
+}
+
+HardwareSerial::HardwareSerial(void *peripheral)
+  : HardwareSerial(peripheral, pinmap_pin(peripheral, PinMap_UART_TX),
+                   pinmap_pin(peripheral, PinMap_UART_RX))
+{
 }
 
 void HardwareSerial::init(PinName _rx, PinName _tx, PinName _rts, PinName _cts)
@@ -485,42 +485,41 @@ void HardwareSerial::setHandler(void *handler)
    _serial.uart  = (USART_TypeDef *) handler;
 }
 
-// SerialEvent functions are weak, so when the user doesn't define them,
-// the linker just sets their address to 0 (which is checked below).
+// Use each variant's default pins for the built-in serial instances.
 #if defined(HAVE_HWSERIAL1)
-  HardwareSerial Serial1(USART1);
+  HardwareSerial Serial1(USART1, PIN_SERIAL1_TX, PIN_SERIAL1_RX);
 #endif
 
 #if defined(HAVE_HWSERIAL2)
-  HardwareSerial Serial2(USART2);
+  HardwareSerial Serial2(USART2, PIN_SERIAL2_TX, PIN_SERIAL2_RX);
 #endif
 
 #if defined(HAVE_HWSERIAL3)
-  HardwareSerial Serial3(USART3);
+  HardwareSerial Serial3(USART3, PIN_SERIAL3_TX, PIN_SERIAL3_RX);
 #endif
 
 #if defined(HAVE_HWSERIAL4)
   #if defined(USART4)
-    HardwareSerial Serial4(USART4);
+    HardwareSerial Serial4(USART4, PIN_SERIAL4_TX, PIN_SERIAL4_RX);
   #else
-    HardwareSerial Serial4(UART4);
+    HardwareSerial Serial4(UART4, PIN_SERIAL4_TX, PIN_SERIAL4_RX);
   #endif
 #endif
 
 #if defined(HAVE_HWSERIAL5) && defined(UART5)
-  HardwareSerial Serial5(UART5);
+  HardwareSerial Serial5(UART5, PIN_SERIAL5_TX, PIN_SERIAL5_RX);
 #endif
 
 #if defined(HAVE_HWSERIAL6) && defined(UART6)
-  HardwareSerial Serial6(UART6);
+  HardwareSerial Serial6(UART6, PIN_SERIAL6_TX, PIN_SERIAL6_RX);
 #endif
 
 #if defined(HAVE_HWSERIAL7) && defined(UART7)
-  HardwareSerial Serial7(UART7);
+  HardwareSerial Serial7(UART7, PIN_SERIAL7_TX, PIN_SERIAL7_RX);
 #endif
 
 #if defined(HAVE_HWSERIAL8) && defined(UART8)
-  HardwareSerial Serial8(UART8);
+  HardwareSerial Serial8(UART8, PIN_SERIAL8_TX, PIN_SERIAL8_RX);
 #endif
 
 #endif // UART_MODULE_ENABLED && !UART_MODULE_ONLY

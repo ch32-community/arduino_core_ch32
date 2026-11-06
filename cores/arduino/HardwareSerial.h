@@ -108,6 +108,8 @@ class HardwareSerial : public Stream {
 
   serial_t _serial;  
 public:
+    HardwareSerial(void *peripheral, uint32_t tx, uint32_t rx);
+    HardwareSerial(void *peripheral, PinName tx, PinName rx);
     HardwareSerial(void *peripheral); 
     
     void begin(unsigned long baud)
@@ -162,8 +164,8 @@ public:
 #if ENABLE_RX_BUFFER
 public:
     // RX Buffer variables - for all CH32 series MCUs
-    volatile rx_buffer_index_t _rx_buffer_head;
-    volatile rx_buffer_index_t _rx_buffer_tail;
+    volatile rx_buffer_index_t _rx_buffer_head = 0;
+    volatile rx_buffer_index_t _rx_buffer_tail = 0;
     unsigned char _rx_buffer[SERIAL_RX_BUFFER_SIZE];
 #endif
 
