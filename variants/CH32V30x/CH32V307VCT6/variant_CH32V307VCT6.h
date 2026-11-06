@@ -55,6 +55,12 @@
 #define PC7                     30
 #define PC12                    31
 #define PD2                     32
+#define PC0                     33
+#define PC1                     34
+#define PC2                     35
+#define PC3                     36
+#define PC4                     37
+#define PC5                     38
 
 
 // Alternate pins number
@@ -76,7 +82,8 @@
 // These numbers/definitions were not updated since the first release in 2023. 
 // Probably there are more variants suffering from the same issue. TODO: need to check those!
 // PR #12 [161] added 11 pins, so let's add them first.
-#define NUM_DIGITAL_PINS        33
+// PC0-PC5 are also exposed for UART6-UART8; existing pin numbers stay unchanged.
+#define NUM_DIGITAL_PINS        39
 #define NUM_ANALOG_INPUTS       6
 // #define ADC_CTLR_ADCAL          
 #define ADC_RESOLUTION          12
