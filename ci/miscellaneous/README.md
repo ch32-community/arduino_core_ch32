@@ -72,7 +72,3 @@ Miscellaneous/i2c_scanner/CH32V002F4_LTO_I2C_UART
 
 Uploads using these names create new targets; reports previously uploaded under
 the old names remain there. Build artifact directories are unchanged.
-
-V307 Serial6–8 currently expose missing PC0–PC5 definitions in the original
-variant. These configurations remain in the suite and fail until the variant
-is fixed separately.
