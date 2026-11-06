@@ -111,8 +111,11 @@ HardwareSerial::HardwareSerial(void *peripheral)
   setTx(pinmap_pin(peripheral, PinMap_UART_TX));
 #else
   // SERIAL_RX/TX are defined by the Serial port/map selection (see cores/arduino/variant.h)
-  setRx(PIN_SERIAL_RX);   // TODO: check if serial can be initialized as TX-only (for V002/V003 SOP8)
-  setTx(PIN_SERIAL_TX);
+  // Flash minimization: using digitalPinToPinName avoids overloaded setRX (works only for -Os, not for LTO)
+  // setRx(PIN_SERIAL_RX);   // TODO: check if serial can be initialized as TX-only (for V002/V003 SOP8)
+  // setTx(PIN_SERIAL_TX);
+  setRx(digitalPinToPinName(PIN_SERIAL_RX));   // TODO: check if serial can be initialized as TX-only (for V002/V003 SOP8)
+  setTx(digitalPinToPinName(PIN_SERIAL_TX));  
 #endif
   
 #if ENABLE_RX_BUFFER
