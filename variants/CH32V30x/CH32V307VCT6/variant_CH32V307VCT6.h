@@ -177,24 +177,24 @@
 #endif
 
 #ifndef PIN_SERIAL6_RX
-  #define PIN_SERIAL6_RX     PC1  /* UART6 default RX pin */
+  #define PIN_SERIAL6_RX     PC_1  /* UART6 default RX pin */
 #endif
 #ifndef PIN_SERIAL6_TX
-  #define PIN_SERIAL6_TX     PC0  /* UART6 default TX pin */
+  #define PIN_SERIAL6_TX     PC_0  /* UART6 default TX pin */
 #endif
 
 #ifndef PIN_SERIAL7_RX
-  #define PIN_SERIAL7_RX     PC3  /* UART7 default RX pin */
+  #define PIN_SERIAL7_RX     PC_3  /* UART7 default RX pin */
 #endif
 #ifndef PIN_SERIAL7_TX
-  #define PIN_SERIAL7_TX     PC2  /* UART7 default TX pin */
+  #define PIN_SERIAL7_TX     PC_2  /* UART7 default TX pin */
 #endif
 
 #ifndef PIN_SERIAL8_RX
-  #define PIN_SERIAL8_RX     PC5  /* UART8 default RX pin */
+  #define PIN_SERIAL8_RX     PC_5  /* UART8 default RX pin */
 #endif
 #ifndef PIN_SERIAL8_TX
-  #define PIN_SERIAL8_TX     PC4  /* UART8 default TX pin */
+  #define PIN_SERIAL8_TX     PC_4  /* UART8 default TX pin */
 #endif
 
 
