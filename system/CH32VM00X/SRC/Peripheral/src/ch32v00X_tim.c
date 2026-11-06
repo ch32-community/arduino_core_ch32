@@ -1,8 +1,8 @@
 /********************************** (C) COPYRIGHT *******************************
  * File Name          : ch32v00X_tim.c
  * Author             : WCH
- * Version            : V1.0.0
- * Date               : 2024/01/01
+ * Version            : V1.0.5
+ * Date               : 2025/02/21
  * Description        : This file provides all the TIM firmware functions.
  *********************************************************************************
  * Copyright (c) 2021 Nanjing Qinheng Microelectronics Co., Ltd.
@@ -580,16 +580,15 @@ void TIM_ITConfig(TIM_TypeDef *TIMx, uint16_t TIM_IT, FunctionalState NewState)
  * @brief   Configures the TIMx event to be generate by software.
  *
  * @param   TIMx - where x can be 1 to 2 to select the TIM peripheral.
- *          TIM_IT - specifies the TIM interrupts sources to be enabled or disabled.
- *            TIM_IT_Update - TIM update Interrupt source.
- *            TIM_IT_CC1 - TIM Capture Compare 1 Interrupt source.
- *            TIM_IT_CC2 - TIM Capture Compare 2 Interrupt source
- *            TIM_IT_CC3 - TIM Capture Compare 3 Interrupt source.
- *            TIM_IT_CC4 - TIM Capture Compare 4 Interrupt source.
- *            TIM_IT_COM - TIM Commutation Interrupt source.
- *            TIM_IT_Trigger - TIM Trigger Interrupt source.
- *            TIM_IT_Break - TIM Break Interrupt source.
- *          NewState - ENABLE or DISABLE.
+ *          TIM_EventSource - specifies the TIM event sources.
+ *            TIM_EventSource_Update - Timer update Event source.
+ *            TIM_EventSource_CC1 - Timer Capture Compare 1 Event source.
+ *            TIM_EventSource_CC2 - Timer Capture Compare 2 Event source.
+ *            TIM_EventSource_CC3 - Timer Capture Compare 3 Event source.
+ *            TIM_EventSource_CC4 - Timer Capture Compare 4 Event source.
+ *            TIM_EventSource_COM - Timer COM event source.
+ *            TIM_EventSource_Trigger - Timer Trigger Event source.
+ *            TIM_EventSource_Break - Timer Break event source.(only for TIM1)
  *
  * @return  none
  */
@@ -1102,7 +1101,7 @@ void TIM_ARRPreloadConfig(TIM_TypeDef *TIMx, FunctionalState NewState)
  *
  * @brief   Selects the TIM peripheral Commutation event.
  *
- * @param   TIMx - where x can be 1 to 2 to select the TIM peripheral.
+ * @param   TIMx - where x can be 1 to select the TIM peripheral.
  *          NewState - ENABLE or DISABLE.
  *
  * @return  none
@@ -1146,7 +1145,7 @@ void TIM_SelectCCDMA(TIM_TypeDef *TIMx, FunctionalState NewState)
  *
  * @brief   DSets or Resets the TIM peripheral Capture Compare Preload Control bit.
  *        reset values  .
- * @param   TIMx - where x can be 1 to 2 to select the TIM peripheral.
+ * @param   TIMx - where x can be 1 to select the TIM peripheral.
  *          NewState - ENABLE or DISABLE.
  *
  * @return  none

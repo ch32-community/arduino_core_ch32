@@ -1,8 +1,8 @@
 /********************************** (C) COPYRIGHT  *******************************
  * File Name          : ch32v00X_gpio.c
  * Author             : WCH
- * Version            : V1.0.0
- * Date               : 2024/01/01
+ * Version            : V1.0.1
+ * Date               : 2025/03/10
  * Description        : This file provides all the GPIO firmware functions.
  *********************************************************************************
  * Copyright (c) 2021 Nanjing Qinheng Microelectronics Co., Ltd.
@@ -522,27 +522,25 @@ void GPIO_IPD_Unused(void)
             GPIO_Init(GPIOC, &GPIO_InitStructure);
             break;
         }
-        case 0x00600600:     //CH32V006K8U6
+        case 0x00640600:     //CH32V006F4U
+        {
+            GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0|GPIO_Pin_3|GPIO_Pin_4\
+                                         |GPIO_Pin_5|GPIO_Pin_6|GPIO_Pin_7;
+            GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPD;
+            GPIO_Init(GPIOA, &GPIO_InitStructure);
+            GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0|GPIO_Pin_1|GPIO_Pin_2\
+                                         |GPIO_Pin_3|GPIO_Pin_4|GPIO_Pin_5\
+                                         |GPIO_Pin_6;
+            GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPD;
+            GPIO_Init(GPIOB, &GPIO_InitStructure);
+            break;
+        }
+        case 0x00600600:     //CH32V006K8U
         {
             break;
         }
 #elif defined(CH32V007_M007)
         case 0x00720600:     //CH32V007F8U6
-        {
-            GPIO_InitStructure.GPIO_Pin = GPIO_Pin_7;
-            GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPD;
-            GPIO_Init(GPIOA, &GPIO_InitStructure);
-            GPIO_InitStructure.GPIO_Pin = GPIO_Pin_1|GPIO_Pin_2|GPIO_Pin_4\
-                                         |GPIO_Pin_5|GPIO_Pin_6;
-            GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPD;
-            GPIO_Init(GPIOB, &GPIO_InitStructure);
-            GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0|GPIO_Pin_1|GPIO_Pin_2\
-                                         |GPIO_Pin_6|GPIO_Pin_7;
-            GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPD;
-            GPIO_Init(GPIOC, &GPIO_InitStructure);
-            break;
-        }
-        case 0x00710600:     //CH32V007E8R6
         {
             GPIO_InitStructure.GPIO_Pin = GPIO_Pin_7;
             GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPD;
@@ -556,23 +554,49 @@ void GPIO_IPD_Unused(void)
             GPIO_Init(GPIOC, &GPIO_InitStructure);
             break;
         }
-        case 0x00700800:     //CH32M007G8R6
+
+        case 0x00730800:     //CH32M007E8R
         {
-            GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0|GPIO_Pin_2|GPIO_Pin_3\
-                                         |GPIO_Pin_5|GPIO_Pin_6|GPIO_Pin_7;
+            GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6|GPIO_Pin_7;
             GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPD;
             GPIO_Init(GPIOA, &GPIO_InitStructure);
-            GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0|GPIO_Pin_1|GPIO_Pin_2\
-                                         |GPIO_Pin_4|GPIO_Pin_5|GPIO_Pin_6;
+            GPIO_InitStructure.GPIO_Pin = GPIO_Pin_2|GPIO_Pin_4|GPIO_Pin_5\
+                                         |GPIO_Pin_6;
             GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPD;
             GPIO_Init(GPIOB, &GPIO_InitStructure);
-            GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0|GPIO_Pin_1|GPIO_Pin_2\
-                                         |GPIO_Pin_3|GPIO_Pin_6|GPIO_Pin_7;
+            GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0|GPIO_Pin_3|GPIO_Pin_6\
+                                         |GPIO_Pin_7;
             GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPD;
             GPIO_Init(GPIOC, &GPIO_InitStructure);
-            GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0;
+            break;
+        }
+        case 0x00740800:     //CH32M007E8U
+        {
+            GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6|GPIO_Pin_7;
             GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPD;
-            GPIO_Init(GPIOD, &GPIO_InitStructure);
+            GPIO_Init(GPIOA, &GPIO_InitStructure);
+            GPIO_InitStructure.GPIO_Pin = GPIO_Pin_2|GPIO_Pin_4|GPIO_Pin_5\
+                                         |GPIO_Pin_6;
+            GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPD;
+            GPIO_Init(GPIOB, &GPIO_InitStructure);
+            GPIO_InitStructure.GPIO_Pin = GPIO_Pin_3|GPIO_Pin_6|GPIO_Pin_7;
+            GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPD;
+            GPIO_Init(GPIOC, &GPIO_InitStructure);
+            break;
+        }
+        case 0x00700800:     //CH32M007G8R
+        {
+            GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6|GPIO_Pin_7;
+            GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPD;
+            GPIO_Init(GPIOA, &GPIO_InitStructure);
+            GPIO_InitStructure.GPIO_Pin = GPIO_Pin_2|GPIO_Pin_4|GPIO_Pin_5\
+                                         |GPIO_Pin_6;
+            GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPD;
+            GPIO_Init(GPIOB, &GPIO_InitStructure);
+            GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0|GPIO_Pin_1|GPIO_Pin_3\
+                                         |GPIO_Pin_6|GPIO_Pin_7;
+            GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPD;
+            GPIO_Init(GPIOC, &GPIO_InitStructure);
             break;
         }
 #elif defined(CH32V005)
@@ -674,7 +698,7 @@ void GPIO_IPD_Unused(void)
             GPIO_Init(GPIOD, &GPIO_InitStructure);
             break;
         }
-        case 0x00220600:     //CH32V002A4M6
+        case 0x00220600:     //CH32V002A4M
         {
             GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0|GPIO_Pin_3|GPIO_Pin_4\
                                          |GPIO_Pin_5|GPIO_Pin_6|GPIO_Pin_7;
@@ -742,7 +766,7 @@ void GPIO_IPD_Unused(void)
 #endif
             break;
         }
-        case 0x00410600:     //CH32V004F6U1
+        case 0x00410600:     //CH32V004F6U
         {
             GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0|GPIO_Pin_3|GPIO_Pin_5\
                                          |GPIO_Pin_6|GPIO_Pin_7;
