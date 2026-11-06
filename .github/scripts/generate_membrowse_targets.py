@@ -96,6 +96,7 @@ def generate_targets(config: dict) -> list[dict]:
 
     for case in miscellaneous_builds('ch32-community:ch32v'):
         sketch = Path(case['sketch']).name
+        configuration = case['name'].removesuffix('-' + sketch)
         compile_args = ['arduino-cli', 'compile', '--fqbn', case['fqbn']]
         for key, value in case['build_properties'].items():
             compile_args.extend(['--build-property', f'{key}={value}'])
@@ -105,7 +106,7 @@ def generate_targets(config: dict) -> list[dict]:
             + f' --build-path "$PWD/{build_dir}" ' + shlex.quote(case['sketch'])
         )
         targets.append({
-            'target_name': f"Miscellaneous/{case['name']}",
+            'target_name': f"Miscellaneous/{sketch}/{configuration}",
             'setup_cmd': setup_cmd,
             'build_cmd': build_cmd,
             'elf': f'{build_dir}/{sketch}.ino.elf',
