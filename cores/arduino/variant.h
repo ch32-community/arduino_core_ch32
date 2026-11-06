@@ -13,6 +13,16 @@
   #endif
 #endif
 
+#if !defined(SERIAL_UART_PINMAP) || SERIAL_UART_PINMAP == 0
+  #undef SERIAL_UART_PINMAP
+  #if defined(BOARD_DEFAULT_SERIALMAP)
+    #define SERIAL_UART_PINMAP BOARD_DEFAULT_SERIALMAP
+  #else
+    #define SERIAL_UART_PINMAP 0  // 0 means no pinmap to be used
+  #endif
+#endif
+
+
 // A variant exposes a hardware port by supplying both of its default pins.
 // Keep all exposed ports available independently of the Serial alias.
 #if !defined(HWSERIAL_NONE) && defined(SERIAL_UART_ENABLE_ALL)
@@ -45,13 +55,24 @@
 // Compatibility pin aliases use the same port as WSerial.h.
 #define SERIAL_PIN_NAME_EXPAND(port, direction) PIN_SERIAL##port##_##direction
 #define SERIAL_PIN_NAME(port, direction) SERIAL_PIN_NAME_EXPAND(port, direction)
+#define SERIAL_PINMAP_NAME_EXPAND(port, pinmap, direction) PIN_SERIAL##port##_##pinmap##_##direction
+#define SERIAL_PINMAP_NAME(port, pinmap, direction) SERIAL_PINMAP_NAME_EXPAND(port, pinmap, direction)
 #if defined(SERIAL_UART_INSTANCE) && SERIAL_UART_INSTANCE > 0
+  #if defined(SERIAL_UART_PINMAP) && SERIAL_UART_PINMAP > 0
+    #ifndef PIN_SERIAL_RX
+        #define PIN_SERIAL_RX SERIAL_PINMAP_NAME(SERIAL_UART_INSTANCE, SERIAL_UART_PINMAP, RX)
+    #endif
+    #ifndef PIN_SERIAL_TX
+        #define PIN_SERIAL_TX SERIAL_PINMAP_NAME(SERIAL_UART_INSTANCE, SERIAL_UART_PINMAP, TX)
+    #endif
+  #else
     #ifndef PIN_SERIAL_RX
         #define PIN_SERIAL_RX SERIAL_PIN_NAME(SERIAL_UART_INSTANCE, RX)
     #endif
     #ifndef PIN_SERIAL_TX
         #define PIN_SERIAL_TX SERIAL_PIN_NAME(SERIAL_UART_INSTANCE, TX)
     #endif
+  #endif
 
     // A variant exposes a hardware port by supplying both of its default pins.
     // Keep all exposed ports available independently of the Serial alias.
