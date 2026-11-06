@@ -194,11 +194,15 @@ def build_sketch(variant, sketch, local_build, build_properties=None, display_na
         property_options = []
         for key, value in (build_properties or {}).items():
             property_options.extend(['--build-property', f'{key}={value}'])
-        build_result = subprocess.run(
-            [local_build['cli'], 'compile', '--warnings', 'all', '--fqbn', fqbn,
-             *local_build['compile_options'], *property_options, os.path.abspath(sketch)],
-            env=build_env, stdout=PIPE, stderr=PIPE,
-        )
+        # The bundled ctags can choose the same temporary filename in parallel
+        # processes. Isolate tool temporary files as well as build directories.
+        with tempfile.TemporaryDirectory(prefix='ch32-compile-') as build_temp:
+            build_env.update(TMP=build_temp, TEMP=build_temp, TMPDIR=build_temp)
+            build_result = subprocess.run(
+                [local_build['cli'], 'compile', '--warnings', 'all', '--fqbn', fqbn,
+                 *local_build['compile_options'], *property_options, os.path.abspath(sketch)],
+                env=build_env, stdout=PIPE, stderr=PIPE,
+            )
         # get stderr into a form where warning/error was output to stderr
         if build_result.returncode != 0:
             success = FAILED
