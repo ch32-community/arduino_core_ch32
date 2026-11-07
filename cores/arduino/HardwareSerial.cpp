@@ -101,9 +101,22 @@ HardwareSerial::HardwareSerial(void *peripheral)
 {
   setHandler(peripheral);
 
-  // MxRD: find the first pin in the map, instead of predefined values, to support multiple simultaneous serial ports.
+  // Using the IDE menu, the user can select which Serial port to use.
+  // The default port is defined in the variant header (BOARD_DEFAULT_SERIAL).
+  // Some board support selecting a pinmap. Default is no map (BOARD_DEFAULT_SERIALMAP).
+  // Using the option Multiple Ports allows simultaneous multiple ports (SERIAL_UART_ENABLE_ALL).
+#if defined(SERIAL_UART_ENABLE_ALL) && SERIAL_UART_ENABLE_ALL==1
+  // Multiple ports selected: find the first pin of each peripheral in the pinmap (see variants/.../PeripherralPins.c)
   setRx(pinmap_pin(peripheral, PinMap_UART_RX));
   setTx(pinmap_pin(peripheral, PinMap_UART_TX));
+#else
+  // SERIAL_RX/TX are defined by the Serial port/map selection (see cores/arduino/variant.h)
+  // Flash minimization: using digitalPinToPinName avoids overloaded setRX (works only for -Os, not for LTO)
+  // setRx(PIN_SERIAL_RX);   // TODO: check if serial can be initialized as TX-only (for V002/V003 SOP8)
+  // setTx(PIN_SERIAL_TX);
+  setRx(digitalPinToPinName(PIN_SERIAL_RX));   // TODO: check if serial can be initialized as TX-only (for V002/V003 SOP8)
+  setTx(digitalPinToPinName(PIN_SERIAL_TX));  
+#endif
   
 #if ENABLE_RX_BUFFER
   // Initialize buffer pointers for all CH32 series MCUs
