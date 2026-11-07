@@ -238,7 +238,7 @@ static inline void pin_SetV32AFPin(uint32_t afnum)
       GPIO_PinRemapConfig(GPIO_PartialRemap7_TIM1,ENABLE);
       break;
     case AFIO_PartialRemap8_TIM1_ENABLE:
-      GPIO_PinRemapConfig(GPIO_PartialRemap7_TIM1,ENABLE);
+      GPIO_PinRemapConfig(GPIO_PartialRemap8_TIM1,ENABLE);
       break;          
     case AFIO_FullRemap_TIM1_ENABLE:
       GPIO_PinRemapConfig(GPIO_FullRemap_TIM1,ENABLE);
