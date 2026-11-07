@@ -7,6 +7,14 @@ menu.usb=USB support (if available)
 menu.xusb=USB speed (if available)
 menu.virtio=Virtual serial support
 
+#menu.peri=Peripherals
+menu.periADC=ADC Module
+menu.periUART=UART Module
+menu.periSPI=SPI Module
+menu.periI2C=I2C Module
+menu.periI2Cslave=I2C Slave Option
+menu.periTimer=Hardware Timer
+
 menu.opt=Optimize
 menu.dbg=Debug symbols and core logs
 menu.rtlib=C Runtime Library
@@ -116,7 +124,42 @@ CH32V00x_EVT.menu.rtlib.nanofps.build.flags.ldflags=--specs=nano.specs --specs=n
 CH32V00x_EVT.menu.rtlib.full=Newlib Standard
 CH32V00x_EVT.menu.rtlib.full.build.flags.ldflags=--specs=nosys.specs
 
+# Serial port selection - allow disabling of UART module
+CH32V00x_EVT.menu.xserial.boardDefault=Serial=Board Default (default)
+CH32V00x_EVT.menu.xserial.boardDefault.build.serial_flags=-DSERIAL_UART_INSTANCE=0
+CH32V00x_EVT.menu.xserial.serial1=Serial=Serial1
+CH32V00x_EVT.menu.xserial.serial1.build.serial_flags=-DSERIAL_UART_INSTANCE=1
+CH32V00x_EVT.menu.xserial.none=No Serial (smallest sketch)
+CH32V00x_EVT.menu.xserial.none.build.serial_flags=-DHWSERIAL_NONE
 
+# Other peripheral selection. -DIDE_MENU_PERIPHERALS disables any definitions made in the variant header.
+CH32V00x_EVT.build.periIDE=-DIDE_MENU_PERIPHERALS
+
+# Peripherals Options
+CH32V00x_EVT.menu.periADC.enable=enabled (default)
+CH32V00x_EVT.menu.periADC.enable.build.periADC=-DADC_MODULE_ENABLED
+CH32V00x_EVT.menu.periADC.disable=disabled
+CH32V00x_EVT.menu.periADC.disable.build.periADC=
+CH32V00x_EVT.menu.periUART.enable=enabled (default)
+CH32V00x_EVT.menu.periUART.enable.build.periUART=-DUART_MODULE_ENABLED
+CH32V00x_EVT.menu.periUART.disable=disabled
+CH32V00x_EVT.menu.periUART.disable.build.periUART=
+CH32V00x_EVT.menu.periSPI.enable=enabled (default)
+CH32V00x_EVT.menu.periSPI.enable.build.periSPI=-DSPI_MODULE_ENABLED
+CH32V00x_EVT.menu.periSPI.disable=disabled
+CH32V00x_EVT.menu.periSPI.disable.build.periSPI=
+CH32V00x_EVT.menu.periI2C.enable=enabled (default)
+CH32V00x_EVT.menu.periI2C.enable.build.periI2C=-DI2C_MODULE_ENABLED
+CH32V00x_EVT.menu.periI2C.disable=disabled
+CH32V00x_EVT.menu.periI2C.disable.build.periI2C=
+CH32V00x_EVT.menu.periI2Cslave.enable=enabled (default)
+CH32V00x_EVT.menu.periI2Cslave.enable.build.periI2Cslave=-DOPT_I2C_SLAVE=1
+CH32V00x_EVT.menu.periI2Cslave.disable=disabled
+CH32V00x_EVT.menu.periI2Cslave.disable.build.periI2Cslave=-DOPT_I2C_SLAVE=0
+CH32V00x_EVT.menu.periTimer.enable=enabled (default)
+CH32V00x_EVT.menu.periTimer.enable.build.periTimer=-DTIM_MODULE_ENABLED
+CH32V00x_EVT.menu.periTimer.disable=disabled
+CH32V00x_EVT.menu.periTimer.disable.build.periTimer=
 # Serial port selection
 # Using SERIAL_UART_INSTANCE=0 means board default; SERIAL_UART_PINMAP=2 means use second pinmap, eg. PIN_RX1_2
 CH32V00x_EVT.menu.xserial.boardDefault=Serial=Board Default (default)
