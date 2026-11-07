@@ -5,7 +5,7 @@
 # https://arduino.github.io/arduino-cli/latest/platform-specification/
 
 name=CH32 Community Core
-version=1.0.1
+version=1.2
 
 # OpenOCD & Compiler Path (Update version when updated)
 toolchain_dir={runtime.tools.riscv-none-embed-gcc-8.2.0.path}
