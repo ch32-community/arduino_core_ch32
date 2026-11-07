@@ -143,6 +143,9 @@
 #ifndef BOARD_DEFAULT_SERIAL
   #define BOARD_DEFAULT_SERIAL 1
 #endif
+#if (defined(SERIAL_UART_INSTANCE) && SERIAL_UART_INSTANCE>2)
+  #error "CH32V203C6 only supports Serial1 and Serial2"
+#endif
 
 // Default pins for hardware serial port 1.
 #ifndef PIN_SERIAL1_RX

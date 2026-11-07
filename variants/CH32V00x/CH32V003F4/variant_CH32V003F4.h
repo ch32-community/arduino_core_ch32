@@ -68,7 +68,6 @@
 
 
 
-
 // UART Definitions
 #ifndef BOARD_DEFAULT_SERIAL
   #define BOARD_DEFAULT_SERIAL 1
@@ -81,6 +80,15 @@
 #ifndef PIN_SERIAL1_TX
   #define PIN_SERIAL1_TX         PD5
 #endif
+
+// Useful mapped pins for each hardware serial port.
+#ifndef PIN_SERIAL1_2_RX
+  #define PIN_SERIAL1_2_RX     PD5  /* UART1_2 pinmap RX pin */
+#endif
+#ifndef PIN_SERIAL1_2_TX
+  #define PIN_SERIAL1_2_TX     PD6  /* UART1_3 pinmap TX pin */
+#endif
+
 
 
 // SPI definitions

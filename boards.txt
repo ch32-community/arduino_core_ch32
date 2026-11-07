@@ -160,6 +160,18 @@ CH32V00x_EVT.menu.periTimer.enable=enabled (default)
 CH32V00x_EVT.menu.periTimer.enable.build.periTimer=-DTIM_MODULE_ENABLED
 CH32V00x_EVT.menu.periTimer.disable=disabled
 CH32V00x_EVT.menu.periTimer.disable.build.periTimer=
+# Serial port selection
+# Using SERIAL_UART_INSTANCE=0 means board default; SERIAL_UART_PINMAP=2 means use second pinmap, eg. PIN_RX1_2
+CH32V00x_EVT.menu.xserial.boardDefault=Serial=Board Default (default)
+CH32V00x_EVT.menu.xserial.boardDefault.build.serial_flags=-DSERIAL_UART_INSTANCE=0
+CH32V00x_EVT.menu.xserial.serial1=Serial=Serial1 (TX/RX=PD5/PD6)
+CH32V00x_EVT.menu.xserial.serial1.build.serial_flags=-DSERIAL_UART_INSTANCE=1
+CH32V00x_EVT.menu.xserial.serial1_2=Serial=Serial1_2 (TX/RX=PD6/PD5)
+CH32V00x_EVT.menu.xserial.serial1_2.build.serial_flags=-DSERIAL_UART_INSTANCE=1 -DSERIAL_UART_PINMAP=2
+CH32V00x_EVT.menu.xserial.none=No Serial (smallest sketch)
+CH32V00x_EVT.menu.xserial.none.build.serial_flags=-DHWSERIAL_NONE
+
+
 
 
 ##############################################################################
@@ -661,8 +673,8 @@ CH32V20x_EVT.build.variant_h=variant_{build.board}.h
 CH32V20x_EVT.debug.tool=gdb-WCH_LinkE
 
 
-#CH32V203RB EVT Board
-CH32V20x_EVT.menu.pnum.CH32V203RB=CH32V203RB EVT
+#CH32V203RB LQFP64 (CH32V203R-EVT-R1 CH32V203C8T6)
+CH32V20x_EVT.menu.pnum.CH32V203RB=CH32V203RB LQFP64 EVT
 CH32V20x_EVT.menu.pnum.CH32V203RB.node=NODE_V203RB
 CH32V20x_EVT.menu.pnum.CH32V203RB.upload.maximum_size=131072
 CH32V20x_EVT.menu.pnum.CH32V203RB.upload.maximum_data_size=65536
@@ -677,8 +689,8 @@ CH32V20x_EVT.menu.pnum.CH32V203RB.build.math_lib_gcc=-lm
 CH32V20x_EVT.menu.pnum.CH32V203RB.build.IQ_math_RV32=
 CH32V20x_EVT.menu.pnum.CH32V203RB.build.ch_extra_lib=-lprintf
 
-#CH32V203G8 EVT Board
-CH32V20x_EVT.menu.pnum.CH32V203G8=CH32V203G8 EVT
+#CH32V203G8 QSOP28
+CH32V20x_EVT.menu.pnum.CH32V203G8=CH32V203G8 QSOP28
 CH32V20x_EVT.menu.pnum.CH32V203G8.node=NODE_V203G8
 CH32V20x_EVT.menu.pnum.CH32V203G8.upload.maximum_size=65536
 CH32V20x_EVT.menu.pnum.CH32V203G8.upload.maximum_data_size=20480
@@ -693,8 +705,8 @@ CH32V20x_EVT.menu.pnum.CH32V203G8.build.math_lib_gcc=-lm
 CH32V20x_EVT.menu.pnum.CH32V203G8.build.IQ_math_RV32=
 CH32V20x_EVT.menu.pnum.CH32V203G8.build.ch_extra_lib=-lprintf
 
-#CH32V203G6 EVT Board
-CH32V20x_EVT.menu.pnum.CH32V203G6=CH32V203G6 EVT
+#CH32V203G6 QFN28
+CH32V20x_EVT.menu.pnum.CH32V203G6=CH32V203G6 QFN28
 CH32V20x_EVT.menu.pnum.CH32V203G6.node=NODE_V203G6
 CH32V20x_EVT.menu.pnum.CH32V203G6.upload.maximum_size=32768
 CH32V20x_EVT.menu.pnum.CH32V203G6.upload.maximum_data_size=10240
@@ -709,8 +721,9 @@ CH32V20x_EVT.menu.pnum.CH32V203G6.build.math_lib_gcc=-lm
 CH32V20x_EVT.menu.pnum.CH32V203G6.build.IQ_math_RV32=
 CH32V20x_EVT.menu.pnum.CH32V203G6.build.ch_extra_lib=-lprintf
 
-#CH32V203C8 Board
-CH32V20x_EVT.menu.pnum.CH32V203C8=CH32V203C8
+#CH32V203C8 LQFP/QFN48 EVT Board (CH32V203C8T6-EVT-R0 LQFP48)
+# TODO: Not supported yet: the only known other V203 EVT Board CH32V203F6P6-EVT-R0 TSSOP20.
+CH32V20x_EVT.menu.pnum.CH32V203C8=CH32V203C8 LQFP/QFN48 EVT
 CH32V20x_EVT.menu.pnum.CH32V203C8.node=NODE_V203C8
 CH32V20x_EVT.menu.pnum.CH32V203C8.upload.maximum_size=65536
 CH32V20x_EVT.menu.pnum.CH32V203C8.upload.maximum_data_size=20480
@@ -725,8 +738,8 @@ CH32V20x_EVT.menu.pnum.CH32V203C8.build.math_lib_gcc=-lm
 CH32V20x_EVT.menu.pnum.CH32V203C8.build.IQ_math_RV32=
 CH32V20x_EVT.menu.pnum.CH32V203C8.build.ch_extra_lib=-lprintf
 
-#CH32V203C6 Board
-CH32V20x_EVT.menu.pnum.CH32V203C6=CH32V203C6
+#CH32V203C6 LQFP48
+CH32V20x_EVT.menu.pnum.CH32V203C6=CH32V203C6 LQFP48
 CH32V20x_EVT.menu.pnum.CH32V203C6.node=NODE_V203C6
 CH32V20x_EVT.menu.pnum.CH32V203C6.upload.maximum_size=32768
 CH32V20x_EVT.menu.pnum.CH32V203C6.upload.maximum_data_size=10240
@@ -757,8 +770,8 @@ CH32V20x_EVT.menu.pnum.CH32V203G6_ADAFRUIT_QTPY.build.math_lib_gcc=-lm
 CH32V20x_EVT.menu.pnum.CH32V203G6_ADAFRUIT_QTPY.build.IQ_math_RV32=
 CH32V20x_EVT.menu.pnum.CH32V203G6_ADAFRUIT_QTPY.build.ch_extra_lib=-lprintf
 
-#LANA TNY Board
-CH32V20x_EVT.menu.pnum.CH32V203G6_LANA_TNY=LANA TNY
+#LANA TNY CH32V203G6 Board
+CH32V20x_EVT.menu.pnum.CH32V203G6_LANA_TNY=LANA TNY CH32V203G6
 CH32V20x_EVT.menu.pnum.CH32V203G6_LANA_TNY.node=NODE_V203G6_LANA_TNY
 CH32V20x_EVT.menu.pnum.CH32V203G6_LANA_TNY.upload.maximum_size=229376
 CH32V20x_EVT.menu.pnum.CH32V203G6_LANA_TNY.upload.maximum_data_size=10240
@@ -777,7 +790,7 @@ CH32V20x_EVT.menu.pnum.CH32V203G6_LANA_TNY.build.ch_extra_lib=-lprintf
 # Serial port selection
 CH32V20x_EVT.menu.xserial.boardDefault=Serial=Board Default (default)
 CH32V20x_EVT.menu.xserial.boardDefault.build.serial_flags=-DSERIAL_UART_INSTANCE=0
-CH32V20x_EVT.menu.xserial.serial1=Serial=Serial1
+CH32V20x_EVT.menu.xserial.serial1=Serial=Serial1 (not on F6)
 CH32V20x_EVT.menu.xserial.serial1.build.serial_flags=-DSERIAL_UART_INSTANCE=1
 CH32V20x_EVT.menu.xserial.serial2=Serial=Serial2
 CH32V20x_EVT.menu.xserial.serial2.build.serial_flags=-DSERIAL_UART_INSTANCE=2

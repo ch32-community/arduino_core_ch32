@@ -51,8 +51,17 @@ const PinName digitalPin[] = {
   PC_6,   //D29    SDIO_D6
   PC_7,   //D30    SDIO_D7
   PC_12,  //D31    SDIO_CK
-  PD_2    //D32    SDIO_CMD
+  PD_2,   //D32    SDIO_CMD
+  PC_0,   //D33    UART6_TX
+  PC_1,   //D34    UART6_RX
+  PC_2,   //D35    UART7_TX
+  PC_3,   //D36    UART7_RX
+  PC_4,   //D37    UART8_TX
+  PC_5    //D38    UART8_RX
 };
+
+static_assert(sizeof(digitalPin) / sizeof(digitalPin[0]) == NUM_DIGITAL_PINS,
+              "V307 digital pin count must match NUM_DIGITAL_PINS");
 
 // Analog (Ax) pin number array
 const uint32_t analogInputPin[] = {
