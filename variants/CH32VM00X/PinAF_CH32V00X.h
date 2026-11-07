@@ -32,6 +32,8 @@
 #ifndef _PINAF_CH32V00X_H
 #define _PINAF_CH32V00X_H
 
+#include "variant.h"   // Needed to allow testing if peripheral is enabled
+
 #ifdef __cplusplus
 extern "C" {
 #endif
