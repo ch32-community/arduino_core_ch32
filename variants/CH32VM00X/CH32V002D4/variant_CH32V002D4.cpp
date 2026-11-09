@@ -39,27 +39,5 @@ V002 QFN12->DIP14 DEV-BOARD PINOUT
 // Note: - Arduino pin numbers on QFN12 deviate from TSSOP20/QFN20 numbers.
 //       - On QFN12 UART/I2C pin PD1 is also SWIO. Use "Clear by Power on" in Link Utility to reprogram.
 // Digital PinName array. 
-const PinName digitalPin[] = {
-  PA_1,   // D0/A1
-  PA_2,   // D1/A0
-  PC_0,   // D2
-  PC_3,   // D3
-  PC_4,   // D4/A2
-  PC_6,   // D5
-  PC_7,   // D6
-  PD_0,   // D7/SDA/TX
-  PD_1,   // D8/SWIO/SCL/RX
-  PD_4,   // D9/A3
-  PD_7    // D10/RST
-};
-
-// Analog (Ax) pin number array
-const uint32_t analogInputPin[] = {
-  1,    // A0/PA2
-  0,    // A1/PA1
-  4,    // A2/PC4
-  9    // A3/PD4 
-};
-
-
-
+const PinName digitalPin[] = VARIANT_DIGITAL_PIN_MAP;
+const uint32_t analogInputPin[] = VARIANT_ANALOG_PIN_MAP;

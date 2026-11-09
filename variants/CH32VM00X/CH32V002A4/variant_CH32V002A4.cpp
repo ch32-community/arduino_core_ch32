@@ -48,35 +48,5 @@ V006: RV32EmC, 62K Flash, 8KB SRAM, 3328B bootloader, 256B user mem, 12-bit ADC,
 // Digital PinName array. On smaller packages some GPIOs are bound to the same pin.
 // Leading pinout is TSSOP20 (18x gpio), same as V003 TSSOP20
 // For SOP16 (A4M6) we keep the same pin numbering as on TSSOP20
-const PinName digitalPin[] = {
-  PA_1,   // D0/A1
-  PA_2,   // D1/A0
-  PC_0,   // D2
-  PC_1,   // D3
-  PC_2,   // D4
-  PC_3,   // D5
-  PC_4,   // D6/A2
-  NC,     // D7        No PC_5 on A4M6
-  PC_6,   // D8
-  PC_7,   // D9 (recommended software CS/SS)
-  NC,     // D10       No PD_0 on A4M6
-  PD_1,   // D11/SWIO
-  NC,     // D12/A3    No PD_2 on A4M6
-  NC,     // D13/A4    No PD_3 on A4M6
-  PD_4,   // D14/A7/SCK
-  PD_5,   // D15/A5/TX/MISO
-  PD_6,   // D16/A6/RX/MOSI
-  PD_7    // D17/RST
-};
-
-// Analog (Ax) pin number array
-const uint32_t analogInputPin[] = {
-  1,    // A0/PA2
-  0,    // A1/PA1
-  6,    // A2/PC4
-  12,   // A3/PD2    No PD2 on A4M6
-  13,   // A4/PD3    No PD3 on A4M6
-  15,   // A5/PD5
-  16,   // A6/PD6
-  14    // A7/PD4 
-};
+const PinName digitalPin[] = VARIANT_DIGITAL_PIN_MAP;
+const uint32_t analogInputPin[] = VARIANT_ANALOG_PIN_MAP;

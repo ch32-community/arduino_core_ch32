@@ -15,29 +15,10 @@
 #include "hw_config.h"
 
 // Digital PinName array
-const PinName digitalPin[] = {
-  PB_1,  // D0/A0
-  PB_0,  // D1/A1
-  PA_1,  // D2/A2
-  PA_0,  // D3/A3
-  PA_2,  // D4/TX
-  PA_3,  // D5/RX
-  PA_4,  // D6/Neopixel
-  PA_5,  // D7/SCK
-  PA_6,  // D8/MISO
-  PA_7,  // D9/MOSI
-  PB_6,  // D10/SCL
-  PB_7,  // D11/SDA
-  PB_8,  // D12/BOOT0 Button
-};
+const PinName digitalPin[] = VARIANT_DIGITAL_PIN_MAP;
+const uint32_t analogInputPin[] = VARIANT_ANALOG_PIN_MAP;
 
-// Analog (Ax) pin number array
-const uint32_t analogInputPin[] = {
-  0,  // A0,  PB1
-  1,  // A1,  PB0
-  2,  // A2,  PA1
-  3,  // A3,  PA0
-};
+
 
 extern "C" {
 

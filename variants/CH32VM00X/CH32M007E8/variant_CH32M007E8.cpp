@@ -51,41 +51,10 @@ RX2 PB3 PA5 PA3 PD3 PB1 PD1 PA5
 */
 
 // Digital PinName array, PA1 is shorted to PA6
-const PinName digitalPin[] = {
-  PD_4,   // D0/A7
-  PD_5,   // D1/A5/TX
-  PD_6,   // D2/A6/RX
-  PD_7,   // D3/
-  PA_4,   // D4/TX2
-  PA_5,   // D5/RX2
-  PA_3,   // D6/HO1
-  PA_0,   // D7/LO1
-  PB_0,   // D8/HO2
-  PA_2,   // D9/LO2
-  PB_1,   // D10/HO3
-  PD_0,   // D11/LO3
-  PB_3,   // D12/MISO
-  PC_1,   // D13/SDA
-  PC_2,   // D14/SCL
-  PC_4,   // D15/SS/A2
-  PC_5,   // D16/RST
-  PA_1,   // D17/A1
-  PD_1,   // D18/SWIO
-  PD_2,   // D19/A3/SCK
-  PD_3    // D20/A4/MOSI
-};
+const PinName digitalPin[] = VARIANT_DIGITAL_PIN_MAP;
+const uint32_t analogInputPin[] = VARIANT_ANALOG_PIN_MAP;
 
-// Analog (Ax) pin number array
-const uint32_t analogInputPin[] = {
-  NC,   // A0/PA2 (was 9, but A0 cannot be used, PA2 is occupied by LO2)
-  17,  // A1/PA1
-  15,  // A2/PC4
-  19,  // A3/PD2
-  20,  // A4/PD3
-  1,   // A5/PD5
-  2,   // A6/PD6
-  0    // A7/PD4 
-};
+
 
 /* V007 ADC
 
@@ -99,5 +68,3 @@ Ai6 PD6 D2
 Ai7 PD4 D0
 
 */
-
-

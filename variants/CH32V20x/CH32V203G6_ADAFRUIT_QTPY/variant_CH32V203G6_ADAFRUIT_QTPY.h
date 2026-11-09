@@ -70,6 +70,31 @@
 
 #define NUM_DIGITAL_PINS        13
 #define NUM_ANALOG_INPUTS       4
+
+// Shared initializers for runtime and compile-time pin conversion.
+#define VARIANT_DIGITAL_PIN_MAP { \
+  PB_1,  /* D0/A0 */              \
+  PB_0,  /* D1/A1 */              \
+  PA_1,  /* D2/A2 */              \
+  PA_0,  /* D3/A3 */              \
+  PA_2,  /* D4/TX */              \
+  PA_3,  /* D5/RX */              \
+  PA_4,  /* D6/Neopixel */        \
+  PA_5,  /* D7/SCK */             \
+  PA_6,  /* D8/MISO */            \
+  PA_7,  /* D9/MOSI */            \
+  PB_6,  /* D10/SCL */            \
+  PB_7,  /* D11/SDA */            \
+  PB_8,  /* D12/BOOT0 Button */   \
+}
+
+#define VARIANT_ANALOG_PIN_MAP { \
+  0,  /* A0,  PB1 */              \
+  1,  /* A1,  PB0 */              \
+  2,  /* A2,  PA1 */              \
+  3,  /* A3,  PA0 */              \
+}
+
 // #define ADC_CTLR_ADCAL          
 #define ADC_RESOLUTION          12
 

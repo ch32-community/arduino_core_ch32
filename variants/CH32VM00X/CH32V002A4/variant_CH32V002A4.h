@@ -83,6 +83,39 @@
 #define NUM_DIGITAL_PINS        18
 #define NUM_ANALOG_INPUTS       8
 
+// Shared initializers for runtime and compile-time pin conversion.
+#define VARIANT_DIGITAL_PIN_MAP {               \
+  PA_1,   /* D0/A1 */                           \
+  PA_2,   /* D1/A0 */                           \
+  PC_0,   /* D2 */                              \
+  PC_1,   /* D3 */                              \
+  PC_2,   /* D4 */                              \
+  PC_3,   /* D5 */                              \
+  PC_4,   /* D6/A2 */                           \
+  NC,     /* D7        No PC_5 on A4M6 */       \
+  PC_6,   /* D8 */                              \
+  PC_7,   /* D9 (recommended software CS/SS) */ \
+  NC,     /* D10       No PD_0 on A4M6 */       \
+  PD_1,   /* D11/SWIO */                        \
+  NC,     /* D12/A3    No PD_2 on A4M6 */       \
+  NC,     /* D13/A4    No PD_3 on A4M6 */       \
+  PD_4,   /* D14/A7/SCK */                      \
+  PD_5,   /* D15/A5/TX/MISO */                  \
+  PD_6,   /* D16/A6/RX/MOSI */                  \
+  PD_7    /* D17/RST */                         \
+}
+
+#define VARIANT_ANALOG_PIN_MAP { \
+  1,    /* A0/PA2 */                            \
+  0,    /* A1/PA1 */                            \
+  6,    /* A2/PC4 */                            \
+  12,   /* A3/PD2    No PD2 on A4M6 */          \
+  13,   /* A4/PD3    No PD3 on A4M6 */          \
+  15,   /* A5/PD5 */                            \
+  16,   /* A6/PD6 */                            \
+  14    /* A7/PD4  */                           \
+}
+
 // #define ADC_CTLR_ADCAL          
 #define ADC_RESOLUTION          12
 
