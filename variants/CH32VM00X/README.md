@@ -74,8 +74,8 @@ Shared pinout for CH32V003F4P6 / CH32V002F4P6 / CH32V006F8P6.
 
 1. Install [latest WCH Link Utility](https://www.wch.cn/downloads/WCH-LinkUtility_ZIP.html), update LinkE device when prompted. Test connection to Link Utility and CH32 chip using Query Chip Info. (This step installs drivers and support for CH32V006 and other newer chips).
 2. Install latest Arduino IDE (v2.3.10).
-3. Run Arduino IDE as administrator, Add [board json](https://github.com/ch32-community/board_manager_files/raw/main/package_ch32v_index.json) to preferences:
-    `https://github.com/ch32-community/board_manager_files/raw/main/package_ch32v_index.json`
+3. Run Arduino IDE as administrator, Add [board json](https://github.com/ch32-community/board_manager_files/raw/main/package_ch32-commmunity_index.json) to preferences:
+    `https://github.com/ch32-community/board_manager_files/raw/main/package_ch32-commmunity_index.json`
 Open Tools → Board → Boards Manager, search for wch, and click Install. Exit IDE.
 5. Optional: For latest sources download [zip of latest master branch](https://github.com/ch32-community/arduino_core_ch32/archive/refs/heads/main.zip). Unzip and copy/overwrite all contents to this location: 
    - `C:\Users\<username>\AppData\Local\Arduino15\packages\ch32-community\hardware\ch32v\[release number]`

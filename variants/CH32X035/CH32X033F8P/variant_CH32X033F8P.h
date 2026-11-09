@@ -153,6 +153,9 @@
 #ifndef BOARD_DEFAULT_SERIAL
   #define BOARD_DEFAULT_SERIAL 2
 #endif
+#if (defined(SERIAL_UART_INSTANCE) && SERIAL_UART_INSTANCE==3)
+  #error "CH32X033 Serial3 cannot be selected (pins are used by SWDIO/SWCLK)"
+#endif
 
 // Default pins for each hardware serial port.
 #ifndef PIN_SERIAL1_RX
