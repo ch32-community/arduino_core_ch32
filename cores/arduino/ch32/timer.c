@@ -346,7 +346,7 @@ IRQn_Type getTimerUpIrq(TIM_TypeDef *tim)
         #endif
           break;
 #endif
-#if defined(TIM3_BASE) && defined(TIM3_IRQn)
+#if defined(TIM3_BASE) && !defined(CH32VM00X)
       case (uint32_t)TIM3_BASE:
         IRQn = TIM3_IRQn;
         break;
@@ -420,7 +420,7 @@ IRQn_Type getTimerCCIrq(TIM_TypeDef *tim)
         #endif
         break;
 #endif
-#if defined(TIM3_BASE) && defined(TIM3_IRQn)
+#if defined(TIM3_BASE) && !defined(CH32VM00X)
       case (uint32_t)TIM3_BASE:
         IRQn = TIM3_IRQn;
         break;
