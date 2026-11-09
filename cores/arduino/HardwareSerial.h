@@ -155,11 +155,11 @@ public:
     // Keep conversions at the call site so constant pins fold without LTO.
     __attribute__((always_inline)) void setRx(uint32_t _rx)
     {
-      _serial.pin_rx = ch32::serialPinToPinName(_rx);
+      setRx(ch32::serialPinToPinName(_rx));
     }
     __attribute__((always_inline)) void setTx(uint32_t _tx)
     {
-      _serial.pin_tx = ch32::serialPinToPinName(_tx);
+      setTx(ch32::serialPinToPinName(_tx));
     }
     void setRx(PinName _rx);
     void setTx(PinName _tx);
@@ -167,16 +167,15 @@ public:
     // Enable HW flow control on RTS, CTS or both
     __attribute__((always_inline)) void setRts(uint32_t _rts)
     {
-      _serial.pin_rts = ch32::serialPinToPinName(_rts);
+      setRts(ch32::serialPinToPinName(_rts));
     }
     __attribute__((always_inline)) void setCts(uint32_t _cts)
     {
-      _serial.pin_cts = ch32::serialPinToPinName(_cts);
+      setCts(ch32::serialPinToPinName(_cts));
     }
     __attribute__((always_inline)) void setRtsCts(uint32_t _rts, uint32_t _cts)
     {
-      _serial.pin_rts = ch32::serialPinToPinName(_rts);
-      _serial.pin_cts = ch32::serialPinToPinName(_cts);
+      setRtsCts(ch32::serialPinToPinName(_rts), ch32::serialPinToPinName(_cts));
     }
     void setRts(PinName _rts);
     void setCts(PinName _cts);
