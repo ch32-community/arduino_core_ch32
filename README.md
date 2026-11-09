@@ -40,7 +40,7 @@ The original core was published by WCH ([openwch/arduino_core_ch32](https://gith
 2. Paste this URL into **Additional boards manager URLs**:
 
    ```
-   https://github.com/ch32-community/board_manager_files/raw/main/package_ch32v_index.json
+   https://github.com/ch32-community/board_manager_files/raw/main/package_ch32-commmunity_index.json
    ```
 
 3. Open **Tools → Board → Boards Manager**, search for **ch32**, and click **Install**.
