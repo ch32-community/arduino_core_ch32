@@ -97,11 +97,6 @@ static inline __attribute__((always_inline)) void uart_rx_isr(USART_TypeDef *uar
 #endif
 #endif // ENABLE_RX_BUFFER
 
-HardwareSerial::HardwareSerial(void *peripheral, uint32_t tx, uint32_t rx)
-  : HardwareSerial(peripheral, digitalPinToPinName(tx), digitalPinToPinName(rx))
-{
-}
-
 HardwareSerial::HardwareSerial(void *peripheral, PinName tx, PinName rx)
 {
   init(rx, tx);

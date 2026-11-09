@@ -30,6 +30,7 @@
 #include <inttypes.h>
 #include "Stream.h"
 #include "uart.h"
+#include "pins_arduino_constexpr.h"
 
 // Define constants and variables for buffering incoming serial data.  We're
 // using a ring buffer (I think), in which head is the index of the location
@@ -108,7 +109,11 @@ class HardwareSerial : public Stream {
 
   serial_t _serial;  
 public:
-    HardwareSerial(void *peripheral, uint32_t tx, uint32_t rx);
+    // Force inlining so -Os also folds pin aliases when several ports are enabled.
+    __attribute__((always_inline)) HardwareSerial(void *peripheral, uint32_t tx, uint32_t rx)
+      : HardwareSerial(peripheral, ch32::serialPinToPinName(tx),
+                       ch32::serialPinToPinName(rx))
+    {}
     HardwareSerial(void *peripheral, PinName tx, PinName rx);
     HardwareSerial(void *peripheral); 
     
