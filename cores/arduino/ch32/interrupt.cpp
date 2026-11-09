@@ -97,8 +97,6 @@ static const uint32_t exti_lines[NB_EXTI] = {
   EXTI_Line20, EXTI_Line21, EXTI_Line22, EXTI_Line23,
   EXTI_Line24, EXTI_Line25  
 };
-// TODO: fix support for >16 pins.
-// See https://github.com/openwch/arduino_core_ch32/issues/257
 
 #else
 
@@ -119,7 +117,7 @@ static const uint32_t exti_lines[NB_EXTI] = {
   * @param  pin : one of the gpio pin
   * @retval None
   */
-static uint8_t get_pin_id(uint16_t pin)
+static uint8_t get_pin_id(uint32_t pin)
 {
   uint8_t id = 0;
 
@@ -144,7 +142,7 @@ static uint8_t get_pin_id(uint16_t pin)
   *         edge on that line before installing the callback and enabling its IRQ.
   * @retval None
   */
-void ch32_interrupt_enable(GPIO_TypeDef *port, GPIOMode_TypeDef io_mode,uint16_t pin, void (*callback)(void), EXTIMode_TypeDef it_mode, EXTITrigger_TypeDef trigger_mode)
+void ch32_interrupt_enable(GPIO_TypeDef *port, GPIOMode_TypeDef io_mode,uint32_t pin, void (*callback)(void), EXTIMode_TypeDef it_mode, EXTITrigger_TypeDef trigger_mode)
 {
     GPIO_InitTypeDef GPIO_InitStruct={};
     EXTI_InitTypeDef EXTI_InitStruct={};
@@ -208,7 +206,7 @@ void ch32_interrupt_enable(GPIO_TypeDef *port, GPIOMode_TypeDef io_mode,uint16_t
   * @param  pin : one of the gpio pin
   * @retval None
   */
-void ch32_interrupt_disable(GPIO_TypeDef *port, uint16_t pin)
+void ch32_interrupt_disable(GPIO_TypeDef *port, uint32_t pin)
 {
   (void)port; // TODO: See if port can be omitted from the function arguments (Port is not needed as the Interrupts are related to the pin number after initiliaztion)
   uint8_t id = get_pin_id(pin);
@@ -228,7 +226,7 @@ void ch32_interrupt_disable(GPIO_TypeDef *port, uint16_t pin)
   * @param  GPIO_Pin : one of the gpio pin
   * @retval None
   */
-void _gpio_exti_callback(uint16_t GPIO_Pin)
+void _gpio_exti_callback(uint32_t GPIO_Pin)
 {
   uint8_t irq_id = get_pin_id(GPIO_Pin);
   if (gpio_irq_conf[irq_id].callback != NULL) {
