@@ -13,6 +13,7 @@
 #include "analog.h"
 #include "ch32yyxx_adc.h"
 #include "PinAF_ch32yyxx.h"
+#include "wiring_time.h"
 
 
 #ifdef __cplusplus
@@ -682,6 +683,15 @@ uint16_t adc_read_value(PinName pin, uint32_t resolution)
 	while(ADC_GetCalibrationStatus(padc));
 	calibration_value = Get_CalibrationValue(padc);	
 	ADC_BufferCmd(padc, ENABLE);   //enable buffer  
+#endif
+
+#if defined(CH32V4x7)
+  if (pin == PADC_TEMP || pin == PADC_VREF) {
+    // ADC_DeInit below resets this gate after every read. RM section 12.2.6
+    // requires startup settling; allow a conservative 100 us before sampling.
+    ADC_TempSensorVrefintCmd(ENABLE);
+    delayMicroseconds(100);
+  }
 #endif
 
   /*##-3- Start the conversion process ####################*/
