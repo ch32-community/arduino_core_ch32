@@ -6,9 +6,9 @@
 CH32V003J4M6 SOP8 PINOUT
 ```
                   +-----v-----+
-  TX'/A6/RX D3  1-+PD6     PD1+-8  D5/SWIO
-         A1/D0    +PA1   PD5/4+    D6/A7/A5/TX/RX'
-           GND  2-+VSS     PC4+-7  D4/A3
+  TX'/A6/RX/D8  1-+PD6     PD1+-8  D5/SWIO
+         A1/D0    +PA1   PD5/4+    D7/A5/TX D6/A7/RX'
+           GND  2-+VSS     PC4+-7  D4/A2
                   +           +
          A0/D1  3-+PA2     PC2+-6  D3/SCL
                   +           +

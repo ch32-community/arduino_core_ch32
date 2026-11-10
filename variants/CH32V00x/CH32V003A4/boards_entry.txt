@@ -3,7 +3,7 @@
 
 
 # CH32V003A4
-CH32V00x_EVT.menu.pnum.CH32V003A4=CH32V00x EVT
+CH32V00x_EVT.menu.pnum.CH32V003A4=CH32V003A4 SOP16
 CH32V00x_EVT.menu.pnum.CH32V003A4.upload.maximum_size=16384
 CH32V00x_EVT.menu.pnum.CH32V003A4.upload.maximum_data_size=2048
 CH32V00x_EVT.menu.pnum.CH32V003A4.build.board=CH32V003A4

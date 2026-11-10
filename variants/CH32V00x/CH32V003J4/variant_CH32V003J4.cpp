@@ -18,10 +18,10 @@
 const PinName digitalPin[] = {
   PA_1,   // D0/A1   
   PA_2,   // D1/A0
-  PC_1,   // D2
-  PC_2,   // D3
+  PC_1,   // D2/SDA
+  PC_2,   // D3/SCL
   PC_4,   // D4/A2
-  PD_1,   // D5
+  PD_1,   // D5/SWIO
   PD_4,   // D6/A7
   PD_5,   // D7/A5
   PD_6    // D8/A6  

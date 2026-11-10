@@ -24,7 +24,7 @@
 #ifndef IDE_MENU_PERIPHERALS   // MxRD: defined when peripherals are enabled/disabled via the IDE menu
 #define                         ADC_MODULE_ENABLED
 #define                         UART_MODULE_ENABLED
-#define                         SPI_MODULE_ENABLED
+//#define                         SPI_MODULE_ENABLED  // No SPI SCK on V003J4, SPI should be disabled
 #define                         I2C_MODULE_ENABLED
 #define                         TIM_MODULE_ENABLED
 #endif
@@ -122,7 +122,7 @@
   #define PIN_SERIAL1_2_RX     PD5  // UART1_2 pinmap RX pin
 #endif
 #ifndef PIN_SERIAL1_2_TX
-  #define PIN_SERIAL1_2_TX     PD6  // UART1_3 pinmap TX pin 
+  #define PIN_SERIAL1_2_TX     PD6  // UART1_2 pinmap TX pin 
 #endif
 
 /*
@@ -136,7 +136,7 @@
 
 // SPI definitions (CH32V003A4 has no pin for SPI so it's not available)
 #if defined(SPI_MODULE_ENABLED)
-  #error "CH32V003A4 has no SPI SCK pin. SPI should be disabled"
+  #error "CH32V003J4 has no SPI. SPI should be disabled"
 #endif
 
 // I2C definitions

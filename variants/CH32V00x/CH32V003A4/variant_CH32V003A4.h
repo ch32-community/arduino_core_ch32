@@ -133,12 +133,11 @@
   #define PIN_SERIAL1_2_RX     PD5  /* UART1_2 pinmap RX pin */
 #endif
 #ifndef PIN_SERIAL1_2_TX
-  #define PIN_SERIAL1_2_TX     PD6  /* UART1_3 pinmap TX pin */
+  #define PIN_SERIAL1_2_TX     PD6  /* UART1_2 pinmap TX pin */
 #endif
 
-// Useful mapped pins for each hardware serial port.
 #ifndef PIN_SERIAL1_3_RX
-  #define PIN_SERIAL1_3_RX     PC1  /* UART1_2 pinmap RX pin */
+  #define PIN_SERIAL1_3_RX     PC1  /* UART1_3 pinmap RX pin */
 #endif
 #ifndef PIN_SERIAL1_3_TX
   #define PIN_SERIAL1_3_TX     PC0  /* UART1_3 pinmap TX pin */
