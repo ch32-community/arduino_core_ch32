@@ -35,7 +35,7 @@ CH32V00x_EVT.debug.tool=gdb-WCH_LinkE
 
 
 #CH32V003F4 EVT Board
-CH32V00x_EVT.menu.pnum.CH32V003F4=CH32V003F4 EVT
+CH32V00x_EVT.menu.pnum.CH32V003F4=CH32V003F4 TSSOP20 EVT
 CH32V00x_EVT.menu.pnum.CH32V003F4.node=NODE_V003F4
 CH32V00x_EVT.menu.pnum.CH32V003F4.upload.maximum_size=16384
 CH32V00x_EVT.menu.pnum.CH32V003F4.upload.maximum_data_size=2048
@@ -49,6 +49,38 @@ CH32V00x_EVT.menu.pnum.CH32V003F4.build.mabi=ilp32e
 CH32V00x_EVT.menu.pnum.CH32V003F4.build.math_lib_gcc=-lm
 CH32V00x_EVT.menu.pnum.CH32V003F4.build.IQ_math_RV32=
 CH32V00x_EVT.menu.pnum.CH32V003F4.build.ch_extra_lib=-lprintf
+
+CH32V00x_EVT.menu.pnum.CH32V003A4=CH32V003A4 SOP16
+CH32V00x_EVT.menu.pnum.CH32V003A4.node=NODE_V003A4
+CH32V00x_EVT.menu.pnum.CH32V003A4.upload.maximum_size=16384
+CH32V00x_EVT.menu.pnum.CH32V003A4.upload.maximum_data_size=2048
+CH32V00x_EVT.menu.pnum.CH32V003A4.build.mcu=QingKe-V2A
+CH32V00x_EVT.menu.pnum.CH32V003A4.build.board=CH32V003A4
+CH32V00x_EVT.menu.pnum.CH32V003A4.build.series=CH32V00x
+CH32V00x_EVT.menu.pnum.CH32V003A4.build.variant=CH32V00x/CH32V003A4
+CH32V00x_EVT.menu.pnum.CH32V003A4.build.chip=CH32V003A4
+CH32V00x_EVT.menu.pnum.CH32V003A4.build.march=rv32ecxw
+CH32V00x_EVT.menu.pnum.CH32V003A4.build.mabi=ilp32e
+CH32V00x_EVT.menu.pnum.CH32V003A4.build.math_lib_gcc=-lm
+CH32V00x_EVT.menu.pnum.CH32V003A4.build.IQ_math_RV32=
+CH32V00x_EVT.menu.pnum.CH32V003A4.build.ch_extra_lib=-lprintf
+
+CH32V00x_EVT.menu.pnum.CH32V003J4=CH32V003J4 SOP8
+CH32V00x_EVT.menu.pnum.CH32V003J4.node=NODE_V003J4
+CH32V00x_EVT.menu.pnum.CH32V003J4.upload.maximum_size=16384
+CH32V00x_EVT.menu.pnum.CH32V003J4.upload.maximum_data_size=2048
+CH32V00x_EVT.menu.pnum.CH32V003J4.build.mcu=QingKe-V2A
+CH32V00x_EVT.menu.pnum.CH32V003J4.build.board=CH32V003J4
+CH32V00x_EVT.menu.pnum.CH32V003J4.build.series=CH32V00x
+CH32V00x_EVT.menu.pnum.CH32V003J4.build.variant=CH32V00x/CH32V003J4
+CH32V00x_EVT.menu.pnum.CH32V003J4.build.chip=CH32V003J4
+CH32V00x_EVT.menu.pnum.CH32V003J4.build.march=rv32ecxw
+CH32V00x_EVT.menu.pnum.CH32V003J4.build.mabi=ilp32e
+CH32V00x_EVT.menu.pnum.CH32V003J4.build.math_lib_gcc=-lm
+CH32V00x_EVT.menu.pnum.CH32V003J4.build.IQ_math_RV32=
+CH32V00x_EVT.menu.pnum.CH32V003J4.build.ch_extra_lib=-lprintf
+
+
 
 
 # Upload menu
@@ -132,6 +164,8 @@ CH32V00x_EVT.menu.xserial.serial1=Serial=Serial1 (TX/RX=PD5/PD6)
 CH32V00x_EVT.menu.xserial.serial1.build.serial_flags=-DSERIAL_UART_INSTANCE=1
 CH32V00x_EVT.menu.xserial.serial1_2=Serial=Serial1_2 (TX/RX=PD6/PD5)
 CH32V00x_EVT.menu.xserial.serial1_2.build.serial_flags=-DSERIAL_UART_INSTANCE=1 -DSERIAL_UART_PINMAP=2
+CH32V00x_EVT.menu.xserial.serial1_3=Serial=Serial1_3 (TX/RX=PC0/PC1)
+CH32V00x_EVT.menu.xserial.serial1_3.build.serial_flags=-DSERIAL_UART_INSTANCE=1 -DSERIAL_UART_PINMAP=3
 CH32V00x_EVT.menu.xserial.none=No Serial (smallest sketch)
 CH32V00x_EVT.menu.xserial.none.build.serial_flags=-DHWSERIAL_NONE
 
