@@ -32,13 +32,14 @@
 /* CH32V003J4 Pins */
 #define PA1                     PIN_A1  // D0
 #define PA2                     PIN_A0  // D1
-#define PC1                     2       // D2
-#define PC2                     3       // D3
+#define PC1                     2       // D2/SDA
+#define PC2                     3       // D3/SCL
 #define PC4                     PIN_A2  // D4
-#define PD1                     7
+#define PD1                     5       // D5/SWIO
 #define PD4                     PIN_A7	// D6
 #define PD5                     PIN_A5	// D7
-#define PD6                     PIN_A6	// D8
+#define PD6                     PIN_A6	// D8/TX'
+
 
 // Alternate pin numbers
 #define PC4_ALT1              (PC4  | ALT1)
