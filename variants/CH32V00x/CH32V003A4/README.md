@@ -1,9 +1,9 @@
-## CH32V002A4M6 ##
+## CH32V003A4M6 ##
 
 
 ### PINOUT ###
 
-CH32V002A4M6 SOP16 PINOUT
+CH32V003A4M6 SOP16 PINOUT
 ```
               +-----v-----+
 RX'/SDA D3  1-+PC1     PC0+-16 D2~/TX'
@@ -11,28 +11,16 @@ RX'/SDA D3  1-+PC1     PC0+-16 D2~/TX'
         D5~ 3-+PC3     VSS+-14 GND
      A2/D6~ 4-+PC4     PA2+-13 D1/A0
         D8  5-+PC6     PA1+-12 D0~/A1
-     SS/D9  6-+PC7     PD7+-11 RST
+        D9  6-+PC7     PD7+-11 RST
       SWIO  7-+PD1     PD6+-10 RX/A6/MOSI
-SCK/A7/D14  8-+PD4     PD5+-9  TX/A5/MISO
+SCK/A7/D10  8-+PD4     PD5+-9  TX/A5/MISO
               +-----------+
 ```
 
 ### MAIN FEATURES/LIMITATIONS ###
 
- - Max 14 I/O pins, PWM/ADC/I2C/UART/SPI.
- - Hardware SPI is available, but only using software SS.
- - When I2C is enabled, SPI pins MOSI/MISO are shared with serial TX/RX pins. See [SPI pin limitations](#spi-pin-limitations).
- - TX'/RX' - when I2C is enabled, TX/RX=PD5/PD6, when not enabled TX/RX=PC0/PC1.
- - Requires updated core and tools. See [these notes](../README.md#known-issues--limitations).
-
- #### SPI pin limitations
- - Hardware SPI-SSEL is not available on CH32V002A4M6; use software SS (aka. CS) instead. Recommended pin: PC7.
- - Simultaneous hardware UART, I2C, and full-duplex SPI is unsupported:
-
-| Combination | Pin allocation |
-|:---|:---|
-| UART + I2C | UART uses PD5/PD6; I2C uses PC1/PC2 |
-| UART + SPI, with I2C disabled | UART uses PC0/PC1; SPI uses PD6/PD5/PD4 |
-| UART + I2C + SPI | UART and SPI conflict on PD5/PD6 |
-
-If a sketch needs all three interfaces, use a software SPI implementation on unused GPIOs. For example, PC6, PC7, and PD4 are candidates for MOSI, MISO, and SCK, with a separate free GPIO for chip select. This requires a software SPI implementation.
+ - Max 14 I/O pins, PWM/ADC/I2C/UART.  No SPI!
+ - Hardware SPI is missing SCK pin and is unavailable.
+ - PD7/RST can be used as GPIO pin by disabling RST using WCH Link Utility. By default RST is enabled.
+ - TX'/RX' - when I2C is enabled, RX' conflicts with SDA.
+ - If a sketch needs SPI, use a software SPI implementation.
