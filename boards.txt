@@ -215,7 +215,7 @@ CH32V00x_EVT.menu.YperiTimer.disable.build.periTimer=
 ##############################################################################
 ##CH32VM00X_EVT Board   including V/M 002 004 005 006 007
 
-CH32VM00X_EVT.name=CH32VM00X
+CH32VM00X_EVT.name=CH32V00x/M00x
 CH32VM00X_EVT.build.core=arduino
 CH32VM00X_EVT.build.board=CH32VM00X_EVT
 CH32VM00X_EVT.upload.maximum_size=0
