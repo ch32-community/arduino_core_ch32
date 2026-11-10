@@ -148,7 +148,12 @@ void ch32_interrupt_enable(GPIO_TypeDef *port, GPIOMode_TypeDef io_mode,uint16_t
 {
     GPIO_InitTypeDef GPIO_InitStruct={};
     EXTI_InitTypeDef EXTI_InitStruct={};
-    // RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO,ENABLE);
+    // EXTI routing is in AFIO; do not rely on a previous peripheral to clock it.
+#if defined(RCC_APB2Periph_AFIO)
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO, ENABLE);
+#elif defined(RCC_PB2Periph_AFIO)
+    RCC_PB2PeriphClockCmd(RCC_PB2Periph_AFIO, ENABLE);
+#endif
     uint8_t id = get_pin_id(pin);
     uint8_t gpio_port_souce=0;
     GPIO_InitStruct.GPIO_Pin  = pin;
