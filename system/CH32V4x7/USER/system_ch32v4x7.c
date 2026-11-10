@@ -21,7 +21,7 @@
 // #define SYSCLK_120MHz_HCLK_60MHz_HSE   120000000
 // #define SYSCLK_240MHz_HCLK_120MHz_HSE  240000000  
 // #define SYSCLK_350MHz_HCLK_175MHz_HSE  350000000 
-#define SYSCLK_400MHz_HCLK_200MHz_HSE  400000000 
+#define SYSCLK_200MHz_HCLK_200MHz_HSE  200000000 
 // #define SYSCLK_HCLK_HSI    HSI_VALUE
 // #define SYSCLK_120MHz_HCLK_60MHz_HSI   120000000
 // #define SYSCLK_240MHz_HCLK_120MHz_HSI  240000000 
@@ -48,9 +48,9 @@ uint32_t SystemCoreClock     = SYSCLK_240MHz_HCLK_120MHz_HSE >> 1;
 #elif defined SYSCLK_350MHz_HCLK_175MHz_HSE
 uint32_t SystemClock         = SYSCLK_350MHz_HCLK_175MHz_HSE;        /* System Clock Frequency */
 uint32_t SystemCoreClock     = SYSCLK_350MHz_HCLK_175MHz_HSE >> 1;
-#elif defined SYSCLK_400MHz_HCLK_200MHz_HSE
-uint32_t SystemClock         = SYSCLK_400MHz_HCLK_200MHz_HSE;        /* System Clock Frequency */
-uint32_t SystemCoreClock     = SYSCLK_400MHz_HCLK_200MHz_HSE >> 1;
+#elif defined SYSCLK_200MHz_HCLK_200MHz_HSE
+uint32_t SystemClock         = SYSCLK_200MHz_HCLK_200MHz_HSE;        /* System Clock Frequency */
+uint32_t SystemCoreClock     = SYSCLK_200MHz_HCLK_200MHz_HSE;
 #elif defined SYSCLK_480MHz_HCLK_240MHz_HSE
 uint32_t SystemClock         = SYSCLK_480MHz_HCLK_240MHz_HSE;        /* System Clock Frequency */
 uint32_t SystemCoreClock     = SYSCLK_480MHz_HCLK_240MHz_HSE >> 1;
@@ -89,8 +89,8 @@ static void SetSYSCLK_120MHz_HCLK_60MHz_HSE( void );
 static void SetSYSCLK_240MHz_HCLK_120MHz_HSE( void );
 #elif defined SYSCLK_350MHz_HCLK_175MHz_HSE
 static void SetSYSCLK_350MHz_HCLK_175MHz_HSE( void );
-#elif defined SYSCLK_400MHz_HCLK_200MHz_HSE
-static void SetSYSCLK_400MHz_HCLK_200MHz_HSE( void );
+#elif defined SYSCLK_200MHz_HCLK_200MHz_HSE
+static void SetSYSCLK_200MHz_HCLK_200MHz_HSE( void );
 #elif defined SYSCLK_480MHz_HCLK_240MHz_HSE
 static void SetSYSCLK_480MHz_HCLK_240MHz_HSE( void );
 #elif defined SYSCLK_120MHz_HCLK_60MHz_HSI
@@ -234,8 +234,8 @@ static void SetSysClock(void)
     SetSYSCLK_240MHz_HCLK_120MHz_HSE();
 #elif defined SYSCLK_350MHz_HCLK_175MHz_HSE
     SetSYSCLK_350MHz_HCLK_175MHz_HSE();
-#elif defined SYSCLK_400MHz_HCLK_200MHz_HSE
-    SetSYSCLK_400MHz_HCLK_200MHz_HSE();    
+#elif defined SYSCLK_200MHz_HCLK_200MHz_HSE
+    SetSYSCLK_200MHz_HCLK_200MHz_HSE();    
 #elif defined SYSCLK_480MHz_HCLK_240MHz_HSE
     SetSYSCLK_480MHz_HCLK_240MHz_HSE();    
 #elif defined SYSCLK_120MHz_HCLK_60MHz_HSI
@@ -581,16 +581,16 @@ static void SetSYSCLK_350MHz_HCLK_175MHz_HSE(void)
     }
 }
 
-#elif defined SYSCLK_400MHz_HCLK_200MHz_HSE
+#elif defined SYSCLK_200MHz_HCLK_200MHz_HSE
 
 /*********************************************************************
- * @fn      SetSYSCLK_400MHz_HCLK_200MHz_HSE
+ * @fn      SetSYSCLK_200MHz_HCLK_200MHz_HSE
  *
- * @brief   Sets System clock frequency to 400MHz and configure HCLK, PCLK2 and PCLK1 prescalers.
+ * @brief   Sets System clock frequency to 200MHz and configure HCLK, PCLK2 and PCLK1 prescalers.
  *
  * @return  none
  */
-static void SetSYSCLK_400MHz_HCLK_200MHz_HSE(void)
+static void SetSYSCLK_200MHz_HCLK_200MHz_HSE(void)
 {
     __IO uint32_t StartUpCounter = 0, HSEStatus = 0 , FLASH_Temp = 0;
 
@@ -614,15 +614,15 @@ static void SetSYSCLK_400MHz_HCLK_200MHz_HSE(void)
 
     if (HSEStatus == (uint32_t)0x01)
     {
-      /* HCLK = SYSCLK /2 */
-      RCC->CFGR0 |= (uint32_t)RCC_HPRE_DIV2;
+      /* WCH PSRAM example: SYSCLK = HCLK = 200 MHz. */
+      RCC->CFGR0 |= (uint32_t)RCC_HPRE_DIV1;
       /* PCLK2 = HCLK */
       RCC->CFGR0 |= (uint32_t)RCC_PPRE2_DIV1;
       /* PCLK1 = HCLK */
       RCC->CFGR0 |= (uint32_t)RCC_PPRE1_DIV1;
 
-      /* PLL configuration: HCLK = (HSE * 16) / 2 = 200 MHz */
-      RCC->CFGR0 |= (uint32_t)(RCC_PLLSRC_HSE | RCC_PLLMULL16);
+      /* PLL configuration: HCLK = (HSE * 8) / 1 = 200 MHz */
+      RCC->CFGR0 |= (uint32_t)(RCC_PLLSRC_HSE | RCC_PLLMULL8);
 
       /* Enable PLL */
       RCC->CTLR |= RCC_PLLON;

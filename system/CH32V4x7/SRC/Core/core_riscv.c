@@ -11,6 +11,15 @@
 *******************************************************************************/
 #include <stdint.h>
 
+/* Numeric CSR spellings for the packaged GCC 8.2 assembler.
+ * Encodings: https://github.com/riscv/riscv-opcodes/blob/master/csrs.csv */
+#define CH32_CSR_VXRM "0x00A"
+#define CH32_CSR_VXSAT "0x009"
+#define CH32_CSR_VCSR "0x00F"
+#define CH32_CSR_VL "0xC20"
+#define CH32_CSR_VTYPE "0xC21"
+#define CH32_CSR_VLENB "0xC22"
+
 /* define compiler specific symbols */
 #if defined ( __CC_ARM   )
   #define __ASM            __asm                                      /*!< asm keyword for ARM Compiler          */
@@ -314,7 +323,7 @@ uint32_t __get_VXRM(void)
 {
   uint32_t result;
 
-  __ASM volatile ( "csrr %0," "vxrm" : "=r"(result) : );
+  __ASM volatile ( "csrr %0," CH32_CSR_VXRM : "=r"(result) : );
   return (result);
 }
 
@@ -331,7 +340,7 @@ uint32_t __get_VXRM(void)
  */
 void __set_VXRM(uint32_t value)
 {
-  __ASM volatile ("csrw vxrm, %0" : : "r" (value) );
+  __ASM volatile ("csrw " CH32_CSR_VXRM ", %0" : : "r" (value) );
 }
 
 /*********************************************************************
@@ -345,7 +354,7 @@ uint32_t __get_VXSAT(void)
 {
   uint32_t result;
 
-  __ASM volatile ( "csrr %0," "vxsat" : "=r"(result) : );
+  __ASM volatile ( "csrr %0," CH32_CSR_VXSAT : "=r"(result) : );
   return (result);
 }
 
@@ -358,7 +367,7 @@ uint32_t __get_VXSAT(void)
  */
 void __set_VXSAT(uint32_t value)
 {
-  __ASM volatile ("csrw vxsat, %0" : : "r" (value) );
+  __ASM volatile ("csrw " CH32_CSR_VXSAT ", %0" : : "r" (value) );
 }
 
 /*********************************************************************
@@ -372,7 +381,7 @@ uint32_t __get_VCSR(void)
 {
   uint32_t result;
 
-  __ASM volatile ( "csrr %0," "vcsr" : "=r"(result) : );
+  __ASM volatile ( "csrr %0," CH32_CSR_VCSR : "=r"(result) : );
   return (result);
 }
 
@@ -385,7 +394,7 @@ uint32_t __get_VCSR(void)
  */
 void __set_VCSR(uint32_t value)
 {
-  __ASM volatile ("csrw vcsr, %0" : : "r" (value) );
+  __ASM volatile ("csrw " CH32_CSR_VCSR ", %0" : : "r" (value) );
 }
 
 /*********************************************************************
@@ -399,7 +408,7 @@ uint32_t __get_VL(void)
 {
   uint32_t result;
 
-  __ASM volatile ( "csrr %0," "vl" : "=r"(result) : );
+  __ASM volatile ( "csrr %0," CH32_CSR_VL : "=r"(result) : );
   return (result);
 }
 
@@ -414,7 +423,7 @@ uint32_t __get_VTYPE(void)
 {
   uint32_t result;
 
-  __ASM volatile ( "csrr %0," "vtype" : "=r"(result) : );
+  __ASM volatile ( "csrr %0," CH32_CSR_VTYPE : "=r"(result) : );
   return (result);
 }
 
@@ -429,7 +438,7 @@ uint32_t __get_VLENB(void)
 {
   uint32_t result;
 
-  __ASM volatile ( "csrr %0," "vlenb" : "=r"(result) : );
+  __ASM volatile ( "csrr %0," CH32_CSR_VLENB : "=r"(result) : );
   return (result);
 }
 
