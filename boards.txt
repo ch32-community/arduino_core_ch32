@@ -25,7 +25,7 @@ menu.YperiTimer=Hardware Timer
 ##############################################################################
 ##CH32V00x_EVT Board
 
-CH32V00x_EVT.name=CH32V00x
+CH32V00x_EVT.name=CH32V003
 CH32V00x_EVT.build.core=arduino
 CH32V00x_EVT.build.board=CH32V00x_EVT
 CH32V00x_EVT.upload.maximum_size=0
