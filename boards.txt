@@ -159,12 +159,15 @@ CH32V00x_EVT.menu.rtlib.full=Newlib Standard
 CH32V00x_EVT.menu.rtlib.full.build.flags.ldflags=--specs=nosys.specs
 
 
-# Serial port selection
-# Using SERIAL_UART_INSTANCE=0 means board default; SERIAL_UART_PINMAP=2 means use second pinmap, eg. PIN_RX1_2
+# Serial port and pinmap selection
+# Using SERIAL_UART_INSTANCE=0 means board default; SERIAL_UART_INSTANCE=1 means Serial1.
+# Using SERIAL_UART_PINMAP=2 means use second pinmap, eg. PIN_RX1_2.
+# The Board default pinmap is used when SERIAL_UART_PINMAP=0 or undefined.
+# Negative value -1 means no pinmap and don't use the board default pinmap. 
 CH32V00x_EVT.menu.xserial.boardDefault=Serial=Board Default
 CH32V00x_EVT.menu.xserial.boardDefault.build.serial_flags=-DSERIAL_UART_INSTANCE=0
 CH32V00x_EVT.menu.xserial.serial1=Serial=Serial1 (TX/RX=PD5/PD6)
-CH32V00x_EVT.menu.xserial.serial1.build.serial_flags=-DSERIAL_UART_INSTANCE=1
+CH32V00x_EVT.menu.xserial.serial1.build.serial_flags=-DSERIAL_UART_INSTANCE=1 -DSERIAL_UART_PINMAP=-1
 CH32V00x_EVT.menu.xserial.serial1_2=Serial=Serial1_2 (TX/RX=PD6/PD5)
 CH32V00x_EVT.menu.xserial.serial1_2.build.serial_flags=-DSERIAL_UART_INSTANCE=1 -DSERIAL_UART_PINMAP=2
 CH32V00x_EVT.menu.xserial.serial1_3=Serial=Serial1_3 (TX/RX=PC0/PC1)
