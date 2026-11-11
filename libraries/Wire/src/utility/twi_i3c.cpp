@@ -18,6 +18,7 @@
 // already owned by another instance.
 static i2c_t *owner;
 
+/** @brief Reset the controller and configure legacy I2C timing at 100 MHz. */
 static void configureController() {
   I3C_DeInit();
   I3C_Ctrl_BusTypeDef timing = {};
@@ -45,6 +46,11 @@ static void configureController() {
   I3C_Cmd(ENABLE);
 }
 
+/**
+ * @brief Enable supported timing, or disable transfers for unsupported clocks.
+ * @param obj Controller owner.
+ * @param frequency Requested bus frequency in Hz; only 400000 is supported.
+ */
 void i2c_setTiming(i2c_t *obj, uint32_t frequency) {
   if (owner != obj)
     return;
@@ -58,6 +64,12 @@ void i2c_setTiming(i2c_t *obj, uint32_t frequency) {
     configureController();
 }
 
+/**
+ * @brief Claim the I3C peripheral for controller transfers on PB11/PB10.
+ * @param obj Wire instance with its pins and controller mode selected.
+ * @param frequency Requested bus frequency in Hz.
+ * The final two compatibility arguments are unused by this controller backend.
+ */
 void i2c_custom_init(i2c_t *obj, uint32_t frequency, uint32_t, uint32_t) {
   obj->i3cReady = false;
   if (owner && owner != obj)
@@ -78,8 +90,10 @@ void i2c_custom_init(i2c_t *obj, uint32_t frequency, uint32_t, uint32_t) {
   i2c_setTiming(obj, frequency);
 }
 
+/** @brief Initialize a Wire instance using the supported 400 kHz setting. */
 void i2c_init(i2c_t *obj) { i2c_custom_init(obj, 400000, 0, 0); }
 
+/** @brief Release the pins and controller only if this instance owns them. */
 void i2c_deinit(i2c_t *obj) {
   obj->i3cReady = false;
   if (owner != obj)
@@ -91,6 +105,16 @@ void i2c_deinit(i2c_t *obj) {
   owner = nullptr;
 }
 
+/**
+ * @brief Perform one bounded, nonempty, STOP-terminated legacy I2C transfer.
+ * @param obj Controller owner.
+ * @param address Seven-bit target address shifted left by one.
+ * @param data Transmit or receive buffer.
+ * @param size Number of bytes to transfer.
+ * @param read True for a read, false for a write.
+ * @param sendStop Must be true; repeated START is unsupported.
+ * @return Transfer status, including NACK, timeout, or unsupported request.
+ */
 static i2c_status_e transfer(i2c_t *obj, uint8_t address, uint8_t *data,
                              uint16_t size, bool read, bool sendStop) {
   // RM 19.4.1 requires MEND=1 and a nonzero DCNT for legacy I2C. Never
@@ -150,11 +174,13 @@ static i2c_status_e transfer(i2c_t *obj, uint8_t address, uint8_t *data,
   return result;
 }
 
+/** @brief Write one message and return its transfer status. */
 i2c_status_e i2c_master_write(i2c_t *obj, uint8_t address, uint8_t *data,
                               uint16_t size, uint8_t sendStop) {
   return transfer(obj, address, data, size, false, sendStop);
 }
 
+/** @brief Read one STOP-terminated message and return its transfer status. */
 i2c_status_e i2c_master_read(i2c_t *obj, uint8_t address, uint8_t *data,
                              uint16_t size) {
   return transfer(obj, address, data, size, true, true);
