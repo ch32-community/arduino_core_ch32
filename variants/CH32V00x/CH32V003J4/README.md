@@ -26,6 +26,10 @@ CH32V003J4M6 SOP8 PINOUT
  - Serial1_3 is not available on CH32V003J4M6.
  - I2C slave mode can be used to make an 8-pin I2C device.
  - Hardware SPI is unavailable. Software SPI is possible.
+ - Do not call `setRx()/setTx()/setRts()/setCts()` without validating pin combinations against
+   the V003 Datasheet or Reference Manual. For example: don't use `setRts(PC2)` with the
+   board-default Serial1_2 mapping. Configuring PC2 as RTS disables the USART1 remap, 
+   changing TX/RX from PD6/PD5 to PD5/PD6. PD5 also shares the SWIO pin.
 
 #### SWIO pin usage - Beware of bricking!
 
