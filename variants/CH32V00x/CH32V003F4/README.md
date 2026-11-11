@@ -29,5 +29,5 @@ CH32V003F4P6 TSSOP20 PINOUT
    Hardware SPI NSS/SSEL uses PC1, which is also the default I2C SDA pin. SPI and I2C cannot use PC1 at the same time. 
    Do not pass PC4 as the hardware SSEL argument to SPIClass.
    Using alternative pin mappings now requires changing PeripheralPins.c, but may get core API support in a future release.
- - SWIO is on PD1. Beware of bricking! When used as output pin, the SWIO function will be blocked.  
+ - SWIO is on PD1. Beware of bricking! When used as GPIO pin, the SWIO function can be blocked.  
    To unbrick use WCH Link Utility option "Clear All Code by Power Off".

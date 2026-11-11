@@ -135,7 +135,7 @@
 #endif
 */
 
-// SPI definitions (CH32V003A4 has no pin for SPI so it's not available)
+// SPI definitions (CH32V003J4 has no pins for SPI so it's not available)
 #if defined(SPI_MODULE_ENABLED)
   #error "CH32V003J4 has no SPI. SPI should be disabled"
 #endif

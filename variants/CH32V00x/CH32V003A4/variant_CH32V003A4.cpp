@@ -36,8 +36,8 @@ const uint32_t analogInputPin[] = {
   1,    // A0/PA2
   0,    // A1/PA1
   6,    // A2/PC4
-  0,    // A3 NC
-  0,    // A4 NC
+  NC,    // A3 NC
+  NC,    // A4 NC
   11,   // A5/PD5
   12,   // A6/PD6
   10    // A7/PD4 
