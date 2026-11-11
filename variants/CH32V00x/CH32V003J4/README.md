@@ -23,11 +23,12 @@ CH32V003J4M6 SOP8 PINOUT
  - Pin 1 also combines multiple pins. Only one can be used as output!
  - Don't use more than one output for combined pins. PD6=A1, PD1=PD4=PD5.
  - TX'/RX' - Serial1_2 is board default to allow Serial.print without unbricking procedure.
+ - Serial1_3 is not available on CH32V003J4M6.
  - I2C slave mode can be used to make an 8-pin I2C device.
  - Hardware SPI is unavailable. Software SPI is possible.
 
 #### SWIO pin usage - Beware of bricking!
 
  - Using either PD1, PD4 or PD5 will block the SWIO function.
- - When selecting TX/RX=PD5/PD6, using Serial will block the SWIO pin. 
+ - When selecting Serial=Serial1 (TX/RX=PD5/PD6), using Serial will block the SWIO function. 
  - To unbrick use WCH Link Utility option "Clear All Code by Power Off".
