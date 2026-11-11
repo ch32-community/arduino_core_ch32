@@ -36,6 +36,11 @@ WEAK uint32_t pinNametoDigitalPin(PinName p)
   return i;
 }
 
+/**
+ * @brief Map an Arduino analog input or internal ADC identifier to a PinName.
+ * @param pin Analog input number or supported internal channel identifier.
+ * @return Mapped pin, or NC if the input is unavailable.
+ */
 PinName analogInputToPinName(uint32_t pin)
 {
 #if defined(CH32V4x7) && defined(ADC_MODULE_ENABLED)

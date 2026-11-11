@@ -2,6 +2,8 @@
 // Compatibility names for the common Arduino peripheral adapters.
 #pragma once
 #define SysTicK_IRQn SysTick_IRQn
+#define ADC_CHANNEL_TEMPSENSOR ADC_Channel_TempSensor
+#define ADC_CHANNEL_VREFINT ADC_Channel_Vrefint
 #define GPIO_Speed_2MHz GPIO_Speed_Low
 #define GPIO_Speed_10MHz GPIO_Speed_Medium
 #define GPIO_Speed_50MHz GPIO_Speed_High
