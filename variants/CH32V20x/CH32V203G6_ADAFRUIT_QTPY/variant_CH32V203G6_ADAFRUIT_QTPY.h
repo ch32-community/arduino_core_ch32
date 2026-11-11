@@ -139,13 +139,7 @@
 #endif
 
 // Default pins for each hardware serial port.
-#ifndef PIN_SERIAL1_RX
-  #define PIN_SERIAL1_RX     PA10  /* UART1 default RX pin */
-#endif
-#ifndef PIN_SERIAL1_TX
-  #define PIN_SERIAL1_TX     PA9  /* UART1 default TX pin */
-#endif
-
+// UART1 has no default pins on this board.
 #ifndef PIN_SERIAL2_RX
   #define PIN_SERIAL2_RX     PA3  /* UART2 default RX pin */
 #endif
