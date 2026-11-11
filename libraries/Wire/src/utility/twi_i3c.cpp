@@ -74,8 +74,12 @@ void i2c_custom_init(i2c_t *obj, uint32_t frequency, uint32_t, uint32_t) {
   obj->i3cReady = false;
   if (owner && owner != obj)
     return;
-  if (!obj->isMaster || obj->sda != PB_11 || obj->scl != PB_10)
+  if (!obj->isMaster || obj->sda != PB_11 || obj->scl != PB_10) {
+    // begin(sda, scl) already stored the rejected selection. Release any
+    // existing ownership and the actual peripheral pins, not that selection.
+    i2c_deinit(obj);
     return;
+  }
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO | RCC_APB2Periph_GPIOB, ENABLE);
   RCC_AHBPeriphClockCmd(RCC_HBPeriph_I3C, ENABLE);
   GPIO_PinRemapConfig(GPIO_Remap_I3C, DISABLE);
@@ -99,8 +103,10 @@ void i2c_deinit(i2c_t *obj) {
   if (owner != obj)
     return;
   I3C_DeInit();
-  pinMode(pinNametoDigitalPin(obj->sda), INPUT);
-  pinMode(pinNametoDigitalPin(obj->scl), INPUT);
+  // These are the only supported peripheral pins. The caller may have changed
+  // its requested pins through begin(sda, scl) or setSDA/setSCL since claiming.
+  pinMode(pinNametoDigitalPin(PB_11), INPUT);
+  pinMode(pinNametoDigitalPin(PB_10), INPUT);
   RCC_AHBPeriphClockCmd(RCC_HBPeriph_I3C, DISABLE);
   owner = nullptr;
 }

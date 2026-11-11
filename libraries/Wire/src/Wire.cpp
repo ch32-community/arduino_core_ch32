@@ -49,6 +49,11 @@ TwoWire::TwoWire(uint32_t sda, uint32_t scl)
 
 // Public Methods //////////////////////////////////////////////////////////////
 
+#if defined(WIRE_I3C)
+/** @brief Release owned I3C hardware and buffers when an instance is destroyed. */
+TwoWire::~TwoWire() { end(); }
+#endif
+
 void TwoWire::begin(uint32_t sda, uint32_t scl)
 {
   _i2c.sda = digitalPinToPinName(sda);
@@ -63,6 +68,11 @@ void TwoWire::begin(bool generalCall)
 
 void TwoWire::begin(uint8_t address, bool generalCall, bool NoStretchMode)
 {
+#if defined(WIRE_I3C)
+  // Reinitialization replaces these buffers; release the previous allocation.
+  free(rxBuffer);
+  free(txBuffer);
+#endif
   rxBufferIndex = 0;
   rxBufferLength = 0;
   rxBuffer = nullptr;
@@ -545,6 +555,6 @@ void TwoWire::recoverBus(void)
 #if defined(I2C_MODULE_ENABLED)  // MxRD 261019: no need for a global object when disabled 
 
 // Preinstantiate Objects //////////////////////////////////////////////////////
-TwoWire Wire = TwoWire( ); 
+TwoWire Wire;
 
 #endif

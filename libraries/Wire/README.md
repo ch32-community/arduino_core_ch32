@@ -34,6 +34,11 @@ never converted into a different bus transaction.
 Transfers have a bounded timeout. Errors reset the controller and its FIFOs
 before the next transfer. No bit-banged bus recovery is performed.
 
+Reinitializing an active instance with unsupported pins or mode releases its
+controller and the original PB11/PB10 pins, leaving unsupported pins untouched.
+Destroying an instance releases its controller and buffers automatically; a
+non-owner does not disturb the active bus. I3C `TwoWire` instances cannot be copied.
+
 References: [WCH CH32V407 reference manual](https://www.wch.cn/downloads/CH32V407RM_PDF.html),
 sections 19.4.1 and 19.4.16–18, and
 [WCH AN16001](https://github.com/openwch/ch32_application_notes/blob/main/zh/AN16001/AN16001.md).
