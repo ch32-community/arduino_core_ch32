@@ -8,7 +8,7 @@ name=CH32 Community Core
 version=1.2
 
 # OpenOCD & Compiler Path (Update version when updated)
-toolchain_dir={runtime.tools.riscv-none-embed-gcc-8.2.0.path}
+toolchain_dir={runtime.tools.riscv-gcc-15.0.0.path}
 openocd_dir={runtime.tools.openocd-2.12.path}
 
 # Compile variables
@@ -25,14 +25,14 @@ compiler.warning_flags.all=-Wall -Wextra -Wno-comment
 #---compiler.cmd
 compiler.path={toolchain_dir}/bin/
 
-compiler.S.cmd=riscv-none-embed-gcc
-compiler.c.cmd=riscv-none-embed-gcc
-compiler.cpp.cmd=riscv-none-embed-g++
-compiler.ar.cmd=riscv-none-embed-ar
-compiler.c.elf.cmd=riscv-none-embed-g++
-compiler.objcopy.cmd=riscv-none-embed-objcopy
-compiler.elf2hex.cmd=riscv-none-embed-objcopy
-compiler.objdump.cmd=riscv-none-embed-objdump
+compiler.S.cmd=riscv32-wch-elf-gcc
+compiler.c.cmd=riscv32-wch-elf-gcc
+compiler.cpp.cmd=riscv32-wch-elf-g++
+compiler.ar.cmd=riscv32-wch-elf-ar
+compiler.c.elf.cmd=riscv32-wch-elf-g++
+compiler.objcopy.cmd=riscv32-wch-elf-objcopy
+compiler.elf2hex.cmd=riscv32-wch-elf-objcopy
+compiler.objdump.cmd=riscv32-wch-elf-objdump
 
 compiler.libraries.ldflags=
 
@@ -73,7 +73,7 @@ compiler.objdump.flags=--all-headers --demangle --disassemble -M xw
 
 
 compiler.ldflags=
-compiler.size.cmd=riscv-none-embed-size
+compiler.size.cmd=riscv32-wch-elf-size
 compiler.define=-DARDUINO=
 
 
@@ -211,7 +211,7 @@ tools.wchisp.upload.pattern="{path}{cmd}" {upload.verbose} flash "{build.path}/{
 #  - this is alpha and may be subject to change without notice
 debug.executable={build.path}/{build.project_name}.elf
 debug.toolchain=gcc
-debug.toolchain.prefix=riscv-none-embed
+debug.toolchain.prefix=riscv32-wch-elf
 debug.toolchain.path={compiler.path}
 
 debug.server=openocd
