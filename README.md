@@ -30,7 +30,7 @@ The original core was published by WCH ([openwch/arduino_core_ch32](https://gith
 | :-- | :-- |
 | [Arduino core](https://github.com/ch32-community/arduino_core_ch32) | Arduino API implementation, variants and libraries for CH32 |
 | [openocd_wch](https://github.com/ch32-community/openocd_wch) | OpenOCD build that uploads and debugs over WCH-LinkE |
-| [riscv-none-embed-gcc](https://github.com/ch32-community/risc-none-embed-gcc) | Toolchain with WCH's custom half-word/byte compression extensions and hardware stack push/pop |
+| riscv-gcc ([Win](https://github.com/ch32-community/wch_gcc_windows), [Mac](https://github.com/ch32-community/wch_gcc_macos), [Linux](https://github.com/ch32-community/wch_gcc_linux)) | Toolchain with WCH's custom half-word/byte compression extensions and hardware stack push/pop |
 
 ## 🚀 Installation
 
