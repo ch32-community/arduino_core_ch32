@@ -23,6 +23,6 @@
 ## Pinout diagrams
 |  |  |  |
 | -- | -- | -- |
-| V003 | [F4 TSSOP20](./CH32V003F4#pinout) | |
-| V003 | [A4 SOP16](./CH32V003A4#pinout) | |
-| V003 | [J4 SOP8](./CH32V003J4#pinout) | |
+| V003 | [F4 TSSOP20](./CH32V003F4/README.md#pinout) | |
+| V003 | [A4 SOP16](./CH32V003A4/README.md#pinout) | |
+| V003 | [J4 SOP8](./CH32V003J4/README.md#pinout) | |
