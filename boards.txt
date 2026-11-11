@@ -25,7 +25,7 @@ menu.YperiTimer=Hardware Timer
 ##############################################################################
 ##CH32V00x_EVT Board
 
-CH32V00x_EVT.name=CH32V00x
+CH32V00x_EVT.name=CH32V003
 CH32V00x_EVT.build.core=arduino
 CH32V00x_EVT.build.board=CH32V00x_EVT
 CH32V00x_EVT.upload.maximum_size=0
@@ -35,7 +35,7 @@ CH32V00x_EVT.debug.tool=gdb-WCH_LinkE
 
 
 #CH32V003F4 EVT Board
-CH32V00x_EVT.menu.pnum.CH32V003F4=CH32V003F4 EVT
+CH32V00x_EVT.menu.pnum.CH32V003F4=CH32V003F4 TSSOP20 EVT
 CH32V00x_EVT.menu.pnum.CH32V003F4.node=NODE_V003F4
 CH32V00x_EVT.menu.pnum.CH32V003F4.upload.maximum_size=16384
 CH32V00x_EVT.menu.pnum.CH32V003F4.upload.maximum_data_size=2048
@@ -49,6 +49,41 @@ CH32V00x_EVT.menu.pnum.CH32V003F4.build.mabi=ilp32e
 CH32V00x_EVT.menu.pnum.CH32V003F4.build.math_lib_gcc=-lm
 CH32V00x_EVT.menu.pnum.CH32V003F4.build.IQ_math_RV32=
 CH32V00x_EVT.menu.pnum.CH32V003F4.build.ch_extra_lib=-lprintf
+CH32V00x_EVT.menu.pnum.CH32V003F4.build.spi_default=-DSPI_MODULE_ENABLED
+
+CH32V00x_EVT.menu.pnum.CH32V003A4=CH32V003A4 SOP16
+CH32V00x_EVT.menu.pnum.CH32V003A4.node=NODE_V003A4
+CH32V00x_EVT.menu.pnum.CH32V003A4.upload.maximum_size=16384
+CH32V00x_EVT.menu.pnum.CH32V003A4.upload.maximum_data_size=2048
+CH32V00x_EVT.menu.pnum.CH32V003A4.build.mcu=QingKe-V2A
+CH32V00x_EVT.menu.pnum.CH32V003A4.build.board=CH32V003A4
+CH32V00x_EVT.menu.pnum.CH32V003A4.build.series=CH32V00x
+CH32V00x_EVT.menu.pnum.CH32V003A4.build.variant=CH32V00x/CH32V003A4
+CH32V00x_EVT.menu.pnum.CH32V003A4.build.chip=CH32V003A4
+CH32V00x_EVT.menu.pnum.CH32V003A4.build.march=rv32ecxw
+CH32V00x_EVT.menu.pnum.CH32V003A4.build.mabi=ilp32e
+CH32V00x_EVT.menu.pnum.CH32V003A4.build.math_lib_gcc=-lm
+CH32V00x_EVT.menu.pnum.CH32V003A4.build.IQ_math_RV32=
+CH32V00x_EVT.menu.pnum.CH32V003A4.build.ch_extra_lib=-lprintf
+CH32V00x_EVT.menu.pnum.CH32V003A4.build.spi_default=
+
+CH32V00x_EVT.menu.pnum.CH32V003J4=CH32V003J4 SOP8
+CH32V00x_EVT.menu.pnum.CH32V003J4.node=NODE_V003J4
+CH32V00x_EVT.menu.pnum.CH32V003J4.upload.maximum_size=16384
+CH32V00x_EVT.menu.pnum.CH32V003J4.upload.maximum_data_size=2048
+CH32V00x_EVT.menu.pnum.CH32V003J4.build.mcu=QingKe-V2A
+CH32V00x_EVT.menu.pnum.CH32V003J4.build.board=CH32V003J4
+CH32V00x_EVT.menu.pnum.CH32V003J4.build.series=CH32V00x
+CH32V00x_EVT.menu.pnum.CH32V003J4.build.variant=CH32V00x/CH32V003J4
+CH32V00x_EVT.menu.pnum.CH32V003J4.build.chip=CH32V003J4
+CH32V00x_EVT.menu.pnum.CH32V003J4.build.march=rv32ecxw
+CH32V00x_EVT.menu.pnum.CH32V003J4.build.mabi=ilp32e
+CH32V00x_EVT.menu.pnum.CH32V003J4.build.math_lib_gcc=-lm
+CH32V00x_EVT.menu.pnum.CH32V003J4.build.IQ_math_RV32=
+CH32V00x_EVT.menu.pnum.CH32V003J4.build.ch_extra_lib=-lprintf
+CH32V00x_EVT.menu.pnum.CH32V003J4.build.spi_default=
+
+
 
 
 # Upload menu
@@ -124,14 +159,19 @@ CH32V00x_EVT.menu.rtlib.full=Newlib Standard
 CH32V00x_EVT.menu.rtlib.full.build.flags.ldflags=--specs=nosys.specs
 
 
-# Serial port selection
-# Using SERIAL_UART_INSTANCE=0 means board default; SERIAL_UART_PINMAP=2 means use second pinmap, eg. PIN_RX1_2
-CH32V00x_EVT.menu.xserial.boardDefault=Serial=Board Default (default)
+# Serial port and pinmap selection
+# Using SERIAL_UART_INSTANCE=0 means board default; SERIAL_UART_INSTANCE=1 means Serial1.
+# Using SERIAL_UART_PINMAP=2 means use second pinmap, eg. PIN_RX1_2.
+# The Board default pinmap is used when SERIAL_UART_PINMAP=0 or undefined.
+# Negative value -1 means no pinmap and don't use the board default pinmap. 
+CH32V00x_EVT.menu.xserial.boardDefault=Serial=Board Default
 CH32V00x_EVT.menu.xserial.boardDefault.build.serial_flags=-DSERIAL_UART_INSTANCE=0
 CH32V00x_EVT.menu.xserial.serial1=Serial=Serial1 (TX/RX=PD5/PD6)
-CH32V00x_EVT.menu.xserial.serial1.build.serial_flags=-DSERIAL_UART_INSTANCE=1
+CH32V00x_EVT.menu.xserial.serial1.build.serial_flags=-DSERIAL_UART_INSTANCE=1 -DSERIAL_UART_PINMAP=-1
 CH32V00x_EVT.menu.xserial.serial1_2=Serial=Serial1_2 (TX/RX=PD6/PD5)
 CH32V00x_EVT.menu.xserial.serial1_2.build.serial_flags=-DSERIAL_UART_INSTANCE=1 -DSERIAL_UART_PINMAP=2
+CH32V00x_EVT.menu.xserial.serial1_3=Serial=Serial1_3 (TX/RX=PC0/PC1)
+CH32V00x_EVT.menu.xserial.serial1_3.build.serial_flags=-DSERIAL_UART_INSTANCE=1 -DSERIAL_UART_PINMAP=3
 CH32V00x_EVT.menu.xserial.none=No Serial (smallest sketch)
 CH32V00x_EVT.menu.xserial.none.build.serial_flags=-DHWSERIAL_NONE
 
@@ -143,20 +183,32 @@ CH32V00x_EVT.menu.YperiADC.enable=enabled (default)
 CH32V00x_EVT.menu.YperiADC.enable.build.periADC=-DADC_MODULE_ENABLED
 CH32V00x_EVT.menu.YperiADC.disable=disabled
 CH32V00x_EVT.menu.YperiADC.disable.build.periADC=
+
 CH32V00x_EVT.menu.YperiUART.enable=enabled (default)
 CH32V00x_EVT.menu.YperiUART.enable.build.periUART=-DUART_MODULE_ENABLED
 CH32V00x_EVT.menu.YperiUART.disable=disabled
 CH32V00x_EVT.menu.YperiUART.disable.build.periUART=
-CH32V00x_EVT.menu.YperiSPI.enable=enabled (default)
+
+CH32V00x_EVT.menu.YperiSPI.auto=Board default
+# (F4 enabled; A4/J4 disabled)
+CH32V00x_EVT.menu.YperiSPI.auto.build.periSPI={build.spi_default}
+CH32V00x_EVT.menu.YperiSPI.enable=enabled (F4 only)
 CH32V00x_EVT.menu.YperiSPI.enable.build.periSPI=-DSPI_MODULE_ENABLED
 CH32V00x_EVT.menu.YperiSPI.disable=disabled
 CH32V00x_EVT.menu.YperiSPI.disable.build.periSPI=
+
+#CH32V00x_EVT.menu.YperiSPI.enable=enabled (default)
+#CH32V00x_EVT.menu.YperiSPI.enable.build.periSPI=-DSPI_MODULE_ENABLED
+#CH32V00x_EVT.menu.YperiSPI.disable=disabled
+#CH32V00x_EVT.menu.YperiSPI.disable.build.periSPI=
+
 CH32V00x_EVT.menu.YperiI2C.enable=enabled (default)
 CH32V00x_EVT.menu.YperiI2C.enable.build.periI2C=-DI2C_MODULE_ENABLED -DOPT_I2C_SLAVE=1
 CH32V00x_EVT.menu.YperiI2C.disableslave=I2C slave disabled
 CH32V00x_EVT.menu.YperiI2C.disableslave.build.periI2C=-DI2C_MODULE_ENABLED -DOPT_I2C_SLAVE=0
 CH32V00x_EVT.menu.YperiI2C.disable=I2C disabled
 CH32V00x_EVT.menu.YperiI2C.disable.build.periI2C=
+
 CH32V00x_EVT.menu.YperiTimer.enable=enabled (default)
 CH32V00x_EVT.menu.YperiTimer.enable.build.periTimer=-DTIM_MODULE_ENABLED
 CH32V00x_EVT.menu.YperiTimer.disable=disabled
@@ -166,7 +218,7 @@ CH32V00x_EVT.menu.YperiTimer.disable.build.periTimer=
 ##############################################################################
 ##CH32VM00X_EVT Board   including V/M 002 004 005 006 007
 
-CH32VM00X_EVT.name=CH32VM00X
+CH32VM00X_EVT.name=CH32V00x/M00x
 CH32VM00X_EVT.build.core=arduino
 CH32VM00X_EVT.build.board=CH32VM00X_EVT
 CH32VM00X_EVT.upload.maximum_size=0
@@ -369,7 +421,7 @@ CH32VM00X_EVT.menu.rtlib.full.build.flags.ldflags=--specs=nosys.specs
 
 
 # Serial port selection
-CH32VM00X_EVT.menu.xserial.boardDefault=Serial=Board Default (default)
+CH32VM00X_EVT.menu.xserial.boardDefault=Serial=Board Default
 CH32VM00X_EVT.menu.xserial.boardDefault.build.serial_flags=-DSERIAL_UART_INSTANCE=0
 CH32VM00X_EVT.menu.xserial.serial1=Serial=Serial1
 CH32VM00X_EVT.menu.xserial.serial1.build.serial_flags=-DSERIAL_UART_INSTANCE=1
@@ -526,7 +578,7 @@ CH32X035_EVT.menu.rtlib.full.build.flags.ldflags=--specs=nosys.specs
 
 
 # Serial port selection
-CH32X035_EVT.menu.xserial.boardDefault=Serial=Board Default (default)
+CH32X035_EVT.menu.xserial.boardDefault=Serial=Board Default
 CH32X035_EVT.menu.xserial.boardDefault.build.serial_flags=-DSERIAL_UART_INSTANCE=0
 CH32X035_EVT.menu.xserial.serial1=Serial=Serial1
 CH32X035_EVT.menu.xserial.serial1.build.serial_flags=-DSERIAL_UART_INSTANCE=1
@@ -658,7 +710,7 @@ CH32V10x_EVT.menu.rtlib.full.build.flags.ldflags=--specs=nosys.specs
 
 
 # Serial port selection
-CH32V10x_EVT.menu.xserial.boardDefault=Serial=Board Default (default)
+CH32V10x_EVT.menu.xserial.boardDefault=Serial=Board Defaul
 CH32V10x_EVT.menu.xserial.boardDefault.build.serial_flags=-DSERIAL_UART_INSTANCE=0
 CH32V10x_EVT.menu.xserial.serial1=Serial=Serial1
 CH32V10x_EVT.menu.xserial.serial1.build.serial_flags=-DSERIAL_UART_INSTANCE=1
@@ -801,7 +853,7 @@ CH32V20x_EVT.menu.pnum.CH32V203G6_LANA_TNY.build.ch_extra_lib=-lprintf
 
 
 # Serial port selection
-CH32V20x_EVT.menu.xserial.boardDefault=Serial=Board Default (default)
+CH32V20x_EVT.menu.xserial.boardDefault=Serial=Board Default
 CH32V20x_EVT.menu.xserial.boardDefault.build.serial_flags=-DSERIAL_UART_INSTANCE=0
 CH32V20x_EVT.menu.xserial.serial1=Serial=Serial1 (not on F6)
 CH32V20x_EVT.menu.xserial.serial1.build.serial_flags=-DSERIAL_UART_INSTANCE=1
@@ -947,7 +999,7 @@ CH32V30x_EVT.menu.pnum.CH32V307VCT6.build.ch_extra_lib=-lprintfloat
 
 
 # Serial port selection
-CH32V30x_EVT.menu.xserial.boardDefault=Serial=Board Default (default)
+CH32V30x_EVT.menu.xserial.boardDefault=Serial=Board Default
 CH32V30x_EVT.menu.xserial.boardDefault.build.serial_flags=-DSERIAL_UART_INSTANCE=0
 CH32V30x_EVT.menu.xserial.serial1=Serial=Serial1
 CH32V30x_EVT.menu.xserial.serial1.build.serial_flags=-DSERIAL_UART_INSTANCE=1
@@ -1184,7 +1236,7 @@ CH32L10x_EVT.menu.rtlib.full.build.flags.ldflags=--specs=nosys.specs
 
 
 # Serial port selection
-CH32L10x_EVT.menu.xserial.boardDefault=Serial=Board Default (default)
+CH32L10x_EVT.menu.xserial.boardDefault=Serial=Board Default
 CH32L10x_EVT.menu.xserial.boardDefault.build.serial_flags=-DSERIAL_UART_INSTANCE=0
 CH32L10x_EVT.menu.xserial.serial1=Serial=Serial1
 CH32L10x_EVT.menu.xserial.serial1.build.serial_flags=-DSERIAL_UART_INSTANCE=1
