@@ -49,6 +49,11 @@ TwoWire::TwoWire(uint32_t sda, uint32_t scl)
 
 // Public Methods //////////////////////////////////////////////////////////////
 
+#if defined(WIRE_I3C)
+/** @brief Release owned I3C hardware and buffers when an instance is destroyed. */
+TwoWire::~TwoWire() { end(); }
+#endif
+
 void TwoWire::begin(uint32_t sda, uint32_t scl)
 {
   _i2c.sda = digitalPinToPinName(sda);
@@ -63,6 +68,11 @@ void TwoWire::begin(bool generalCall)
 
 void TwoWire::begin(uint8_t address, bool generalCall, bool NoStretchMode)
 {
+#if defined(WIRE_I3C)
+  // Reinitialization replaces these buffers; release the previous allocation.
+  free(rxBuffer);
+  free(txBuffer);
+#endif
   rxBufferIndex = 0;
   rxBufferLength = 0;
   rxBuffer = nullptr;
@@ -87,9 +97,12 @@ void TwoWire::begin(uint8_t address, bool generalCall, bool NoStretchMode)
 
   _i2c.NoStretchMode = (NoStretchMode == true) ? 1 : 0;
 
+#if defined(WIRE_I3C)
+  i2c_custom_init(&_i2c, 400000, I2C_AcknowledgedAddress_7bit, ownAddress);
+#else
   recoverBus(); // in case I2C bus (device) is stuck after a reset for example
-
   i2c_custom_init(&_i2c, 100000, I2C_AcknowledgedAddress_7bit, ownAddress);
+#endif
 
   if (_i2c.isMaster == 0) 
   {
@@ -131,7 +144,17 @@ void TwoWire::setClock(uint32_t frequency)
 
 uint8_t TwoWire::requestFrom(uint8_t address, uint8_t quantity, uint32_t iaddress, uint8_t isize, uint8_t sendStop)
 {
-  (void)sendStop;   // TODO: Implement the ability to send a stop bit or allow re-starting I2C
+#if defined(WIRE_I3C)
+  // Legacy I2C on this peripheral cannot hold the bus for another message.
+  // Reject combined register reads before either phase touches the bus.
+  if (!sendStop || isize) {
+    rxBufferIndex = rxBufferLength = 0;
+    return 0;
+  }
+#else
+  (void)sendStop; // TODO: Implement the ability to send a stop bit or allow
+                  // re-starting I2C
+#endif
   uint8_t read = 0;
 
   if (_i2c.isMaster == 1) {
@@ -532,6 +555,6 @@ void TwoWire::recoverBus(void)
 #if defined(I2C_MODULE_ENABLED)  // MxRD 261019: no need for a global object when disabled 
 
 // Preinstantiate Objects //////////////////////////////////////////////////////
-TwoWire Wire = TwoWire( ); 
+TwoWire Wire;
 
 #endif
