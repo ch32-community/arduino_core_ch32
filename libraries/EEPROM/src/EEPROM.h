@@ -116,5 +116,4 @@ class EEPROMClass {
 extern EEPROMClass EEPROM;
 #endif
 
-
 #endif		// #ifndef EEPROM_h
