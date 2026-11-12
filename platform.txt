@@ -212,7 +212,7 @@ tools.uf2.python.windows=python
 tools.uf2.convert.pattern="{tools.uf2.python}" "{runtime.platform.path}/tools/uf2/uf2conv.py" -c -f {build.uf2_family} -b {build.flash_offset} -o "{build.path}/{build.project_name}.uf2" "{build.path}/{build.project_name}.bin"
 tools.uf2.upload.params.verbose=
 tools.uf2.upload.params.quiet=
-tools.uf2.upload.pattern="{tools.uf2.python}" "{runtime.platform.path}/tools/uf2/uf2conv.py" -c -f {build.uf2_family} -b {build.flash_offset} -o "{serial.port}/NEW.UF2" "{build.path}/{build.project_name}.bin"
+tools.uf2.upload.pattern="{tools.uf2.python}" "{runtime.platform.path}/tools/uf2/upload.py" --volume "{serial.port}" --family {build.uf2_family} --base {build.flash_offset} "{build.path}/{build.project_name}.bin"
 
 
 # Debugger configuration (general options)

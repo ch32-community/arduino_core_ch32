@@ -42,6 +42,11 @@ arduino-cli upload --fqbn <package>:ch32v:<board> --port D: --input-dir <build-o
 
 On Linux or macOS, use the volume's mount path instead of `D:`. Select the
 intended board's volume explicitly; automatic serial-port-to-volume discovery
-and reset are not provided. The upload recipe writes `NEW.UF2` only at that
-path. Both recipes use conversion-only mode with an explicit output path,
-avoiding the converter's automatic deployment to every UF2 drive.
+and reset are not provided. The upload wrapper requires a mounted volume with
+an `INFO_UF2.TXT` file before writing `NEW.UF2` there. Missing drives, ordinary
+directories, and stale mount directories are rejected. On Windows, a bare
+drive letter such as `D:` selects the drive's root.
+
+Both recipes use conversion-only mode with an explicit output path, avoiding
+the converter's automatic deployment to every UF2 drive. The vendor converter
+remains unmodified; volume validation is implemented separately in `upload.py`.
