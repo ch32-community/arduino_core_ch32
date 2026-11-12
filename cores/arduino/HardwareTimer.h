@@ -186,6 +186,7 @@ class HardwareTimer {
     void TIM_IC_ConfigChannel_Static(TIM_TypeDef *htim, TIM_ICInitTypeDef *sConfig, uint32_t Channel);
 
   private:
+    static void (*_deleteCallback)(HardwareTimer *timer);
      TimerModes_t  _ChannelMode[TIMER_CHANNELS];
     timerObj_t _timerObj;
     callback_function_t callbacks[1 + TIMER_CHANNELS]; //Callbacks: 0 for update, 1-4 for channels. (channel5/channel6, if any, doesn't have interrupt)
