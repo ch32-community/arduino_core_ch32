@@ -1,2 +1,4 @@
-ci/** export-ignore # Tells GitHub not to export the ci directory when a new release is created
-* -text             # Tells Git not to normalize line endings.
++# Exclude ci from release archives.
++ci/** export-ignore
++# Disable line-ending normalization.
++* -text
