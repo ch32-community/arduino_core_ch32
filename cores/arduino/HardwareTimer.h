@@ -115,6 +115,9 @@ class HardwareTimer {
     HardwareTimer(TIM_TypeDef *instance);
     ~HardwareTimer();  // destructor
 
+    // Internal PWM cleanup; keeps heap deletion out of digital-only sketches.
+    static void deleteInstance(HardwareTimer *timer);
+
     void setup(TIM_TypeDef *instance); // Setup, only needed if no instance was passed to the constructor
 
     void pause(void);  // Pause counter and all output channels
