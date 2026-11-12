@@ -101,7 +101,12 @@ class EEPROMClass {
     uint8_t const & operator[](int const address) const {return getConstDataPtr()[address];}
 
   protected:
-    uint8_t* _data = nullptr;
+#if defined(CH32VM00X) ||  defined(CH32X035)
+    static constexpr size_t _capacity = 122;   // Option bytes available on CH32V002/V006, CH32X035/X033: 256- 16 = 240; 240/2=120, 2+120=122
+#else
+    static constexpr size_t _capacity = 26;   // Option bytes available on CH32V003: 64 - 16 = 48; 48/2=24, 2+24=26
+#endif
+    uint8_t _data[_capacity];
     bool _dirty = false;
     size_t _size = 0;
 };
@@ -109,6 +114,5 @@ class EEPROMClass {
 #if !defined(NO_GLOBAL_INSTANCES) && !defined(NO_GLOBAL_EEPROM)
 extern EEPROMClass EEPROM;
 #endif
-
 
 #endif		// #ifndef EEPROM_h
