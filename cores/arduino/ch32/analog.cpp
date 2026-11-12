@@ -838,7 +838,7 @@ void pwm_stop(PinName pin)
 
   HT = (HardwareTimer *)(HardwareTimer_Handle[index]->__this);
   if (HT != NULL) {
-    delete (HT);
+    HardwareTimer::deleteInstance(HT);
     HT = NULL;
   }
 }
