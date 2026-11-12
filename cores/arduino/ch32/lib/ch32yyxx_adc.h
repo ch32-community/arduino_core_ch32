@@ -1,7 +1,3 @@
-#if defined(CH32V4x7)
-#include "ch32v4x7_adc.h"
-#endif
-
 #ifndef _CH32YYXX_ADC_H_
 #define _CH32YYXX_ADC_H_
 
@@ -23,6 +19,9 @@
 
 #elif defined(CH32V30x)  || defined(CH32V30x_C)
 #include "ch32v30x_adc.h"
+
+#elif defined(CH32V4x7)
+#include "ch32v4x7_adc.h"
 
 #elif defined(CH32L10x)
 #include "ch32l103_adc.h"

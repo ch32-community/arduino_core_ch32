@@ -1,8 +1,3 @@
-#if defined(CH32V4x7)
-#include "system_ch32v4x7.h"
-#endif
-
-
 #ifndef _SYSTEM_CH32YYXX_H_
 #define _SYSTEM_CH32YYXX_H_
 
@@ -28,6 +23,8 @@
 
 #if defined(CH32V30x) || defined(CH32V30x_C)
 #include "system_ch32v30x.h"
+#elif defined(CH32V4x7)
+#include "system_ch32v4x7.h"
 #endif
 
 #if defined(CH32L10x)
