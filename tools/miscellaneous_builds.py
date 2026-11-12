@@ -91,14 +91,14 @@ def miscellaneous_builds(package='local:ch32v'):
             for port in selected_ports:
                 yield make_build(case, processor, board, port, package, properties, prefix, series)
 
-    # Metro uses fixed board definitions. Ordinary Serial sketches exercise USB
+    # Metro variants share the CH32V4x7 family. Ordinary Serial sketches exercise USB
     # discovery and linking above TinyUF2 at both supported CPU clocks.
     for processor in ('CH32V407', 'CH32V467'):
         for clock in ('100MHz', '200MHz'):
             name = f'{processor}_Metro-{clock}-SimpleSerialRead'
             yield {
                 'name': name,
-                'fqbn': f'{package}:ADAFRUIT_METRO_{processor}:clock={clock}',
+                'fqbn': f'{package}:CH32V4x7_BOARDS:pnum=ADAFRUIT_METRO_{processor},clock={clock}',
                 'sketch': 'ci/miscellaneous/SimpleSerialRead',
                 'build_properties': {},
                 'build_dir': f'build/Miscellaneous/{name}',

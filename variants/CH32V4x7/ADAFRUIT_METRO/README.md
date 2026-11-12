@@ -5,6 +5,11 @@ RJ45 jack. Both use the same pin numbering and a 25 MHz crystal. CPU and bus
 clocks default to 100 MHz. The **Clock select** menu also offers 200 MHz.
 Both options retain the 200 MHz system PLL.
 
+In the Arduino IDE, choose **Board > CH32V4x7**, then choose
+**Board select > Adafruit Metro CH32V407** or **Adafruit Metro CH32V467** to
+match the fitted chip. **Clock Select** and **Upload method > TinyUF2 (USB drive)**
+are shared by both variants.
+
 | Arduino pins | MCU pins, in the same order |
 | --- | --- |
 | D0–D7 | PB7, PB6, PB8, PB9, PC0, PC1, PC2, PC3 |
@@ -70,11 +75,12 @@ copy that file to `METRO407` or `METRO467`. The upload recipe also accepts the
 mounted drive as an explicit port, for example:
 
 ```
-arduino-cli upload --fqbn <package>:ch32v:ADAFRUIT_METRO_CH32V467 --port D: --input-dir <build-output>
+arduino-cli upload --fqbn <package>:ch32v:CH32V4x7_BOARDS:pnum=ADAFRUIT_METRO_CH32V467 --port D: --input-dir <build-output>
 ```
 
 Replace the package name, drive and output directory with your installation's
-values. Automatic serial-port-to-drive discovery is not implemented. The USB
+values; select `pnum=ADAFRUIT_METRO_CH32V407` for the other chip. Automatic
+serial-port-to-drive discovery is not implemented. The USB
 port supports a 1200-baud DTR drop to request the bootloader.
 
 The TinyUSB submodule revision includes the CH32V4x7 USBHS1 device port. That
