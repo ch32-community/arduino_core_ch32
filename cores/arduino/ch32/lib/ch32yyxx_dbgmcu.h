@@ -1,7 +1,3 @@
-#if defined(CH32V4x7)
-#include "ch32v4x7_dbgmcu.h"
-#endif
-
 #ifndef _CH32YYXX_DBGMCU_H_
 #define _CH32YYXX_DBGMCU_H
 
@@ -27,6 +23,8 @@
 
 #if defined(CH32V30x) || defined(CH32V30x_C)
 #include "ch32v30x_dbgmcu.h"
+#elif defined(CH32V4x7)
+#include "ch32v4x7_dbgmcu.h"
 #endif
 
 #if defined(CH32L10x)
