@@ -101,7 +101,13 @@ class EEPROMClass {
     uint8_t const & operator[](int const address) const {return getConstDataPtr()[address];}
 
   protected:
-    uint8_t* _data = nullptr;
+#if defined(CH32VM00X) || defined(CH32X035)
+    static constexpr size_t _capacity = 122;
+#else
+    static constexpr size_t _capacity = 26;
+#endif
+    // The emulated EEPROM size is fixed for each chip; avoid heap allocation.
+    uint8_t _data[_capacity];
     bool _dirty = false;
     size_t _size = 0;
 };

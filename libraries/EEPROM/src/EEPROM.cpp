@@ -78,18 +78,11 @@ uint32_t EEPROMClass::ReadOptionBytes()
 
 void EEPROMClass::begin(void)
 {
-#if defined(CH32VM00X) ||  defined(CH32X035)
-  _size = 122;   // Option bytes available on CH32V002/V006, CH32X035/X033: 256- 16 = 240; 240/2=120, 2+120=122
-#else  
-  _size = 26;   // Option bytes available on CH32V003: 64 - 16 = 48; 48/2=24, 2+24=26
-#endif
-
-  // Allocate data buffer and copy the current content from storage
-  if(!_data)
+  // Load storage once per begin/end session into the per-instance buffer.
+  if (_size == 0)
   {
-    // Allocate the RAM data buffer
-    _data = new uint8_t[_size];
-    
+    _size = _capacity;
+
     // Copy data from the option byte words
     // Using a simple (uint8_t) cast will ignore the inversed value in the second half-word
     uint16_t *ob16p=(uint16_t *)OB_BASE;
@@ -104,21 +97,21 @@ void EEPROMClass::begin(void)
 
 uint8_t * EEPROMClass::getDataPtr() {
   _dirty = true;
-  return &_data[0];
+  return _size ? _data : nullptr;
 }
 
 uint8_t const * EEPROMClass::getConstDataPtr() const {
-  return &_data[0];
+  return _size ? _data : nullptr;
 }
 
 uint8_t EEPROMClass::read( int const idx ) {
-  if(_data && idx>=0 && (size_t)idx<_size)
+  if(idx>=0 && (size_t)idx<_size)
     return(_data[idx]);
   return(0);
 }
 
 void EEPROMClass::write( int const idx, uint8_t  const val ) {
-  if(_data && idx>=0 && ((size_t)idx<_size) && _data[idx]!=val) {
+  if(idx>=0 && ((size_t)idx<_size) && _data[idx]!=val) {
     _dirty = true;
     _data[idx]=val;
   }
@@ -134,7 +127,7 @@ void EEPROMClass::erase(void) {
 bool EEPROMClass::commit()
 { // Write the _data array to the available area for option bytes
   // Based on example code https://github.com/cnlohr/ch32v003fun/tree/master/examples/optiondata by @cnlohr
-  if(!_dirty)
+  if(!_dirty || _size == 0)
     return(true);
 
   volatile uint16_t hold[8]; 		// array to hold reserved values while erasing
@@ -177,7 +170,7 @@ bool EEPROMClass::commit()
 
   // Then write the remainder of the data block
   // Note that when a byte is written as a word, it automatically gets its inverse value as second byte
-  if(_data && _size)
+  if(_size)
   {
 #if defined(CH32VM00X) || defined(CH32X035)
     // To write to the larger 256B option byte area of V00X, we use fast page programming as shown by EVT EXAM code
@@ -213,7 +206,6 @@ bool EEPROMClass::end() {
   bool retval;
 
   retval = commit();
-  _data = nullptr;
   _size = 0;
   return(retval);
 }
