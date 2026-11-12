@@ -1355,6 +1355,9 @@ TIM_HandleTypeDef *HardwareTimer::getHandle()
   * @param  htim: HAL timer handle
   * @retval None
   */
+// Inline std::function::operator() so the callback check below also removes
+// its empty-call error path, which otherwise pulls in newlib stdio RAM.
+__attribute__((flatten))
 void HardwareTimer::updateCallback(TIM_HandleTypeDef *htim)
 {
 
@@ -1380,6 +1383,9 @@ void HardwareTimer::updateCallback(TIM_HandleTypeDef *htim)
   * @param  htim: HAL timer handle
   * @retval None
   */
+// Inline std::function::operator() so the callback check below also removes
+// its empty-call error path, which otherwise pulls in newlib stdio RAM.
+__attribute__((flatten))
 void HardwareTimer::captureCompareCallback(TIM_HandleTypeDef *htim)
 {
   if (!htim) {
