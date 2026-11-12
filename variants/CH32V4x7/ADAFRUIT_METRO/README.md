@@ -33,9 +33,37 @@ After an unsupported `setClock()` value, transfers fail until
 
 ## TinyUF2
 
-Install the matching Metro TinyUF2 bootloader once with a debug probe. Sketches
-start at flash address `0x8000`, preserving its first 32 KiB. The two variants
-use the CH32V4x7 UF2 family ID `0x7b8c32a7`.
+Production Metro CH32V407 and CH32V467 boards ship with TinyUF2 preinstalled.
+Normal sketch uploads need only USB. A debug probe is needed only for a blank
+board or to replace the bootloader; bootloader self-update over UF2 is not
+supported.
+
+For initial installation or recovery:
+
+1. Download the bootloader for the chip fitted to the board:
+   [Metro CH32V407](https://github.com/adafruit/tinyuf2/actions/runs/43249115554/artifacts/13957828280)
+   or [Metro CH32V467](https://github.com/adafruit/tinyuf2/actions/runs/43249115554/artifacts/13957853111).
+   These are official TinyUF2 `master` build artifacts at `d4a8530`; GitHub sign-in
+   is required. Extract `tinyuf2.hex` from the matching ZIP. If the artifacts
+   have expired, use a newer matching artifact from the
+   [TinyUF2 Build workflow](https://github.com/adafruit/tinyuf2/actions/workflows/build.yml?query=branch%3Amaster),
+   or follow the [CH32V4x7 build instructions](https://github.com/adafruit/tinyuf2/tree/master/ports/ch32v4x7#build-and-initial-installation)
+   with `BOARD=metro_ch32v407` or `BOARD=metro_ch32v467`.
+2. Power the Metro from USB. Connect a CH32V4x7-compatible WCH single-wire debug
+   (SWIO) probe: SWIO to PA13, reset to NRST, and ground to GND. Use 3.3 V signal
+   levels; do not connect a second power output from the probe. A standard ARM
+   SWD probe is not sufficient unless its firmware explicitly supports WCH SWIO.
+3. In the probe's programming software, select the matching CH32V407 or CH32V467,
+   load `tinyuf2.hex`, and program with sector erase and readback verification.
+   Preserve any existing application first. Do not use a whole-chip erase or
+   change option bytes/write protection. The bootloader occupies the first
+   32 KiB; use the addresses encoded in the HEX file.
+4. Disconnect the probe and reset the Metro. Double-tap RESET within 500 ms and
+   check that the `METRO407` or `METRO467` USB drive appears. Application uploads
+   can now use the USB procedure below.
+
+Sketches start at flash address `0x8000`, preserving the bootloader's first
+32 KiB. The two variants use the CH32V4x7 UF2 family ID `0x7b8c32a7`.
 
 Build/export produces a `.uf2` file. Double-tap the Metro's RESET button, then
 copy that file to `METRO407` or `METRO467`. The upload recipe also accepts the
