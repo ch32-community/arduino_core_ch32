@@ -41,7 +41,7 @@ public:
 private:
   static constexpr uint32_t sectorBytes = 512; ///< SD logical sector size.
   static constexpr uint32_t identificationDivider =
-      255;                                         ///< CLKDIV: 100 MHz/257.
+      255;                                         ///< Slowest clock: HCLK/257.
   static constexpr uint32_t transferHz = 10000000; ///< Conservative data clock.
   static constexpr uint32_t clockEnable = 1u << 8; ///< CLKCR clock enable.
   static constexpr uint32_t staticFlags = 0x00c007ff; ///< ICR clearable flags.

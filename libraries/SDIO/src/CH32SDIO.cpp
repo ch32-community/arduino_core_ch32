@@ -17,6 +17,8 @@ bool CH32SDIO::fail(Error error, uint32_t status) {
 /**
  * @brief Initialize a card on the remapped SDIO pins without formatting it.
  * @param fourBit True for four data lines; false to use only D0.
+ * @note At 200 MHz HCLK, the minimum initialization clock exceeds 400 kHz;
+ * some cards may fail to initialize. Use 100 MHz for compliant timing.
  * @return True on success. Inspect error(), status(), and lastCommand() on
  * failure.
  */
@@ -29,8 +31,7 @@ bool CH32SDIO::begin(bool fourBit) {
   _highCapacity = false;
   memset(cid, 0, sizeof(cid));
 #if defined(CH32V4x7)
-  // At 200 MHz even CLKDIV=255 exceeds the card's 400 kHz initialization limit.
-  if (SystemCoreClock != 100000000) {
+  if (SystemCoreClock != 100000000 && SystemCoreClock != 200000000) {
     return fail(Unsupported);
   }
   if (!initialize(fourBit)) {
@@ -117,8 +118,9 @@ bool CH32SDIO::initialize(bool fourBit) {
   SDIO->DCTRL = 0;
   SDIO->MASK = 0;
   SDIO->ICR = staticFlags;
-  // RM 24.6.2: SDIO_CK = HCLK / (CLKDIV + 2). At 100 MHz, CLKDIV=255
-  // gives about 389 kHz, leaving margin below the 400 kHz initialization limit.
+  // RM 24.6.2: SDIO_CK = HCLK / (CLKDIV + 2). CLKDIV=255 gives the slowest
+  // clock: about 389 kHz at 100 MHz HCLK, or 778 kHz at 200 MHz HCLK.
+  // The latter exceeds the 400 kHz initialization limit; some cards may fail.
   SDIO->CLKCR = identificationDivider | SDIO_ClockEdge_Falling | clockEnable;
   SDIO->POWER = SDIO_PowerState_ON;
   delay(5); // At least 74 idle clocks before CMD0.
