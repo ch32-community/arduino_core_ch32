@@ -14,15 +14,15 @@ mcu_list = {
 usb_list = {
     'tinyusb_usbd': {
         'name': 'Adafruit TinyUSB with USBD',
-        'usb_flags': '-DUSBCON -DUSE_TINYUSB -DCFG_TUD_WCH_USBIP_FSDEV=1 "-I{runtime.platform.path}/libraries/Adafruit_TinyUSB/src/arduino"'
+        'usb_flags': '-DUSBCON -DUSE_TINYUSB -DCFG_TUD_WCH_USBIP_FSDEV=1 "-I{runtime.platform.path}/libraries/Adafruit_TinyUSB_Arduino/src/arduino"'
     },
     'tinyusb_usbfs': {
         'name': 'Adafruit TinyUSB with USBFS',
-        'usb_flags': '-DUSBCON -DUSE_TINYUSB -DCFG_TUD_WCH_USBIP_USBFS=1 "-I{runtime.platform.path}/libraries/Adafruit_TinyUSB/src/arduino"'
+        'usb_flags': '-DUSBCON -DUSE_TINYUSB -DCFG_TUD_WCH_USBIP_USBFS=1 "-I{runtime.platform.path}/libraries/Adafruit_TinyUSB_Arduino/src/arduino"'
     },
     'tinyusb_usbhs': {
         'name': 'Adafruit TinyUSB with USBHS',
-        'usb_flags': '-DUSBCON -DUSE_TINYUSB -DCFG_TUD_WCH_USBIP_USBHS=1 "-I{runtime.platform.path}/libraries/Adafruit_TinyUSB/src/arduino"'
+        'usb_flags': '-DUSBCON -DUSE_TINYUSB -DCFG_TUD_WCH_USBIP_USBHS=1 "-I{runtime.platform.path}/libraries/Adafruit_TinyUSB_Arduino/src/arduino"'
     },
 }
 

@@ -80,7 +80,7 @@ def local_core_build():
         '--build-property', f'tools.uf2.python={sys.executable}',
         '--libraries', os.path.join(REPO_ROOT, 'libraries'),
         # A sketchbook copy must not override the core's pinned USB port.
-        '--library', os.path.join(REPO_ROOT, 'libraries', 'Adafruit_TinyUSB'),
+        '--library', os.path.join(REPO_ROOT, 'libraries', 'Adafruit_TinyUSB_Arduino'),
     ]
     user_libraries = os.path.join(directories['user'], 'libraries')
     if os.path.isdir(user_libraries):
@@ -113,7 +113,7 @@ def local_core_build():
 
 
 def is_tinyusb_example(sketch):
-    examples = os.path.join(REPO_ROOT, 'libraries', 'Adafruit_TinyUSB', 'examples')
+    examples = os.path.join(REPO_ROOT, 'libraries', 'Adafruit_TinyUSB_Arduino', 'examples')
     try:
         return os.path.commonpath([examples, os.path.abspath(sketch)]) == examples
     except ValueError:  # Paths on different Windows drives cannot match.

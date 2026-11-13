@@ -21,14 +21,16 @@ are shared by both variants.
 
 `Serial` / `SerialUSB` is USB CDC; `Serial1` uses D0 RX and D1 TX.
 
-The core bundles its tested TinyUSB version in `libraries/Adafruit_TinyUSB`.
-That folder name exactly matches `Adafruit_TinyUSB.h`, so Arduino selects it
-ahead of a Library Manager installation in `Adafruit_TinyUSB_Library`. You can
-keep that separately installed library for other boards. A manually renamed
-sketchbook copy also named `Adafruit_TinyUSB`, or an explicit CLI `--library`
-override, can still take priority; use the bundled version for these boards.
-For Git installations, run `git submodule sync --recursive` and
-`git submodule update --init --recursive` after updating the core.
+The core bundles a tested default in `libraries/Adafruit_TinyUSB_Arduino`.
+A separately installed **Adafruit TinyUSB Library** can override it through
+normal Arduino library selection, including updates from Library Manager.
+The selected library must include CH32V4x7 support and retain TinyUSB API
+version `30000`, matching the core's bundled declarations. An incompatible
+copy produces a compile-time error with recovery instructions instead of
+missing USB symbols at link time. Update the library or board package as
+directed, or remove the sketchbook TinyUSB installation to use the bundled copy.
+Release **3.7.7** predates CH32V4x7 support; until a newer release includes it,
+use the bundled default or a compatible upstream development version.
 
 The USER button is active low. A0 supports DAC output. Pin remapping is selected
 through the variant's peripheral tables; the header UART uses USART1's PB6/PB7

@@ -598,7 +598,7 @@ CH32X035_EVT.menu.xserial.none.build.serial_flags=-DHWSERIAL_NONE
 CH32X035_EVT.menu.usb.none=None
 CH32X035_EVT.menu.usb.none.build.usb_flags=
 CH32X035_EVT.menu.usb.usbcdc=USB CDC Serial for CH32X033/35 (TODO)
-CH32X035_EVT.menu.usb.usbcdc.build.usb_flags=-DUSBCON -DUSE_TINYUSB -DCFG_TUD_WCH_USBIP_FSDEV=1 "-I{runtime.platform.path}/libraries/Adafruit_TinyUSB/src/arduino"
+CH32X035_EVT.menu.usb.usbcdc.build.usb_flags=-DUSBCON -DUSE_TINYUSB -DCFG_TUD_WCH_USBIP_FSDEV=1 "-I{runtime.platform.path}/libraries/Adafruit_TinyUSB_Arduino/src/arduino"
 
 
 
@@ -873,9 +873,9 @@ CH32V20x_EVT.menu.xserial.none.build.serial_flags=-DHWSERIAL_NONE
 CH32V20x_EVT.menu.usb.none=None
 CH32V20x_EVT.menu.usb.none.build.usb_flags=
 CH32V20x_EVT.menu.usb.tinyusb_usbd=Adafruit TinyUSB with USBD
-CH32V20x_EVT.menu.usb.tinyusb_usbd.build.usb_flags=-DUSBCON -DUSE_TINYUSB -DCFG_TUD_WCH_USBIP_FSDEV=1 "-I{runtime.platform.path}/libraries/Adafruit_TinyUSB/src/arduino"
+CH32V20x_EVT.menu.usb.tinyusb_usbd.build.usb_flags=-DUSBCON -DUSE_TINYUSB -DCFG_TUD_WCH_USBIP_FSDEV=1 "-I{runtime.platform.path}/libraries/Adafruit_TinyUSB_Arduino/src/arduino"
 CH32V20x_EVT.menu.usb.tinyusb_usbfs=Adafruit TinyUSB with USBFS
-CH32V20x_EVT.menu.usb.tinyusb_usbfs.build.usb_flags=-DUSBCON -DUSE_TINYUSB -DCFG_TUD_WCH_USBIP_USBFS=1 "-I{runtime.platform.path}/libraries/Adafruit_TinyUSB/src/arduino"
+CH32V20x_EVT.menu.usb.tinyusb_usbfs.build.usb_flags=-DUSBCON -DUSE_TINYUSB -DCFG_TUD_WCH_USBIP_USBFS=1 "-I{runtime.platform.path}/libraries/Adafruit_TinyUSB_Arduino/src/arduino"
 
 
 # Upload menu
@@ -1027,9 +1027,9 @@ CH32V30x_EVT.menu.xserial.none.build.serial_flags=-DHWSERIAL_NONE
 CH32V30x_EVT.menu.usb.none=None
 CH32V30x_EVT.menu.usb.none.build.usb_flags=
 CH32V30x_EVT.menu.usb.tinyusb_usbhs=Adafruit TinyUSB with USBHS
-CH32V30x_EVT.menu.usb.tinyusb_usbhs.build.usb_flags=-DUSBCON -DUSE_TINYUSB -DCFG_TUD_WCH_USBIP_USBHS=1 "-I{runtime.platform.path}/libraries/Adafruit_TinyUSB/src/arduino"
+CH32V30x_EVT.menu.usb.tinyusb_usbhs.build.usb_flags=-DUSBCON -DUSE_TINYUSB -DCFG_TUD_WCH_USBIP_USBHS=1 "-I{runtime.platform.path}/libraries/Adafruit_TinyUSB_Arduino/src/arduino"
 CH32V30x_EVT.menu.usb.tinyusb_usbfs=Adafruit TinyUSB with USBFS
-CH32V30x_EVT.menu.usb.tinyusb_usbfs.build.usb_flags=-DUSBCON -DUSE_TINYUSB -DCFG_TUD_WCH_USBIP_USBFS=1 "-I{runtime.platform.path}/libraries/Adafruit_TinyUSB/src/arduino"
+CH32V30x_EVT.menu.usb.tinyusb_usbfs.build.usb_flags=-DUSBCON -DUSE_TINYUSB -DCFG_TUD_WCH_USBIP_USBFS=1 "-I{runtime.platform.path}/libraries/Adafruit_TinyUSB_Arduino/src/arduino"
 
 
 # Upload menu
@@ -1277,7 +1277,7 @@ CH32V4x7_BOARDS.build.IQ_math_RV32=
 CH32V4x7_BOARDS.build.serial_flags=-DSERIAL_UART_INSTANCE=1
 CH32V4x7_BOARDS.build.extra_flags=-DWIRE_I3C -DOPT_I2C_SLAVE=0
 CH32V4x7_BOARDS.build.vid=0x239A
-CH32V4x7_BOARDS.build.usb_flags=-DUSBCON -DUSE_TINYUSB -DUSB_VID={build.vid} -DUSB_PID={build.pid} "-I{runtime.platform.path}/libraries/Adafruit_TinyUSB/src/arduino"
+CH32V4x7_BOARDS.build.usb_flags=-DUSBCON -DUSE_TINYUSB -DUSB_VID={build.vid} -DUSB_PID={build.pid} "-I{runtime.platform.path}/libraries/Adafruit_TinyUSB_Arduino/src/arduino"
 CH32V4x7_BOARDS.build.flash_offset=0x8000
 CH32V4x7_BOARDS.build.uf2_family=0x7b8c32a7
 CH32V4x7_BOARDS.build.preferred_out_format=uf2
