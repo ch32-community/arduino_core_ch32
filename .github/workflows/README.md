@@ -10,6 +10,11 @@
 
 ### Autmatic build of examples 
 
+CH32V4x7 builds cover the Adafruit Metro CH32V407 at the default
+100 MHz clock, including TinyUSB examples. The miscellaneous builds also check
+Serial at 100 and 200 MHz. USB-PD example is skipped because this
+board does not support PD. MemBrowse tracks only the V407 variant of the Adafruit Metro.
+
 As of PR #69, we can now test specific variants:
 - Build step compile_examples.yml builds the V006K8 and V002F4 variants as specified.
 - It gave build errors only for V002F4 when the sketch was too large

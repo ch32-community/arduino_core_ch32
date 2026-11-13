@@ -19,6 +19,7 @@ REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TINYUSB_OPTIONS = {
     'CH32V20x': 'tinyusb_usbd',
     'CH32V30x': 'tinyusb_usbfs',
+    'CH32V4x7': None,  # Always enabled; this family has no USB menu.
 }
 
 SUCCEEDED = "\033[32msucceeded\033[0m"
@@ -38,6 +39,7 @@ all_boards = [
     ['CH32V10x' , 'local:ch32v:CH32V10x_EVT' ],
     ['CH32V20x' , 'local:ch32v:CH32V20x_EVT' ],
     ['CH32V30x' , 'local:ch32v:CH32V30x_EVT' ],
+    ['CH32V4x7-ADAFRUIT_METRO_CH32V407', 'local:ch32v:CH32V4x7_BOARDS:pnum=ADAFRUIT_METRO_CH32V407', 'CH32V4x7'],
     ['CH32X035' , 'local:ch32v:CH32X035_EVT' ],
 ]
 
