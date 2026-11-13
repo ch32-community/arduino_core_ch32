@@ -87,7 +87,7 @@ build.variant_h=
 compiler.c.extra_flags=-Wno-comment
 compiler.c.elf.extra_flags=-Wl,--defsym=__FLASH_SIZE={upload.maximum_size} -Wl,--defsym=__RAM_SIZE={upload.maximum_data_size}
 compiler.cpp.extra_flags=-Wno-comment
-compiler.cpp.std=gnu++14
+compiler.cpp.std=gnu++17
 compiler.S.extra_flags=
 ##{build.startup_file}   {build.peripheral_pins}
 compiler.ar.extra_flags=
