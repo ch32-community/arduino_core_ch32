@@ -5,7 +5,7 @@ CH32 core without editing the submodule. Mirror the example's path from the
 repository root. For example, to skip TinyUSB's serial echo on CH32V20x, edit:
 
 ```text
-ci/skips/libraries/Adafruit_TinyUSB_Arduino/examples/CDC/serial_echo/.skip.txt
+ci/skips/libraries/Adafruit_TinyUSB/examples/CDC/serial_echo/.skip.txt
 ```
 
 Add one board family, build target, or Arduino board ID per line:

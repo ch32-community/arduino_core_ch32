@@ -132,7 +132,7 @@ env.Replace(
 def configure_usb_flags(cpp_defines):
     if any([x in cpp_defines for x in ("PIO_FRAMEWORK_ARDUINO_USBD", "PIO_FRAMEWORK_ARDUINO_USBFS", "PIO_FRAMEWORK_ARDUINO_USBHS")]):
         env.Append(CPPPATH=[join(
-            FRAMEWORK_DIR, "libraries", "Adafruit_TinyUSB_Arduino", "src", "arduino")])
+            FRAMEWORK_DIR, "libraries", "Adafruit_TinyUSB", "src", "arduino")])
         # automatically build with lib_archive = no to make weak linking work, needed for TinyUSB
         env_section = "env:" + env["PIOENV"]
         platform.config.set(env_section, "lib_archive", False)
