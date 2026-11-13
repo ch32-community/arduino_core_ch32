@@ -76,6 +76,8 @@ def local_core_build():
 
     compile_options = [
         '--build-property', f'toolchain_dir={compiler_dir}',
+        # This runner already requires Python; local platforms have no tool dependencies.
+        '--build-property', f'tools.uf2.python={sys.executable}',
         '--libraries', os.path.join(REPO_ROOT, 'libraries'),
         # A sketchbook copy must not override the core's pinned USB port.
         '--library', os.path.join(REPO_ROOT, 'libraries', 'Adafruit_TinyUSB_Arduino'),
