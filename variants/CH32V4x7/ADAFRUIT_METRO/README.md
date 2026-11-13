@@ -43,6 +43,21 @@ Normal sketch uploads need only USB. A debug probe is needed only for a blank
 board or to replace the bootloader; bootloader self-update over UF2 is not
 supported.
 
+Building/exporting UF2 sketches and using the TinyUF2 upload recipe require
+**Python 3 on the host computer**. The core currently uses a system-installed
+interpreter; it does not bundle Python. Install it from
+[python.org](https://www.python.org/downloads/) or your operating system's package
+manager, then verify the command used by the build recipes in a new terminal:
+
+- **Windows:** `python --version` must report Python 3. Having only the `py`
+  launcher available is not sufficient; `python` must be available on `PATH`.
+- **Linux/macOS:** `python3 --version` must report Python 3.
+
+Restart Arduino IDE after installing Python or changing `PATH` so it sees the
+updated environment. No additional Python packages are needed. If a build
+reports `exec: "python": executable file not found`, the UF2 conversion step
+cannot find Python; this is not a C++ compilation or linker error.
+
 For initial installation or recovery:
 
 1. Download the bootloader for the chip fitted to the board:
