@@ -1,0 +1,8 @@
+# PSRAM is available only on CH32V467; build this example explicitly there.
+CH32VM00X
+CH32V00x
+CH32L10x
+CH32V10x
+CH32V20x
+CH32V30x
+CH32X035

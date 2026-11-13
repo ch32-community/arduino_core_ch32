@@ -35,7 +35,11 @@ bool CH32PSRAM::begin() {
   PSRAM->CTLR = PSRAM_CAPCFG_32M | PSRAM_EXIT_LPMD;
   // TIMING fields: trc=20, tcph=12, txlpd=7, from the 200 MHz EVT example.
   PSRAM->TIMING = 20u | (12u << 16) | (7u << 24);
-  delay(1);
+  // Constructors run before Arduino's SysTick setup. Execute at least one
+  // millisecond of instructions without borrowing/reconfiguring that timer.
+  for (uint32_t cycles = SystemCoreClock / 1000; cycles; --cycles) {
+    asm volatile("nop");
+  }
 
   // Set controller write latency before changing the memory's MR4.
   PSRAM->LATENCY = 7u << 8;
@@ -96,11 +100,11 @@ int CH32PSRAM::readModeRegister(uint8_t address) {
 }
 
 #if defined(CH32V467)
-/** @brief Wait up to 10 ms for a mode-register command to finish. */
+/** @brief Poll with a finite budget, independent of SysTick and interrupts. */
 bool CH32PSRAM::waitReady() {
-  uint32_t start = micros();
+  uint32_t remaining = commandPollLimit;
   while (PSRAM->ADDR & PSRAM_BUSY) {
-    if (micros() - start >= commandTimeoutUs) {
+    if (!--remaining) {
       return false;
     }
   }

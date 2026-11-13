@@ -34,6 +34,11 @@ DEFAULT_BOARD_OPTIONS = {'opt': 'oslto', 'dbg': 'enable_sym'}
 # Labels form the build/MemBrowse names; give new configurations distinct labels.
 BUILD_CASES = [
     {
+        'label': 'LTO_Heap',
+        'sketch': 'ci/miscellaneous/HeapAllocation',
+        'peripherals': [],
+    },
+    {
         'label': 'LTO_NoPeripherals',
         'sketch': 'ci/libraries/ArduinoBlinkExample',
         'peripherals': [],
