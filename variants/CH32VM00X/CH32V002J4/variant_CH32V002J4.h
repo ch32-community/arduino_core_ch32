@@ -1,0 +1,207 @@
+/*
+ *******************************************************************************
+ * Copyright (c) 2021 Nanjing Qinheng Microelectronics Co., Ltd.
+ * All rights reserved.
+ *
+ * This software component is licensed by WCH under BSD 3-Clause license,
+ * the "License"; You may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at:
+ *                        opensource.org/licenses/BSD-3-Clause
+ *
+ *******************************************************************************
+ */
+#pragma once
+
+/* ENABLE Peripherals */
+#ifndef IDE_MENU_PERIPHERALS   // defined when peripherals are enabled/disabled via the IDE menu
+#define                         ADC_MODULE_ENABLED
+#define                         UART_MODULE_ENABLED
+//#define                         SPI_MODULE_ENABLED
+#define                         I2C_MODULE_ENABLED
+#define                         TIM_MODULE_ENABLED
+#endif  // IDE_MENU_PERIPHERALS  
+
+/* CH32V002F4 Pins - same as CH32V003F4 TSSOP20 (18x GPIO, 8+3 ADC, 1xSER, no OPA */
+#define PA1                     PIN_A1
+#define PA2                     PIN_A0
+#define PC0                     2
+#define PC1                     3
+#define PC2                     4
+#define PC3                     5 
+#define PC4                     PIN_A2
+#define PC5                     7
+#define PC6                     8
+#define PC7                     9
+#define PD0                     10
+#define PD1                     11
+#define PD2                     PIN_A3
+#define PD3                     PIN_A4 
+#define PD4                     PIN_A7
+#define PD5                     PIN_A5
+#define PD6                     PIN_A6 
+#define PD7                     17
+
+/*
+#define PA0                     0         // N/A
+#define PA1                     PIN_A1
+#define PA2                     PIN_A0
+#define PA3                     3         // N/A
+#define PA4                     4          // N/A
+#define PA5                     5         // N/A
+#define PA6                     6         // N/A
+#define PA7                     7          // N/A
+#define PB0                     8             // N/A
+#define PB1                     9         // N/A
+#define PB2                     10         // N/A
+#define PB3                     11          // N/A
+#define PB4                     12          // N/A
+#define PB5                     13         // N/A
+#define PB6                     14          // N/A
+#define PC0                     15
+#define PC1                     16
+#define PC2                     17
+#define PC3                     18
+#define PC4                     PIN_A2
+#define PC5                     20
+#define PC6                     21
+#define PC7                     22
+#define PD0                     23
+#define PD1                     24
+#define PD2                     PIN_A3
+#define PD3                     PIN_A4 
+#define PD4                     PIN_A7
+#define PD5                     PIN_A5
+#define PD6                     PIN_A6 
+#define PD7                     30
+*/
+
+// Alternate pins number
+#define PD5_ALT1                (PD5  | ALT1)
+#define PD6_ALT1                (PD6  | ALT1)
+
+
+#define NUM_DIGITAL_PINS        18
+#define NUM_ANALOG_INPUTS       8
+
+// #define ADC_CTLR_ADCAL          
+#define ADC_RESOLUTION          12
+
+
+
+// On-board LED pin number
+#ifndef LED_BUILTIN
+  #define LED_BUILTIN           PNUM_NOT_DEFINED
+#endif
+
+
+
+// On-board user button
+#ifndef USER_BTN
+  #define USER_BTN              PNUM_NOT_DEFINED
+#endif
+
+
+
+
+
+// UART Definitions
+// CH32V002 only has USART1.
+// VM00X USART1 pinmaps TX/RX: 0=PD5/PD6 _1=PD6/PD5 [_2=PD0/PD1 _3=PC0/PC1_4=PD1/PB3 _5=PB3/PD1 _6=PC5/PC6 _7=PB5/PB6] _8=PA0/PA1, _9=PA0/PC4
+// CH32V002J4M6 pins:  1:PA1=PD6, 3:PA2, 5:PC1/SDA, 6:PC2/SCL, 7: PC4, 8: PD1=PD4=PD5=SWIO
+// CH32V002J4M6 supported UART1 pinmaps: 0 _1 _8 _9
+//    RX: PD6=PA1
+//    TX: PD5=PD4=PD1=SWIO
+//    RX_1: PD5=PD4=PD1=SWIO
+//    TX_1: PD6=PA1
+//    RX_2: PD0
+//    TX_2: PD1
+//    RX_3: PC0
+//    TX_3: PC1
+// If I2C is enabled we cannot use these alternatives but there are no other combinations available.
+// Using both I2C/SPI and UART is too much (but flash gets limited then also)
+#if defined(SERIAL_UART_ENABLE_ALL)
+  #error "CH32V002J4 only supports Serial1; Dual Serial is unavailable"
+#endif
+#if (defined(SERIAL_UART_INSTANCE) && SERIAL_UART_INSTANCE>1)
+  #error "CH32V002J4 only supports Serial1; Serial2 cannot be selected"
+#endif
+
+#ifndef BOARD_DEFAULT_SERIAL
+  #define BOARD_DEFAULT_SERIAL 1
+#endif
+#ifndef BOARD_DEFAULT_SERIALMAP
+  #define BOARD_DEFAULT_SERIALMAP 1
+#endif
+
+#if defined(SERIAL_UART_PINMAP) && (SERIAL_UART_PINMAP!=1)
+  #error "CH32V002J4 only supporta Serial1_1 pin mapping"
+#endif
+
+
+// Default pins for hardware serial port 1.
+#ifndef PIN_SERIAL1_RX
+  #define PIN_SERIAL1_RX         PD6
+#endif
+#ifndef PIN_SERIAL1_TX
+  #define PIN_SERIAL1_TX         PD5
+#endif
+
+// Useful mapped pins for each hardware serial port.
+#ifndef PIN_SERIAL1_1_RX
+  #define PIN_SERIAL1_1_RX     PD5  // UART1_1 pinmap RX pin
+#endif
+#ifndef PIN_SERIAL1_1_TX
+  #define PIN_SERIAL1_1_TX     PD6  // UART1_1 pinmap TX pin 
+#endif
+
+
+// SPI definitions (CH32V002J4 has no pins for SPI so it's not available)
+#if defined(SPI_MODULE_ENABLED)
+  #error "CH32V002J4 has no SPI. SPI should be disabled"
+#endif
+
+// I2C definitions
+#ifndef PIN_WIRE_SDA
+  #define PIN_WIRE_SDA          PC1
+#endif
+#ifndef PIN_WIRE_SCL
+  #define PIN_WIRE_SCL          PC2
+#endif
+
+// Timer Definitions
+#ifndef TIMER_TONE
+  #define TIMER_TONE            TIM2
+#endif
+#ifndef TIMER_SERVO
+  #define TIMER_SERVO           TIM1
+#endif
+
+/*----------------------------------------------------------------------------
+ *        Arduino objects - C++ only
+ *----------------------------------------------------------------------------*/
+
+#ifdef __cplusplus
+  // These serial port names are intended to allow libraries and architecture-neutral
+  // sketches to automatically default to the correct port name for a particular type
+  // of use.  For example, a GPS module would normally connect to SERIAL_PORT_HARDWARE_OPEN,
+  // the first hardware serial port whose RX/TX pins are not dedicated to another use.
+  //
+  // SERIAL_PORT_MONITOR        Port which normally prints to the Arduino Serial Monitor
+  //
+  // SERIAL_PORT_USBVIRTUAL     Port which is USB virtual serial
+  //
+  // SERIAL_PORT_LINUXBRIDGE    Port which connects to a Linux system via Bridge library
+  //
+  // SERIAL_PORT_HARDWARE       Hardware serial port, physical RX & TX pins.
+  //
+  // SERIAL_PORT_HARDWARE_OPEN  Hardware serial ports which are open for use.  Their RX & TX
+  //                            pins are NOT connected to anything by default.
+  #ifndef SERIAL_PORT_MONITOR
+    #define SERIAL_PORT_MONITOR   Serial
+  #endif
+  #ifndef SERIAL_PORT_HARDWARE
+    #define SERIAL_PORT_HARDWARE  Serial
+  #endif
+#endif
+
+
