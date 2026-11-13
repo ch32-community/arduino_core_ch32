@@ -19,6 +19,7 @@ REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TINYUSB_OPTIONS = {
     'CH32V20x': 'tinyusb_usbd',
     'CH32V30x': 'tinyusb_usbfs',
+    'CH32V4x7': None,  # Always enabled; this family has no USB menu.
 }
 
 SUCCEEDED = "\033[32msucceeded\033[0m"
@@ -38,6 +39,7 @@ all_boards = [
     ['CH32V10x' , 'local:ch32v:CH32V10x_EVT' ],
     ['CH32V20x' , 'local:ch32v:CH32V20x_EVT' ],
     ['CH32V30x' , 'local:ch32v:CH32V30x_EVT' ],
+    ['CH32V4x7-ADAFRUIT_METRO_CH32V467', 'local:ch32v:CH32V4x7_BOARDS:pnum=ADAFRUIT_METRO_CH32V467', 'CH32V4x7'],
     ['CH32X035' , 'local:ch32v:CH32X035_EVT' ],
 ]
 
@@ -123,7 +125,7 @@ def is_tinyusb_example(sketch):
 def sketch_fqbn(variant, sketch):
     fqbn = variant[1]
     family = variant[2] if len(variant) > 2 else variant[0]
-    if is_tinyusb_example(sketch) and family in TINYUSB_OPTIONS:
+    if is_tinyusb_example(sketch) and TINYUSB_OPTIONS.get(family):
         parts = fqbn.split(':', 3)
         options = parts[3].split(',') if len(parts) == 4 else []
         if not any(option.startswith('usb=') for option in options):
