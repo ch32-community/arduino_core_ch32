@@ -29,7 +29,8 @@ bool CH32SDIO::begin(bool fourBit) {
   _highCapacity = false;
   memset(cid, 0, sizeof(cid));
 #if defined(CH32V4x7)
-  if (SystemCoreClock != 100000000 && SystemCoreClock != 200000000) {
+  // At 200 MHz even CLKDIV=255 exceeds the card's 400 kHz initialization limit.
+  if (SystemCoreClock != 100000000) {
     return fail(Unsupported);
   }
   if (!initialize(fourBit)) {
@@ -116,10 +117,9 @@ bool CH32SDIO::initialize(bool fourBit) {
   SDIO->DCTRL = 0;
   SDIO->MASK = 0;
   SDIO->ICR = staticFlags;
-  // Peripheral input is HCLK/2. Round up to stay at or below 400 kHz.
-  uint32_t inputHz = SystemCoreClock / 2;
-  uint32_t divisor = (inputHz + identificationHz - 1) / identificationHz;
-  SDIO->CLKCR = (divisor - 2) | SDIO_ClockEdge_Falling | clockEnable;
+  // RM 24.6.2: SDIO_CK = HCLK / (CLKDIV + 2). At 100 MHz, CLKDIV=255
+  // gives about 389 kHz, leaving margin below the 400 kHz initialization limit.
+  SDIO->CLKCR = identificationDivider | SDIO_ClockEdge_Falling | clockEnable;
   SDIO->POWER = SDIO_PowerState_ON;
   delay(5); // At least 74 idle clocks before CMD0.
   if (!command(CMD0, 0, 0)) {
@@ -205,11 +205,11 @@ bool CH32SDIO::initialize(bool fourBit) {
                   !command(ACMD6, 2) || !checkCardStatus())) {
     return false;
   }
-  divisor = (inputHz + transferHz - 1) / transferHz;
+  uint32_t divisor = (SystemCoreClock + transferHz - 1) / transferHz;
   SDIO->CLKCR = (divisor - 2) | clockEnable | SDIO_ClockEdge_Falling |
                 SDIO_HardwareFlowControl_Enable |
                 (fourBit ? SDIO_BusWide_4b : SDIO_BusWide_1b);
-  _clockHz = inputHz / divisor;
+  _clockHz = SystemCoreClock / divisor;
   return true;
 }
 
