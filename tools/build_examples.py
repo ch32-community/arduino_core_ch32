@@ -39,6 +39,7 @@ all_boards = [
     ['CH32V10x' , 'local:ch32v:CH32V10x_EVT' ],
     ['CH32V20x' , 'local:ch32v:CH32V20x_EVT' ],
     ['CH32V30x' , 'local:ch32v:CH32V30x_EVT' ],
+    ['CH32V4x7-ADAFRUIT_METRO_CH32V407', 'local:ch32v:CH32V4x7_BOARDS:pnum=ADAFRUIT_METRO_CH32V407', 'CH32V4x7'],
     ['CH32V4x7-ADAFRUIT_METRO_CH32V467', 'local:ch32v:CH32V4x7_BOARDS:pnum=ADAFRUIT_METRO_CH32V467', 'CH32V4x7'],
     ['CH32X035' , 'local:ch32v:CH32X035_EVT' ],
 ]
