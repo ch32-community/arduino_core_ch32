@@ -94,11 +94,20 @@ extern const uint32_t analogInputPin[];
 /* Convert a digital pin number Dxx to a PinName PX_n */
 #if NUM_ANALOG_INPUTS > 0
 /* Note: Analog pin is also a digital pin */
+/*
 #define digitalPinToPinName(p)      ((((uint32_t)(p) & PNUM_MASK) < NUM_DIGITAL_PINS) ? \
             (PinName)(digitalPin[(uint32_t)(p) & PNUM_MASK] | ((p) & ALTX_MASK)) : \
             (((uint32_t)(p) & PNUM_ANALOG_BASE) == PNUM_ANALOG_BASE) && \
             (((uint32_t)(p) & PNUM_MASK) < NUM_ANALOG_INTERNAL_FIRST) ? \
             (PinName)(digitalPin[analogInputPin[(p) & PNUM_ANALOG_INDEX]] | ((p) & ALTX_MASK)) : NC)
+*/
+// Fix issue #144: Guard unavailable analog mappings
+#define digitalPinToPinName(p)      ((((uint32_t)(p) & PNUM_MASK) < NUM_DIGITAL_PINS) ? \
+            (PinName)(digitalPin[(uint32_t)(p) & PNUM_MASK] | ((p) & ALTX_MASK)) : \
+            ((((uint32_t)(p) & PNUM_ANALOG_BASE) == PNUM_ANALOG_BASE) && \
+            (((uint32_t)(p) & PNUM_MASK) < NUM_ANALOG_INTERNAL_FIRST) && \
+            (analogInputPin[(uint32_t)(p) & PNUM_ANALOG_INDEX] < NUM_DIGITAL_PINS)) ? \
+            (PinName)(digitalPin[analogInputPin[(uint32_t)(p) & PNUM_ANALOG_INDEX]] | ((p) & ALTX_MASK)) : NC)
 #else
 #define digitalPinToPinName(p)      ((((uint32_t)(p) & PNUM_MASK) < NUM_DIGITAL_PINS) ? \
             (PinName)(digitalPin[(uint32_t)(p) & PNUM_MASK] | ((p) & ALTX_MASK)) : NC)
