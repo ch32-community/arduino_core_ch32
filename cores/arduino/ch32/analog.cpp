@@ -832,12 +832,13 @@ void pwm_stop(PinName pin)
   HardwareTimer *HT;
   uint32_t index = get_timer_index(Instance);
   if (HardwareTimer_Handle[index] == NULL) {
-    HardwareTimer_Handle[index]->__this = new HardwareTimer((TIM_TypeDef *)pinmap_peripheral(pin, PinMap_TIM));
+    // No PWM timer was created, so there is nothing to stop.
+    return;
   }
 
   HT = (HardwareTimer *)(HardwareTimer_Handle[index]->__this);
   if (HT != NULL) {
-    delete (HT);
+    HardwareTimer::deleteInstance(HT);
     HT = NULL;
   }
 }

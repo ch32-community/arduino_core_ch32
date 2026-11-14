@@ -36,6 +36,14 @@
 
 /* Private Variables */
 timerObj_t *HardwareTimer_Handle[TIMER_NUM] = {NULL};
+void (*HardwareTimer::_deleteCallback)(HardwareTimer *timer) = nullptr;
+
+void HardwareTimer::deleteInstance(HardwareTimer *timer)
+{
+  if (timer != nullptr && _deleteCallback != nullptr) {
+    _deleteCallback(timer);
+  }
+}
 
 /**
   * @brief  HardwareTimer constructor: make uninitialized timer
@@ -137,6 +145,10 @@ void HardwareTimer::setup(TIM_TypeDef *instance)
   if (_timerObj.handle.Instance) {
     Error_Handler();
   }
+
+  // Only initialized timers need deletion. Keeping this reference in setup
+  // lets the linker discard delete/free when no timer is ever constructed.
+  _deleteCallback = [](HardwareTimer *timer) { delete timer; };
 
   HardwareTimer_Handle[index] = &_timerObj;
 
@@ -1355,6 +1367,9 @@ TIM_HandleTypeDef *HardwareTimer::getHandle()
   * @param  htim: HAL timer handle
   * @retval None
   */
+// Inline std::function::operator() so the callback check below also removes
+// its empty-call error path, which otherwise pulls in newlib stdio RAM.
+__attribute__((flatten))
 void HardwareTimer::updateCallback(TIM_HandleTypeDef *htim)
 {
 
@@ -1380,6 +1395,9 @@ void HardwareTimer::updateCallback(TIM_HandleTypeDef *htim)
   * @param  htim: HAL timer handle
   * @retval None
   */
+// Inline std::function::operator() so the callback check below also removes
+// its empty-call error path, which otherwise pulls in newlib stdio RAM.
+__attribute__((flatten))
 void HardwareTimer::captureCompareCallback(TIM_HandleTypeDef *htim)
 {
   if (!htim) {
