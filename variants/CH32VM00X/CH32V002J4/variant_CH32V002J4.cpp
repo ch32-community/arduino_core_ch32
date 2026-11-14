@@ -23,7 +23,7 @@ CH32V002 comes in same packages as CH32V003, with addition of QFN12:
   CH32V002J4M6 - SOP8    - PC1/2/4, PD1, PA1/2, A0-2/5/6         - PD1=SWIO=PD4=PD5=TX, PA1=PD6=A1=A6=RX
 The largest package has 20 pins. For compatibility of Arduino pin numbers the TSSOP20 pinout is used.
 
-CH32V002J4M6 SOP8 PINOUT
+CH32V002J4M6/CH32V003J4M6 SOP8 PINOUT
                   +-----v-----+
   TX'/A6/RX/D8~ 1-+PD6     PD1+-8 ~D5/SWIO
          A1/D0~   +PA1   PD5/4+   ~D7/A5/TX ~D6/A7/RX'
@@ -43,38 +43,29 @@ V005: RV32EmC, 32K Flash, 6KB SRAM, 3328B bootloader, 256B user mem, 12-bit ADC,
 V006: RV32EmC, 62K Flash, 8KB SRAM, 3328B bootloader, 256B user mem, 12-bit ADC, 8-ch touch. System Clock Monitor, 2-5V, OPA, UART2, 16-bit simple timer, QFN32
 */
 
-// Digital PinName array. On smaller packages some GPIOs are bound to the same pin.
-// Leading pinout is TSSOP20 (18x gpio), same as V003 TSSOP20
-// For SOP8 (J4M6) we use the same pin numbering as V003J4M6
+// Digital PinName array. On SOP8 some GPIOs are bound to the same pin: PD1=PD5=PD4, PA1=PD6
+// For CH32V002J4M6 (SOP8) the pinout is the same as V003J4M6 (SOP8), using the same pin numbering.
+// CH32V002J4M6 pins:  1:PA1=PD6/TX', 3:PA2, 5:PC1/SDA, 6:PC2/SCL, 7: PC4, 8: PD1=PD4=PD5=SWIO/RX'
 const PinName digitalPin[] = {
   PA_1,   // D0/A1
   PA_2,   // D1/A0
-  PC_0,   // D2
-  PC_1,   // D3
-  PC_2,   // D4
-  PC_3,   // D5
-  PC_4,   // D6/A2
-  NC,     // D7        No PC_5 on J4M6
-  PC_6,   // D8
-  PC_7,   // D9 (recommended software CS/SS)
-  NC,     // D10       No PD_0 on J4M6
-  PD_1,   // D11/SWIO
-  NC,     // D12/A3    No PD_2 on J4M6
-  NC,     // D13/A4    No PD_3 on J4M6
-  PD_4,   // D14/A7/SCK
-  PD_5,   // D15/A5/TX/MISO
-  PD_6,   // D16/A6/RX/MOSI
-  PD_7    // D17/RST
+  PC_1,   // D2/SDA
+  PC_2,   // D3/SCL
+  PC_4,   // D4/A2
+  PD_1,   // D5/SWIO
+  PD_4,   // D6/A7
+  PD_5,   // D7/A5/RX'
+  PD_6    // D8/A6/TX'
 };
 
 // Analog (Ax) pin number array
 const uint32_t analogInputPin[] = {
   1,    // A0/PA2
   0,    // A1/PA1
-  6,    // A2/PC4
-  12,   // A3/PD2    No PD2 on J4M6
-  13,   // A4/PD3    No PD3 on J4M6
-  15,   // A5/PD5
-  16,   // A6/PD6
-  14    // A7/PD4 
+  4,    // A2/PC4
+  NC,   // A3/PD2 no pin
+  NC,   // A4/PD3 no pin
+  7,    // A5/PD5
+  8,    // A6/PD6
+  6     // A7/PD4 
 };
