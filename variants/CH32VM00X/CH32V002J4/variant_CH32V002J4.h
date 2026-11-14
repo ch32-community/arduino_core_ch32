@@ -23,6 +23,7 @@
 
 
 /* CH32V002J4 Pins, same as V003J4 */
+// CH32V002J4M6 pins:  1:PA1=PD6, 3:PA2, 5:PC1/SDA, 6:PC2/SCL, 7:PC4, 8:PD1=PD4=PD5=SWIO
 #define PA1                     PIN_A1  // D0          PA1=PD6
 #define PA2                     PIN_A0  // D1
 #define PC1                     2       // D2/SDA
@@ -75,7 +76,7 @@
 // UART Definitions
 // CH32V002 only has USART1.
 // VM00X USART1 pinmaps TX/RX: 0=PD5/PD6 _1=PD6/PD5 [_2=PD0/PD1 _3=PC0/PC1_4=PD1/PB3 _5=PB3/PD1 _6=PC5/PC6 _7=PB5/PB6] _8=PA0/PA1, _9=PA0/PC4
-// CH32V002J4M6 pins:  1:PA1=PD6, 3:PA2, 5:PC1/SDA, 6:PC2/SCL, 7: PC4, 8: PD1=PD4=PD5=SWIO
+// CH32V002J4M6 pins:  1:PA1=PD6, 3:PA2, 5:PC1/SDA, 6:PC2/SCL, 7:PC4, 8:PD1=PD4=PD5=SWIO
 // CH32V002J4M6 supported UART1 pinmaps: 0 _1 _8 _9
 //    RX:   PD6=PA1
 //    TX:   PD5=PD4=PD1=SWIO
@@ -114,13 +115,15 @@
   #define PIN_SERIAL1_TX         PD5
 #endif
 
-// Useful mapped pins for each hardware serial port.
+// Mapped serial pins
+// The VM00X datasheet shows 9 mappings for USART1 and 6 for USART2. Only Serial1_1 is supported on V002J4.
 #ifndef PIN_SERIAL1_1_RX
   #define PIN_SERIAL1_1_RX     PD5  // UART1_1 pinmap RX pin
 #endif
 #ifndef PIN_SERIAL1_1_TX
   #define PIN_SERIAL1_1_TX     PD6  // UART1_1 pinmap TX pin 
 #endif
+
 
 
 // SPI definitions (CH32V002J4 has no pins for SPI so it's not available)
