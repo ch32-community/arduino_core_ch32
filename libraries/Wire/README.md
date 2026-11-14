@@ -2,7 +2,7 @@
 
 ## CH32V407 / CH32V467 I3C controller
 
-Boards can select `WIRE_I3C` and `OPT_I2C_SLAVE=0` to use the I3C peripheral
+Boards can select `WIRE_I3C` to use the I3C peripheral
 for hardware I2C transfers on PB11 (SDA) and PB10 (SCL). External pull-ups are
 required. The normal I2C peripheral driver remains the default for other boards.
 
@@ -42,3 +42,35 @@ non-owner does not disturb the active bus. I3C `TwoWire` instances cannot be cop
 References: [WCH CH32V407 reference manual](https://www.wch.cn/downloads/CH32V407RM_PDF.html),
 sections 19.4.1 and 19.4.16–18, and
 [WCH AN16001](https://github.com/openwch/ch32_application_notes/blob/main/zh/AN16001/AN16001.md).
+
+## CH32V407 / CH32V467 I2C peripheral (target)
+
+With `WIRE_I3C` and `OPT_I2C_SLAVE=1`, a separate `TwoWire` instance can use
+the native I2C1 peripheral as a target on PB9 (SDA) and PB8 (SCL). The I3C
+controller remains available on its original pins. This target backend works
+at 100 and 200 MHz CPU clocks; the I3C controller's clock restrictions above
+still apply.
+
+A board variant can define `PIN_WIRE1_SDA` and `PIN_WIRE1_SCL` to its digital
+pin numbers for PB9 and PB8 to expose `Wire1` automatically. Otherwise, create
+`TwoWire PeripheralWire(PB9, PB8)` using the variant's digital pin constants.
+Connect external pull-ups to 3.3 V and a common ground with the controller.
+The pins cannot simultaneously be used as GPIO or PWM.
+
+Register `onReceive(callback)` and `onRequest(callback)` before calling
+`begin(address)`. The target supports seven-bit addresses `0x08` through
+`0x77`, repeated START, and address-only probes. Clock stretching must remain
+enabled (the default). The external controller sets the bus rate, so
+`setClock()` does not change it. Calling `begin()` without an address does not
+enable controller mode on PB9/PB8. The default `Wire` instance remains a
+controller on PB11/PB10.
+
+Callbacks run in interrupt context: keep them short and avoid blocking, Serial
+output, allocation, or bus reconfiguration. Receive messages retain the first
+`I2C_TXRX_BUFFER_SIZE` bytes (32 by default), discarding any excess. An
+`onRequest` callback runs once per read and can append up to that same limit
+using `write()`; writes exceeding the remaining capacity return zero.
+Reads beyond the queued reply return `0xff`. Calling `end()` releases the
+target's address and pins without changing the I3C controller.
+
+The `i2cMinimalSlave` example selects `Wire1` when the variant defines its pins.
