@@ -21,7 +21,9 @@
 #define                         TIM_MODULE_ENABLED
 #endif
 
-/* CH32V002D4 Pins - subset of CH32V002F4 TSSOP20 (18x GPIO, 8+3 ADC, 1xSER, no OPA */
+/* CH32V002D4 Pins - subset of CH32V002F4 TSSOP20 (18x GPIO, 8+3 ADC, 1xSER, no OPA) */
+// CH32V002J4M6 pins:  1:PA1, 2:PA2, 3:PD0, 5:PC0, 6:PC3, 7:PC4, 8:PC6, 9:PC7, 10:PD1=SWIO, 11:PD4. 12:PD7/RST
+//  CH32V002D4U6 - QFN12 pins: PC0/3/4/6/7, PD0/1/4/7, PA1/2, A0-2/7 - PD1=SWIO, PD7=RST
 #define PA1                     PIN_A1
 #define PA2                     PIN_A0
 #define PC0                     2
@@ -34,29 +36,8 @@
 #define PD4                     PIN_A3
 #define PD7                     10
 
-/* CH32V002F4:
-#define PA1                     PIN_A1
-#define PA2                     PIN_A0
-#define PC0                     2
-#define PC1                     3
-#define PC2                     4
-#define PC3                     5 
-#define PC4                     PIN_A2
-#define PC5                     7
-#define PC6                     8
-#define PC7                     9
-#define PD0                     10
-#define PD1                     11
-#define PD2                     PIN_A3
-#define PD3                     PIN_A4 
-#define PD4                     PIN_A7
-#define PD5                     PIN_A5
-#define PD6                     PIN_A6 
-#define PD7                     17
-*/
-
-#define NUM_DIGITAL_PINS        11 // 18
-#define NUM_ANALOG_INPUTS       4  // 8
+#define NUM_DIGITAL_PINS        11
+#define NUM_ANALOG_INPUTS       4
 
 // #define ADC_CTLR_ADCAL          
 #define ADC_RESOLUTION          12
@@ -102,26 +83,26 @@
   #define PIN_SERIAL1_TX     PD0  /* UART1 default TX pin */
 #endif
 
+// Mapped serial pins
+// The VM00X datasheet shows 9 mappings for USART1 and 6 for USART2. To keep is short only a few are offered by the menu.
+#ifndef PIN_SERIAL1_1_RX
+  #define PIN_SERIAL1_1_RX     PD5  // UART1_1 pinmap RX pin
+#endif
+#ifndef PIN_SERIAL1_1_TX
+  #define PIN_SERIAL1_1_TX     PD6  // UART1_1 pinmap TX pin 
+#endif
+#ifndef PIN_SERIAL1_3_RX
+  #define PIN_SERIAL1_3_RX     PC1  // UART1_3 pinmap RX pin
+#endif
+#ifndef PIN_SERIAL1_3_TX
+  #define PIN_SERIAL1_3_TX     PC0  // UART1_3 pinmap TX pin 
+#endif
 
 
-// SPI definitions
+// SPI definitions (CH32V002D4 has no pins for SPI so it's not available)
 #if defined(SPI_MODULE_ENABLED)
-#error CH32V002D4 QFN12 has no pins to support SPI
-/*
-#ifndef PIN_SPI_SS
-  #define PIN_SPI_SS            PC4
+  #error "CH32V002D4 QFN12 has no SPI. SPI should be disabled"
 #endif
-#ifndef PIN_SPI_MOSI
-  #define PIN_SPI_MOSI          PC6
-#endif
-#ifndef PIN_SPI_MISO
-  #define PIN_SPI_MISO          PC7
-#endif
-#ifndef PIN_SPI_SCK
-  #define PIN_SPI_SCK           PC5
-#endif
-*/
-#endif // SPI_MODULE_ENABLED
 
 // I2C definitions
 #if defined(I2C_MODULE_ENABLED)
@@ -168,5 +149,3 @@
     #define SERIAL_PORT_HARDWARE  Serial
   #endif
 #endif
-
-
