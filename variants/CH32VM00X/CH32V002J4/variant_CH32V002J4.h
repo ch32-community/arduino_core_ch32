@@ -101,8 +101,8 @@
   #define BOARD_DEFAULT_SERIALMAP 1
 #endif
 
-#if defined(SERIAL_UART_PINMAP) && (SERIAL_UART_PINMAP!=1)
-  #error "CH32V002J4 only supporta Serial1_1 pin mapping"
+#if defined(SERIAL_UART_INSTANCE) && SERIAL_UART_INSTANCE==1 && defined(SERIAL_UART_PINMAP) && (SERIAL_UART_PINMAP>1)
+  #error "CH32V002J4 only supports Serial1_1 pin mapping"
 #endif
 
 
@@ -171,5 +171,3 @@
     #define SERIAL_PORT_HARDWARE  Serial
   #endif
 #endif
-
-
