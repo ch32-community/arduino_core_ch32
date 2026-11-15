@@ -88,6 +88,11 @@
   #define BOARD_DEFAULT_SERIAL 1
 #endif
 
+#if SERIAL_UART_INSTANCE==1 && defined(SERIAL_UART_PINMAP) && SERIAL_UART_PINMAP==3
+  #error "CH32M007E8 Serial1_3 is not available"
+#endif
+
+
 // Default pins for each hardware serial port.
 #ifndef PIN_SERIAL1_RX
   #define PIN_SERIAL1_RX     PD6  /* UART1 default RX pin */
