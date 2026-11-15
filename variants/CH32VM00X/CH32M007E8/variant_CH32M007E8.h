@@ -1,4 +1,4 @@
-/*
+/**
  *******************************************************************************
  * Copyright (c) 2021 Nanjing Qinheng Microelectronics Co., Ltd.
  * All rights reserved.
@@ -10,173 +10,142 @@
  *
  *******************************************************************************
  */
-#pragma once
 
-/* ENABLE Peripherals */
-#ifndef IDE_MENU_PERIPHERALS   // defined when peripherals are enabled/disabled via the IDE menu
-#define                         ADC_MODULE_ENABLED
-#define                         UART_MODULE_ENABLED
-#define                         SPI_MODULE_ENABLED
-#define                         I2C_MODULE_ENABLED
-#define                         TIM_MODULE_ENABLED
+#include "Arduino.h"
+#include "PeripheralPins.h"
+
+/* =====
+ * Notes:
+ * - The pins mentioned Px_y_ALTz are alternative possibilities which use other
+ *   HW peripheral instances. You can use them the same way as any other "normal"
+ *   pin (i.e. analogWrite(PA7_ALT1, 128);).
+ *
+ * - Commented lines are alternative possibilities which are not used per default.
+ *   If you change them, you will have to know what you do
+ * =====
+ */
+
+//*** ADC ***
+#ifdef ADC_MODULE_ENABLED
+WEAK const PinMap PinMap_ADC[] = {
+  {PA_2,      ADC1, CH_PIN_DATA_EXT(CH_MODE_INPUT, CH_CNF_INPUT_ANALOG, 0, AFIO_NONE, 0)}, // ADC1_IN0
+  {PA_1,      ADC1, CH_PIN_DATA_EXT(CH_MODE_INPUT, CH_CNF_INPUT_ANALOG, 0, AFIO_NONE, 1)}, // ADC1_IN1
+  {PC_4,      ADC1, CH_PIN_DATA_EXT(CH_MODE_INPUT, CH_CNF_INPUT_ANALOG, 0, AFIO_NONE, 2)}, // ADC1_IN2
+  {PD_2,      ADC1, CH_PIN_DATA_EXT(CH_MODE_INPUT, CH_CNF_INPUT_ANALOG, 0, AFIO_NONE, 3)}, // ADC1_IN3
+  {PD_3,      ADC1, CH_PIN_DATA_EXT(CH_MODE_INPUT, CH_CNF_INPUT_ANALOG, 0, AFIO_NONE, 4)}, // ADC1_IN4
+  {PD_5,      ADC1, CH_PIN_DATA_EXT(CH_MODE_INPUT, CH_CNF_INPUT_ANALOG, 0, AFIO_NONE, 5)}, // ADC1_IN5
+  {PD_6,      ADC1, CH_PIN_DATA_EXT(CH_MODE_INPUT, CH_CNF_INPUT_ANALOG, 0, AFIO_NONE, 6)}, // ADC1_IN6
+  {PD_4,      ADC1, CH_PIN_DATA_EXT(CH_MODE_INPUT, CH_CNF_INPUT_ANALOG, 0, AFIO_NONE, 7)}, // ADC1_IN7
+  {NC,        NP,   0}
+};
 #endif
 
-#if defined(SPI_MODULE_ENABLED)
-  #define SPI_INTERFACES_COUNT 1  // MMOLE: used by libraries such as Adafruit BusIO. Should be defined in some variants.h file somewhere
+//*** No DAC ***
+
+
+
+//*** I2C ***
+#ifdef I2C_MODULE_ENABLED
+WEAK const PinMap PinMap_I2C_SDA[] = {
+  {PC_1, I2C1, CH_PIN_DATA(CH_MODE_OUTPUT_50MHz, CH_CNF_OUTPUT_AFOD, NOPULL, AFIO_NONE)},
+  {NC,   NP,   0}
+};
 #endif
 
-/* CH32M007E Pins */
-#define PA0                     7
-#define PA1                     PIN_A1
-#define PA2                     PIN_A0
-#define PA3                     6
-#define PA4                     4
-#define PA5                     5
-#define PB0                     8
-#define PB1                     10
-#define PB3                     12
-//#define PC0                     19
-#define PC1                     13
-#define PC2                     14
-#define PC4                     PIN_A2
-#define PC5                     16
-#define PD0                     11
-#define PD1                     18
-#define PD2                     PIN_A3
-#define PD3                     PIN_A4 
-#define PD4                     PIN_A7
-#define PD5                     PIN_A5
-#define PD6                     PIN_A6 
-#define PD7                     3
-
-// Make sure A0 is unknown enum, to generate errors when used.
-// (see analogInputPin[] in variant_...cpp and pins_arduino_analog.h)
-#define VARIANT_NO_ANALOG_A0
-
-// Alternate pins number
-//#define PD5_ALT1                (PD5  | ALT1)
-//#define PD6_ALT1                (PD6  | ALT1)
-
-
-#define NUM_DIGITAL_PINS        21
-#define NUM_ANALOG_INPUTS       8
-
-// #define ADC_CTLR_ADCAL          
-#define ADC_RESOLUTION          12
-
-
-
-// On-board LED pin number
-#ifndef LED_BUILTIN
-  #define LED_BUILTIN           PNUM_NOT_DEFINED
+#ifdef I2C_MODULE_ENABLED
+WEAK const PinMap PinMap_I2C_SCL[] = {
+  {PC_2, I2C1, CH_PIN_DATA(CH_MODE_OUTPUT_50MHz, CH_CNF_OUTPUT_AFOD, NOPULL, AFIO_NONE)},
+  {NC,   NP,   0}
+};
 #endif
 
+//*** TIM ***
+#ifdef TIM_MODULE_ENABLED
+WEAK const PinMap PinMap_TIM[] = {
+  {PD_4,       TIM2, CH_PIN_DATA_EXT(CH_MODE_OUTPUT_50MHz, CH_CNF_OUTPUT_AFPP, NOPULL, AFIO_Remap_TIM2_DISABLE, 1)}, // TIM2_CH1
+  {PD_3,       TIM2, CH_PIN_DATA_EXT(CH_MODE_OUTPUT_50MHz, CH_CNF_OUTPUT_AFPP, NOPULL, AFIO_Remap_TIM2_DISABLE, 2)}, // TIM2_CH2
+  {PC_0,       TIM2, CH_PIN_DATA_EXT(CH_MODE_OUTPUT_50MHz, CH_CNF_OUTPUT_AFPP, NOPULL, AFIO_Remap_TIM2_DISABLE, 3)}, // TIM2_CH3
+  {PD_7,       TIM2, CH_PIN_DATA_EXT(CH_MODE_OUTPUT_50MHz, CH_CNF_OUTPUT_AFPP, NOPULL, AFIO_Remap_TIM2_DISABLE, 4)}, // TIM2_CH4
 
-// On-board user button
-#ifndef USER_BTN
-  #define USER_BTN              PNUM_NOT_DEFINED
-#endif
-
-
-// UART Definitions
-// TODO: M007E8R6 QSOP24 UART2 has no PA7 pin. It has RX/TX as alternative functions UART2_1 U2RX_/U2TX_ on pins PA4/PA5)
-// CH32V007:
-//    RX: PD6=RX1, PB3=RX2, PA5=RX2_1
-//    TX: PD5=TX1, PA7=TX2, PA4=TX2_1
-
-#ifndef BOARD_DEFAULT_SERIAL
-  #define BOARD_DEFAULT_SERIAL 1
-#endif
-
-#if SERIAL_UART_INSTANCE==1 && defined(SERIAL_UART_PINMAP) && SERIAL_UART_PINMAP==3
-  #error "CH32M007E8 Serial1_3 is not available"
+  {PD_2,       TIM1, CH_PIN_DATA_EXT(CH_MODE_OUTPUT_50MHz, CH_CNF_OUTPUT_AFPP, NOPULL, AFIO_Remap_TIM1_DISABLE, 1)}, // TIM1_CH1
+  {PA_1,       TIM1, CH_PIN_DATA_EXT(CH_MODE_OUTPUT_50MHz, CH_CNF_OUTPUT_AFPP, NOPULL, AFIO_Remap_TIM1_DISABLE, 2)}, // TIM1_CH2
+  {PC_3,       TIM1, CH_PIN_DATA_EXT(CH_MODE_OUTPUT_50MHz, CH_CNF_OUTPUT_AFPP, NOPULL, AFIO_Remap_TIM1_DISABLE, 3)}, // TIM1_CH3
+  {PC_4,       TIM1, CH_PIN_DATA_EXT(CH_MODE_OUTPUT_50MHz, CH_CNF_OUTPUT_AFPP, NOPULL, AFIO_Remap_TIM1_DISABLE, 4)}, // TIM1_CH4
+  {PD_0,       TIM1, CH_PIN_DATA_EXT(CH_MODE_OUTPUT_50MHz, CH_CNF_OUTPUT_AFPP, NOPULL, AFIO_Remap_TIM1_DISABLE, 1)}, // TIM1_CH1N
+  {PA_2,       TIM1, CH_PIN_DATA_EXT(CH_MODE_OUTPUT_50MHz, CH_CNF_OUTPUT_AFPP, NOPULL, AFIO_Remap_TIM1_DISABLE, 2)}, // TIM1_CH2N
+  {PD_1,       TIM1, CH_PIN_DATA_EXT(CH_MODE_OUTPUT_50MHz, CH_CNF_OUTPUT_AFPP, NOPULL, AFIO_Remap_TIM1_DISABLE, 3)}, // TIM1_CH3N
+  {NC,         NP,   0}
+};
 #endif
 
-
-// Default pins for each hardware serial port.
-#ifndef PIN_SERIAL1_RX
-  #define PIN_SERIAL1_RX     PD6  /* UART1 default RX pin */
-#endif
-#ifndef PIN_SERIAL1_TX
-  #define PIN_SERIAL1_TX     PD5  /* UART1 default TX pin */
-#endif
-
-#ifndef PIN_SERIAL2_RX
-  #define PIN_SERIAL2_RX     PA5  /* UART2 default RX pin */
-#endif
-#ifndef PIN_SERIAL2_TX
-  #define PIN_SERIAL2_TX     PA4  /* UART2 default TX pin */
+//*** UART ***
+#ifdef UART_MODULE_ENABLED
+WEAK const PinMap PinMap_UART_TX[] = {
+  {PD_5, USART1, CH_PIN_DATA(CH_MODE_OUTPUT_50MHz, CH_CNF_OUTPUT_AFPP, 0, AFIO_Remap_USART1_DISABLE)}, 
+  {PD_6, USART1, CH_PIN_DATA(CH_MODE_OUTPUT_50MHz, CH_CNF_OUTPUT_AFPP, 0, AFIO_PartialRemap1_USART1_ENABLE)}, 
+  {PA_4, USART2, CH_PIN_DATA(CH_MODE_OUTPUT_50MHz, CH_CNF_OUTPUT_AFPP, 0, AFIO_PartialRemap1_USART2_ENABLE)},
+  {NC,   NP,     0}
+};
 #endif
 
-// Mapped serial pins
-// The VM00X datasheet shows 9 mappings for USART1 and 6 for USART2. To keep is short only a few are offered by the menu.
-#ifndef PIN_SERIAL1_1_RX
-  #define PIN_SERIAL1_1_RX     PD5  // UART1_1 pinmap RX pin
-#endif
-#ifndef PIN_SERIAL1_1_TX
-  #define PIN_SERIAL1_1_TX     PD6  // UART1_1 pinmap TX pin 
-#endif
-#ifndef PIN_SERIAL1_3_RX
-  #define PIN_SERIAL1_3_RX     PC1  // UART1_3 pinmap RX pin
-#endif
-#ifndef PIN_SERIAL1_3_TX
-  #define PIN_SERIAL1_3_TX     PC0  // UART1_3 pinmap TX pin 
+#ifdef UART_MODULE_ENABLED
+WEAK const PinMap PinMap_UART_RX[] = {
+  {PD_6, USART1, CH_PIN_DATA(CH_MODE_INPUT, CH_CNF_INPUT_PUPD, PULLUP, AFIO_Remap_USART1_DISABLE)},
+  {PD_5, USART1, CH_PIN_DATA(CH_MODE_INPUT, CH_CNF_INPUT_PUPD, PULLUP, AFIO_PartialRemap1_USART1_ENABLE)},
+  {PA_5,  USART2, CH_PIN_DATA(CH_MODE_INPUT, CH_CNF_INPUT_PUPD, PULLUP, AFIO_PartialRemap1_USART2_ENABLE)},
+  {NC,    NP,     0}
+};
 #endif
 
-
-// SPI definitions
-#ifndef PIN_SPI_SS
-  #define PIN_SPI_SS            PC4
-#endif
-#ifndef PIN_SPI_MOSI
-  #define PIN_SPI_MOSI          PD3
-#endif
-#ifndef PIN_SPI_MISO
-  #define PIN_SPI_MISO          PB3
-#endif
-#ifndef PIN_SPI_SCK
-  #define PIN_SPI_SCK           PD2
+#ifdef UART_MODULE_ENABLED
+WEAK const PinMap PinMap_UART_RTS[] = {
+  {PC_2, USART1, CH_PIN_DATA(CH_MODE_OUTPUT_50MHz, CH_CNF_OUTPUT_AFPP, 0, AFIO_Remap_USART1_DISABLE)}, 
+  {NC, USART1, CH_PIN_DATA(CH_MODE_OUTPUT_50MHz, CH_CNF_OUTPUT_AFPP, 0, AFIO_PartialRemap1_USART1_ENABLE)}, // no PC7 on M007E8R6 QSOP24
+  {NC, USART2, CH_PIN_DATA(CH_MODE_OUTPUT_50MHz, CH_CNF_OUTPUT_AFPP, 0, AFIO_NONE)}, // TODO: find matching RTS/CTS, PB3/PA7 of UART2_1 have no pin
+  //{PB_3, USART2, CH_PIN_DATA(CH_MODE_OUTPUT_50MHz, CH_CNF_OUTPUT_AFPP, 0, AFIO_PartialRemap1_USART2_ENABLE)},
+  {NC,    NP,     0}
+};
 #endif
 
-// I2C definitions
-#ifndef PIN_WIRE_SDA
-  #define PIN_WIRE_SDA          PC1
-#endif
-#ifndef PIN_WIRE_SCL
-  #define PIN_WIRE_SCL          PC2
-#endif
-
-#ifndef TIMER_TONE
-  #define TIMER_TONE            TIM2
-#endif
-#ifndef TIMER_SERVO
-  #define TIMER_SERVO           TIM1
+#ifdef UART_MODULE_ENABLED
+WEAK const PinMap PinMap_UART_CTS[] = {
+  {PD_3, USART1, CH_PIN_DATA(CH_MODE_INPUT, CH_CNF_INPUT_PUPD, PULLUP, AFIO_Remap_USART1_DISABLE)},
+  {NC, USART1, CH_PIN_DATA(CH_MODE_INPUT, CH_CNF_INPUT_PUPD, PULLUP, AFIO_PartialRemap1_USART1_ENABLE)}, // no PC6 on M007E8R6 QSOP24
+  {NC, USART2, CH_PIN_DATA(CH_MODE_INPUT, CH_CNF_INPUT_PUPD, PULLUP, AFIO_NONE)}, // TODO: find matching RTS/CTS, PB3/PA7 of UART2_1 have no pin
+  //{PA_7,  USART2, CH_PIN_DATA(CH_MODE_INPUT, CH_CNF_INPUT_PUPD, PULLUP, AFIO_PartialRemap1_USART2_ENABLE)},  // PA7 has no pin!
+  {NC,    NP,     0}
+};
 #endif
 
-/*----------------------------------------------------------------------------
- *        Arduino objects - C++ only
- *----------------------------------------------------------------------------*/
+// TODO: find USART2 pins using pin mapping (also TODO for CH32V006E8)
+//    USART2_1 wont work for RTS/CST (no CTS pin PA7 on CH32V007E8)
 
-#ifdef __cplusplus
-  // These serial port names are intended to allow libraries and architecture-neutral
-  // sketches to automatically default to the correct port name for a particular type
-  // of use.  For example, a GPS module would normally connect to SERIAL_PORT_HARDWARE_OPEN,
-  // the first hardware serial port whose RX/TX pins are not dedicated to another use.
-  //
-  // SERIAL_PORT_MONITOR        Port which normally prints to the Arduino Serial Monitor
-  //
-  // SERIAL_PORT_USBVIRTUAL     Port which is USB virtual serial
-  //
-  // SERIAL_PORT_LINUXBRIDGE    Port which connects to a Linux system via Bridge library
-  //
-  // SERIAL_PORT_HARDWARE       Hardware serial port, physical RX & TX pins.
-  //
-  // SERIAL_PORT_HARDWARE_OPEN  Hardware serial ports which are open for use.  Their RX & TX
-  //                            pins are NOT connected to anything by default.
-  #ifndef SERIAL_PORT_MONITOR
-    #define SERIAL_PORT_MONITOR   Serial
-  #endif
-  #ifndef SERIAL_PORT_HARDWARE
-    #define SERIAL_PORT_HARDWARE  Serial
-  #endif
+//*** SPI ***
+// Like CH32V006E8R6, M007E8 is missing pins for default SPI => use SPI_2 on MISO=PB3(24)/MOSI=PD3(10)/SCK=PD2(9)/SS=PC4(8)
+#ifdef SPI_MODULE_ENABLED
+WEAK const PinMap PinMap_SPI_MOSI[] = {
+  {PD_3, SPI1, CH_PIN_DATA(CH_MODE_OUTPUT_50MHz, CH_CNF_OUTPUT_AFPP, 0, AFIO_PartialRemap2_SPI1_ENABLE)},
+  {NC,   NP,   0}
+};
+#endif
+
+#ifdef SPI_MODULE_ENABLED
+WEAK const PinMap PinMap_SPI_MISO[] = {
+  {PB_3, SPI1, CH_PIN_DATA(CH_MODE_INPUT, CH_CNF_INPUT_FLOAT, 0, AFIO_PartialRemap2_SPI1_ENABLE)},
+  {NC,   NP,   0}
+};
+#endif
+
+#ifdef SPI_MODULE_ENABLED
+WEAK const PinMap PinMap_SPI_SCLK[] = {
+  {PD_2, SPI1, CH_PIN_DATA(CH_MODE_OUTPUT_50MHz, CH_CNF_OUTPUT_AFPP, 0, AFIO_PartialRemap2_SPI1_ENABLE)},
+  {NC,   NP,   0}
+};
+#endif
+
+#ifdef SPI_MODULE_ENABLED
+WEAK const PinMap PinMap_SPI_SSEL[] = {
+  {PC_4,  SPI1, CH_PIN_DATA(CH_MODE_OUTPUT_50MHz, CH_CNF_OUTPUT_AFPP, 0, AFIO_PartialRemap2_SPI1_ENABLE)},
+  {NC,    NP,   0}
+};
 #endif
