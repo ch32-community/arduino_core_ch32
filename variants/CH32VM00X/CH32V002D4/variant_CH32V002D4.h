@@ -60,17 +60,19 @@
 
 // UART Definitions
 // CH32V002 only has USART1. CH32V002D4U6 pins:
-//    RX: PD1=RX1=SCL=SWIO (!)
-//    TX: PD0=TX1=SDA
+//    RX: PD1=RX1`=SCL=SWIO (!)
+//    TX: PD0=TX1`=SDA
 // CH32V002D4U6 QFN12 has RX1/TX1, but beware: RX is shared with SWIO! Use "power-off clear" in Link Utility to program after bricking
 // TODO: it would be nice to give some warning, but adding a #warning here causea a whole ugly load of them to show when compiling.
+// V002D4 as no pins for standard Serial1 (PD5/PD6), Serial1_1 (PD6/PD5) or Serial1_3 (PC0/PC1)
+// It only allows Board default and always uses PD0/PD1 using Remap2
 #if defined(SERIAL_UART_ENABLE_ALL)
   #error "CH32V002D4 only supports Serial1; Dual Serial is unavailable"
-#endif
-#if (defined(SERIAL_UART_INSTANCE) && SERIAL_UART_INSTANCE>1)
+#elif (defined(SERIAL_UART_INSTANCE) && SERIAL_UART_INSTANCE>1)
   #error "CH32V002D4 only supports Serial1; Serial2 cannot be selected"
+#elif (defined(SERIAL_UART_INSTANCE) && SERIAL_UART_INSTANCE==1) || defined(SERIAL_UART_PINMAP)
+  #error "CH32V002D4 can only select Board default for Serial (TX/RX=PD0/PD1)"
 #endif
-
 #ifndef BOARD_DEFAULT_SERIAL
   #define BOARD_DEFAULT_SERIAL 1
 #endif
@@ -83,21 +85,6 @@
   #define PIN_SERIAL1_TX     PD0  /* UART1 default TX pin */
 #endif
 
-// Mapped serial pins
-// The VM00X datasheet shows 9 mappings for USART1 and 6 for USART2. To keep is short only a few are offered by the menu.
-#ifndef PIN_SERIAL1_1_RX
-  #define PIN_SERIAL1_1_RX     PD5  // UART1_1 pinmap RX pin
-#endif
-#ifndef PIN_SERIAL1_1_TX
-  #define PIN_SERIAL1_1_TX     PD6  // UART1_1 pinmap TX pin 
-#endif
-#ifndef PIN_SERIAL1_3_RX
-  #define PIN_SERIAL1_3_RX     PC1  // UART1_3 pinmap RX pin
-#endif
-#ifndef PIN_SERIAL1_3_TX
-  #define PIN_SERIAL1_3_TX     PC0  // UART1_3 pinmap TX pin 
-#endif
-
 
 // SPI definitions (CH32V002D4 has no pins for SPI so it's not available)
 #if defined(SPI_MODULE_ENABLED)
@@ -106,6 +93,9 @@
 
 // I2C definitions
 #if defined(I2C_MODULE_ENABLED)
+#if defined(SERIAL_UART_INSTANCE) && defined(UART_MODULE_ENABLED)
+  #error "CH32V002D4 QFN12 I2C cannot be used together with UART"
+#endif
 #ifndef PIN_WIRE_SDA
   #define PIN_WIRE_SDA          PD0
 #endif
