@@ -49,6 +49,9 @@
 #define PD6                     PIN_A6 
 #define PD7                     3
 
+// Make sure A0 is unknown enum, to generate errors when used.
+// (see analogInputPin[] in variant_...cpp and pins_arduino_analog.h)
+#define VARIANT_NO_ANALOG_A0
 
 // Alternate pins number
 //#define PD5_ALT1                (PD5  | ALT1)
