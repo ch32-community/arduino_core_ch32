@@ -34,6 +34,11 @@
 #define PD5                     PIN_A5	// D7          PD1=PD5=PD4
 #define PD6                     PIN_A6	// D8/TX'      PA1=PD6
 
+// Make sure A3/A4 are unknown enums, to generate errors when used.
+// (see analogInputPin[] in variant_...cpp and pins_arduino_analog.h)
+#define VARIANT_NO_ANALOG_A3
+#define VARIANT_NO_ANALOG_A4
+
 
 // Alternate pin numbers
 #define PC4_ALT1              (PC4  | ALT1)
