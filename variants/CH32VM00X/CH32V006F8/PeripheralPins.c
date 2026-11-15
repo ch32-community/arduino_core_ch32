@@ -101,8 +101,8 @@ WEAK const PinMap PinMap_UART_RX[] = {
 
 #ifdef UART_MODULE_ENABLED
 WEAK const PinMap PinMap_UART_RTS[] = {
-  {PD_3, USART1, CH_PIN_DATA(CH_MODE_INPUT, CH_CNF_INPUT_PUPD, PULLUP, AFIO_NONE)},    // PD_3 is CTS only with the default TX/RX mapping.
-  {PC_6, USART1, CH_PIN_DATA(CH_MODE_INPUT, CH_CNF_INPUT_PUPD, PULLUP, AFIO_NONE)},  // PC6 is CTS with remap 1 or remap 3, AFIO_NONE avoids changing TX/RX remap
+  {PC_2, USART1, CH_PIN_DATA(CH_MODE_OUTPUT_50MHz, CH_CNF_OUTPUT_AFPP, 0, AFIO_NONE)}, // PC2 is RTS only with the default TX/RX mapping.
+  {PC_7, USART1, CH_PIN_DATA(CH_MODE_OUTPUT_50MHz, CH_CNF_OUTPUT_AFPP, 0, AFIO_NONE)}, // PC7 is RTS with remap 1 or remap 3, AFIO_NONE avoids changing TX/RX remap
   {PA_1, USART2, CH_PIN_DATA(CH_MODE_OUTPUT_50MHz, CH_CNF_OUTPUT_AFPP, 0, AFIO_PartialRemap3_USART2_ENABLE)},
   {NC,    NP,     0}
 };
@@ -110,9 +110,9 @@ WEAK const PinMap PinMap_UART_RTS[] = {
 
 #ifdef UART_MODULE_ENABLED
 WEAK const PinMap PinMap_UART_CTS[] = {
-  {PD_3, USART1, CH_PIN_DATA(CH_MODE_INPUT, CH_CNF_INPUT_PUPD, PULLUP, AFIO_NONE)},    // PD_3 is CTS only with the default TX/RX mapping.
+  {PD_3, USART1, CH_PIN_DATA(CH_MODE_INPUT, CH_CNF_INPUT_PUPD, PULLUP, AFIO_NONE)},  // PD_3 is CTS only with the default TX/RX mapping.
   {PC_6, USART1, CH_PIN_DATA(CH_MODE_INPUT, CH_CNF_INPUT_PUPD, PULLUP, AFIO_NONE)},  // PC6 is CTS with remap 1 or remap 3, AFIO_NONE avoids changing TX/RX remap
-  {NC, USART2, CH_PIN_DATA(CH_MODE_INPUT, CH_CNF_INPUT_PUPD, PULLUP, AFIO_NONE)},  // V006E8 has no pin for CTS!
+  {NC, USART2, CH_PIN_DATA(CH_MODE_INPUT, CH_CNF_INPUT_PUPD, PULLUP, AFIO_NONE)},    // V006F8 has no PA_0 pin for CTS!
   //{NC,  USART2, CH_PIN_DATA(CH_MODE_INPUT, CH_CNF_INPUT_PUPD, PULLUP, AFIO_PartialRemap3_USART2_ENABLE)},  // V006E8 has no pin for CTS!
   {NC,    NP,     0}
 };
