@@ -16,11 +16,13 @@ public:
   bool begin(const char *hostName);
   void end();
   /* The services' instance name (default: the host name). Set before
-   * addService(). */
+   * addService(); an empty string restores the default on the next begin(). */
   bool setInstanceName(const char *name);
   /* service and proto with or without the leading underscore: ("http", "tcp")
    * or ("_http", "_tcp"). */
   bool addService(const char *service, const char *proto, uint16_t port);
+  /* Adding an existing TXT key replaces its value (keys are case-insensitive).
+   */
   bool addServiceTxt(const char *service, const char *proto, const char *key,
                      const char *value);
 };

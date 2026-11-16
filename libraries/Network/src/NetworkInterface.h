@@ -75,6 +75,8 @@ public:
 
   /* For the task: drain what the driver queued. */
   virtual void poll() {}
+  /* For the task: recover DHCP allocation failures and maintain leases/DNS. */
+  void maintain();
 
 protected:
   /* One whole Ethernet frame (destination MAC .. payload, no FCS) to send.
@@ -98,7 +100,7 @@ private:
   static int8_t init(struct netif *n);
   static void statusChanged(struct netif *n);
 
-  void dhcpServerApply();
+  bool dhcpServerApply();
 
   struct netif *_netif = nullptr; /* allocated by netifStart() */
   struct NetworkDhcpServer *_dhcps = nullptr;
@@ -110,4 +112,5 @@ private:
   uint8_t _mac[6] = {0};
   char _hostname[33] = {0};
   bool _link = false;
+  bool _dhcpPending = false;
 };

@@ -19,7 +19,7 @@ extern "C" void ch32rv_net_task(void);
 namespace ch32rv_net {
 
 static bool started;
-static NetworkInterface *interfaces[4];
+static NetworkInterface *interfaces[MAX_INTERFACES];
 
 /* Initialize once, when the first interface or polling call needs the stack. */
 void start() {
@@ -55,18 +55,19 @@ void netifChanged(struct netif *n, bool up) {
   }
 }
 
-void addInterface(NetworkInterface *ifc) {
+bool addInterface(NetworkInterface *ifc) {
   for (auto &slot : interfaces) {
     if (slot == ifc) {
-      return;
+      return true;
     }
   }
   for (auto &slot : interfaces) {
     if (!slot) {
       slot = ifc;
-      return;
+      return true;
     }
   }
+  return false;
 }
 
 void removeInterface(NetworkInterface *ifc) {
@@ -104,6 +105,11 @@ extern "C" void ch32rv_net_task(void) {
   }
   netif_poll_all(); /* what was sent to 127.0.0.1 or an own address */
   sys_check_timeouts();
+  for (auto *ifc : ch32rv_net::interfaces) {
+    if (ifc) {
+      ifc->maintain();
+    }
+  }
   running = false;
 }
 

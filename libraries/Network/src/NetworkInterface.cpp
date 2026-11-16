@@ -148,13 +148,14 @@ static NetworkDhcpServer *(*dhcps_start)(struct netif *, uint32_t, uint8_t,
                                          uint32_t, uint32_t);
 
 bool NetworkInterface::dhcpServer(bool enable, uint8_t leases) {
-  if (enable && (!_ip || !leases)) {
+  if (enable &&
+      (!_ip || !NetworkDhcpServer::validPool(lwip_ntohl(_ip), lwip_ntohl(_mask),
+                                             lwip_ntohl(_ip) + 1, leases))) {
     return false; /* the server needs a static address to hand out after */
   }
   dhcps_start = NetworkDhcpServer::start;
   _dhcpsLeases = enable ? leases : 0;
-  dhcpServerApply();
-  return true;
+  return dhcpServerApply();
 }
 
 void NetworkInterface::dhcpAdvertiseGateway(bool enable) {
@@ -169,19 +170,27 @@ void NetworkInterface::dhcpDns(IPAddress dns) {
 
 bool NetworkInterface::dhcpServerRunning() const { return _dhcps != nullptr; }
 
-/* (Re)starts the server with the current settings, or stops it. Leases are
- * forgotten on a restart. */
-void NetworkInterface::dhcpServerApply() {
+/* Keep active leases when only advertised router/DNS options change. */
+bool NetworkInterface::dhcpServerApply() {
+  const uint32_t first = lwip_ntohl(_ip) + 1;
+  const uint32_t router = _dhcpsGateway ? (_gateway ? _gateway : _ip) : 0;
+  const bool validPool = NetworkDhcpServer::validPool(
+      lwip_ntohl(_ip), lwip_ntohl(_mask), first, _dhcpsLeases);
+  if (_dhcps && validPool && _dhcps->first == first &&
+      _dhcps->count == _dhcpsLeases) {
+    _dhcps->router = router;
+    _dhcps->dns = _dhcpsDns;
+    return true;
+  }
   if (_dhcps) {
     _dhcps->stop();
     _dhcps = nullptr;
   }
   if (!_netif || !_dhcpsLeases || !_ip || !dhcps_start) {
-    return;
+    return true;
   }
-  const uint32_t router = _dhcpsGateway ? (_gateway ? _gateway : _ip) : 0;
-  _dhcps =
-      dhcps_start(_netif, lwip_ntohl(_ip) + 1, _dhcpsLeases, router, _dhcpsDns);
+  _dhcps = dhcps_start(_netif, first, _dhcpsLeases, router, _dhcpsDns);
+  return _dhcps != nullptr;
 }
 
 struct netif *NetworkInterface::netif() const { return _netif; }
@@ -271,6 +280,7 @@ void NetworkInterface::statusChanged(struct netif *n) {
 
 /* Static when config() gave an address, DHCP otherwise. */
 void NetworkInterface::applyAddress() {
+  _dhcpPending = false;
   if (_ip) {
     dhcp_release_and_stop(_netif);
     ip4_addr_t ip, mask, gw;
@@ -281,7 +291,7 @@ void NetworkInterface::applyAddress() {
   } else {
     netif_set_addr(_netif, IP4_ADDR_ANY4, IP4_ADDR_ANY4, IP4_ADDR_ANY4);
     if (_link) {
-      dhcp_start(_netif);
+      _dhcpPending = dhcp_start(_netif) != ERR_OK;
     }
   }
   statusChanged(_netif);
@@ -312,12 +322,17 @@ bool NetworkInterface::netifStart(const uint8_t mac[6], uint16_t mtu) {
     return false;
   }
   _netif->mtu = mtu;
+  if (!ch32rv_net::addInterface(this)) {
+    netif_remove(_netif);
+    delete _netif;
+    _netif = nullptr;
+    return false;
+  }
   netif_set_status_callback(_netif, statusChanged);
   if (!netif_default) {
     netif_set_default(_netif);
   }
   netif_set_up(_netif);
-  ch32rv_net::addInterface(this);
   applyAddress();
   dhcpServerApply();
   ch32rv_net::netifChanged(_netif, true);
@@ -345,6 +360,21 @@ void NetworkInterface::netifStop() {
   /* The driver says again after the next netifStart(); until then there is
    * no link to report (a begin() after end() said linkUp() at once). */
   _link = false;
+  _dhcpPending = false;
+}
+
+void NetworkInterface::maintain() {
+  if (!_netif) {
+    return;
+  }
+  if (_dhcpPending && _link && !_ip) {
+    _dhcpPending = dhcp_start(_netif) != ERR_OK;
+  }
+  // An ACK can replace DNS without an address change (and thus no callback).
+  statusChanged(_netif);
+  if (_dhcps) {
+    _dhcps->expire(millis());
+  }
 }
 
 void NetworkInterface::frameReceived(const uint8_t *frame, size_t length) {
@@ -382,9 +412,10 @@ void NetworkInterface::setLinkUp(bool up) {
   if (up) {
     netif_set_link_up(_netif);
     if (!_ip) {
-      dhcp_start(_netif);
+      _dhcpPending = dhcp_start(_netif) != ERR_OK;
     }
   } else {
+    _dhcpPending = false;
     netif_set_link_down(_netif);
     if (!_ip) {
       dhcp_release_and_stop(_netif);

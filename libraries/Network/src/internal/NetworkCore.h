@@ -31,7 +31,8 @@ void setNetifListener(NetifListener listener);
 void netifChanged(struct netif *n, bool up);
 
 /* The interfaces that have started, for the task to poll. */
-void addInterface(NetworkInterface *ifc);
+constexpr size_t MAX_INTERFACES = 4;
+bool addInterface(NetworkInterface *ifc);
 void removeInterface(NetworkInterface *ifc);
 NetworkInterface *firstInterface();
 

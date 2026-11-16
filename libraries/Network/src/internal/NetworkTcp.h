@@ -1,6 +1,7 @@
 /* The connection behind NetworkClient, shared with NetworkServer. Internal. */
 #pragma once
 #include "lwip/tcp.h"
+#include <stddef.h>
 #include <stdint.h>
 
 struct NetworkTcpConnection {
@@ -8,7 +9,7 @@ struct NetworkTcpConnection {
       nullptr; /* nullptr once lwIP freed it (closed, reset, aborted) */
   uint8_t *rx = nullptr; /* ring of TCP_WND bytes */
   uint16_t rxHead = 0, rxCount = 0;
-  uint8_t refs = 1;
+  size_t refs = 1;
   bool connecting = false;
   bool established = false;
   bool peerClosed = false; /* FIN received; what is in rx is the rest */
