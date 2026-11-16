@@ -547,32 +547,54 @@ void GPIO_EXTILineConfig(uint8_t GPIO_PortSource, uint8_t GPIO_PinSource)
  */
 void GPIO_IPD_Unused(void)
 {
-    GPIO_InitTypeDef GPIO_InitStructure = {};
-    uint32_t chip = 0;
-    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA | RCC_APB2Periph_GPIOB | RCC_APB2Periph_GPIOC | RCC_APB2Periph_GPIOD, ENABLE);
-    chip =  *( uint32_t * )0x1FFFF884 ;
-    switch(chip)
-    {
-        case 0x25004102:     //CH32V103C8T6
+    #if ENSURE_COMPATIBILITY
+        GPIO_InitTypeDef GPIO_InitStructure = {};
+        uint32_t chip = 0;
+        RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA | RCC_APB2Periph_GPIOB | RCC_APB2Periph_GPIOC | RCC_APB2Periph_GPIOD, ENABLE);
+        chip =  *( uint32_t * )0x1FFFF884 ;
+        switch(chip)
         {
-            GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0|GPIO_Pin_1\
-                                          |GPIO_Pin_2|GPIO_Pin_3\
-                                          |GPIO_Pin_4|GPIO_Pin_5\
-                                          |GPIO_Pin_6|GPIO_Pin_7\
-                                          |GPIO_Pin_8|GPIO_Pin_9\
-                                          |GPIO_Pin_10|GPIO_Pin_11|GPIO_Pin_12;
-            GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;
-            GPIO_Init(GPIOC, &GPIO_InitStructure);
-            GPIO_InitStructure.GPIO_Pin = GPIO_Pin_2;
-            GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;
-            GPIO_Init(GPIOD, &GPIO_InitStructure);
-            break;
+            case 0x25004102:     //CH32V103C8T6
+            {
+                GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0|GPIO_Pin_1\
+                                            |GPIO_Pin_2|GPIO_Pin_3\
+                                            |GPIO_Pin_4|GPIO_Pin_5\
+                                            |GPIO_Pin_6|GPIO_Pin_7\
+                                            |GPIO_Pin_8|GPIO_Pin_9\
+                                            |GPIO_Pin_10|GPIO_Pin_11|GPIO_Pin_12;
+                GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;
+                GPIO_Init(GPIOC, &GPIO_InitStructure);
+                GPIO_InitStructure.GPIO_Pin = GPIO_Pin_2;
+                GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;
+                GPIO_Init(GPIOD, &GPIO_InitStructure);
+                break;
+            }
+            default:
+            {
+                break;
+            }
         }
-        default:
-        {
-            break;
-        }
-    }
+    #else
+        RCC->APB2PCENR |= RCC_APB2Periph_GPIOA | RCC_APB2Periph_GPIOB | RCC_APB2Periph_GPIOC | RCC_APB2Periph_GPIOD;
+
+        /* Input Pull Down: CNF = 0b10, MODE = 0b00 */
+        #ifndef GPIOA
+            GPIOA->CFGLR = 0x88888888;  /* Mode with pull-up and pull-down */
+            GPIOA->BCR = 0xFFFF;        /* Set pins to pull-down */
+        #endif
+        #ifndef GPIOB
+            GPIOB->CFGLR = 0x88888888;  /* Mode with pull-up and pull-down */
+            GPIOB->BCR = 0xFFFF;        /* Set pins to pull-down */
+        #endif
+        #ifndef GPIOC
+            GPIOC->CFGLR = 0x88888888;  /* Mode with pull-up and pull-down */
+            GPIOC->BCR = 0xFFFF;        /* Set pins to pull-down */
+        #endif
+        #ifndef GPIOD
+            GPIOD->CFGLR = 0x88888888;  /* Mode with pull-up and pull-down */
+            GPIOD->BCR = 0xFFFF;        /* Set pins to pull-down */
+        #endif
+    #endif
 
 }
 
