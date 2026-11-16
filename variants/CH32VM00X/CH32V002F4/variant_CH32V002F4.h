@@ -12,6 +12,9 @@
  */
 #pragma once
 
+/* CH32V002F4P; F4U (0x00210600) has identical GPIO masks. Used for compile-time package selection. */
+#define WCH_MCU_CHIP_ID            0x00200600U
+
 /* ENABLE Peripherals */
 #ifndef IDE_MENU_PERIPHERALS   // defined when peripherals are enabled/disabled via the IDE menu
 #define                         ADC_MODULE_ENABLED

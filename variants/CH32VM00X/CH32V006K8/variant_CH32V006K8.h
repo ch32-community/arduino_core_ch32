@@ -12,6 +12,9 @@
  */
 #pragma once
 
+/* CH32V006K8U. Used for compile-time package selection. */
+#define WCH_MCU_CHIP_ID            0x00600600U
+
 /* ENABLE Peripherals */
 #ifndef IDE_MENU_PERIPHERALS   // defined when peripherals are enabled/disabled via the IDE menu
 #define                         ADC_MODULE_ENABLED

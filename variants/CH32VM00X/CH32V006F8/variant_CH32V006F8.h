@@ -12,6 +12,9 @@
  */
 #pragma once
 
+/* CH32V006F8P; F8U (0x00620600) has identical GPIO masks. Used for compile-time package selection. */
+#define WCH_MCU_CHIP_ID            0x00630600U
+
 /* ENABLE Peripherals */
 #ifndef IDE_MENU_PERIPHERALS   // defined when peripherals are enabled/disabled via the IDE menu
 #define                         ADC_MODULE_ENABLED
