@@ -580,18 +580,22 @@ void GPIO_IPD_Unused(void)
         /* Input Pull Down: CNF = 0b10, MODE = 0b00 */
         #ifndef GPIOA
             GPIOA->CFGLR = 0x88888888;  /* Mode with pull-up and pull-down */
+            GPIOA->CFGHR = 0x88888888;
             GPIOA->BCR = 0xFFFF;        /* Set pins to pull-down */
         #endif
         #ifndef GPIOB
             GPIOB->CFGLR = 0x88888888;  /* Mode with pull-up and pull-down */
+            GPIOB->CFGHR = 0x88888888;
             GPIOB->BCR = 0xFFFF;        /* Set pins to pull-down */
         #endif
         #ifndef GPIOC
             GPIOC->CFGLR = 0x88888888;  /* Mode with pull-up and pull-down */
+            GPIOC->CFGHR = 0x88888888;
             GPIOC->BCR = 0xFFFF;        /* Set pins to pull-down */
         #endif
         #ifndef GPIOD
             GPIOD->CFGLR = 0x88888888;  /* Mode with pull-up and pull-down */
+            GPIOD->CFGHR = 0x88888888;
             GPIOD->BCR = 0xFFFF;        /* Set pins to pull-down */
         #endif
     #endif
