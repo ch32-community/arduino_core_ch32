@@ -768,21 +768,22 @@ void GPIO_IPD_Unused(void)
     #else
         RCC->PB2PCENR |= (RCC_PB2Periph_GPIOA | RCC_PB2Periph_GPIOB | RCC_PB2Periph_GPIOC | RCC_PB2Periph_GPIOD);
 
+        /* Input Pull Down: CNF = 0b10, MODE = 0b00 */
         #ifdef GPIOA
-            GPIOA->CFGLR = 0x88888888;  // Set all pins as input (pull-up)
-            GPIOA->BCR = 0xFF;          // Set all pins to pull-down
+            GPIOA->CFGLR = 0x88888888;  /* Set all pins as input (pull-up) */
+            GPIOA->BCR = 0xFF;          /* Set all pins to pull-down */
         #endif
         #ifdef GPIOB
-            GPIOB->CFGLR = 0x88888888;  // Set all pins as input (pull-up)
-            GPIOB->BCR = 0xFF;          // Set all pins to pull-down
+            GPIOB->CFGLR = 0x88888888;  /* Set all pins as input (pull-up) */
+            GPIOB->BCR = 0xFF;          /* Set all pins to pull-down */
         #endif
         #ifdef GPIOC
-            GPIOC->CFGLR = 0x88888888;  // Set all pins as input (pull-up)
-            GPIOC->BCR = 0xFF;          // Set all pins to pull-down
+            GPIOC->CFGLR = 0x88888888;  /* Set all pins as input (pull-up) */
+            GPIOC->BCR = 0xFF;          /* Set all pins to pull-down */
         #endif
         #ifdef GPIOD
-            GPIOD->CFGLR = 0x88888888;  // Set all pins as input (pull-up)
-            GPIOD->BCR = 0xFF;          // Set all pins to pull-down
+            GPIOD->CFGLR = 0x88888888;  /* Set all pins as input (pull-up) */
+            GPIOD->BCR = 0xFF;          /* Set all pins to pull-down */
         #endif    
     #endif
 }

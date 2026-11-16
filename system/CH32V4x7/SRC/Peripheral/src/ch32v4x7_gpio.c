@@ -715,30 +715,31 @@ void GPIO_IPD_Unused(void)
 
         RCC->PB2PCENR |= RCC_PB2Periph_GPIOA | RCC_PB2Periph_GPIOB | RCC_PB2Periph_GPIOC | RCC_PB2Periph_GPIOD | RCC_PB2Periph_GPIOE;
 
+        /* Input Pull Down: CNF = 0b10, MODE = 0b00 */
         #ifdef GPIOA
-            GPIOA->CFGLR = 0x88888888;
+            GPIOA->CFGLR = 0x88888888;  /* Mode with pull-up and pull-down */
             GPIOA->CFGHR = 0x88888888;
-            GPIOA->BCR = 0xFFFF;
+            GPIOA->BCR = 0xFFFF;        /* Set pins to pull-down */
         #endif
         #ifdef GPIOB
-            GPIOB->CFGLR = 0x88888888;
+            GPIOB->CFGLR = 0x88888888;  /* Mode with pull-up and pull-down */
             GPIOB->CFGHR = 0x88888888;
-            GPIOB->BCR = 0xFFFF;
+            GPIOB->BCR = 0xFFFF;        /* Set pins to pull-down */
         #endif
         #ifdef GPIOC
-            GPIOC->CFGLR = 0x88888888;
+            GPIOC->CFGLR = 0x88888888;  /* Mode with pull-up and pull-down */
             GPIOC->CFGHR = 0x88888888;
-            GPIOC->BCR = 0xFFFF;
+            GPIOC->BCR = 0xFFFF;        /* Set pins to pull-down */
         #endif
         #ifdef GPIOD
-            GPIOD->CFGLR = 0x88888888;
+            GPIOD->CFGLR = 0x88888888;  /* Mode with pull-up and pull-down */
             GPIOD->CFGHR = 0x88888888;
-            GPIOD->BCR = 0xFFFF;
+            GPIOD->BCR = 0xFFFF;        /* Set pins to pull-down */
         #endif
         #ifdef GPIOE
-            GPIOE->CFGLR = 0x88888888;
+            GPIOE->CFGLR = 0x88888888;  /* Mode with pull-up and pull-down */
             GPIOE->CFGHR = 0x88888888;
-            GPIOE->BCR = 0xFFFF;
+            GPIOE->BCR = 0xFFFF;        /* Set pins to pull-down */
         #endif
         
     #endif
