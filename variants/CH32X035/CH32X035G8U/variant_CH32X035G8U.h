@@ -12,6 +12,9 @@
  */
 #pragma once
 
+/* Package ID with revision bits cleared for compile-time selection. */
+#define WCH_MCU_CHIP_ID          0x03560600U
+
 /* ENABLE Peripherals */
 #define                         ADC_MODULE_ENABLED
 #define                         UART_MODULE_ENABLED

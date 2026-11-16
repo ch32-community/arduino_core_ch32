@@ -12,6 +12,10 @@
 #include "ch32x035_gpio.h"
 #include "ch32x035_rcc.h"
 
+#if defined(VARIANT_H) && !defined(ENSURE_COMPATIBILITY)
+    #include VARIANT_H
+#endif
+
 /* MASK */
 #define LSB_MASK                  ((uint16_t)0xFFFF)
 #define DBGAFR_POSITION_MASK      ((uint32_t)0x000F0000)
@@ -563,6 +567,19 @@ void GPIO_EXTILineConfig(uint8_t GPIO_PortSource, uint16_t GPIO_PinSource)
     AFIO->EXTICR[GPIO_PinSource >> 0x04] |= (((uint32_t)GPIO_PortSource) << (0x02 * (GPIO_PinSource & (uint8_t)0x0F)));
 }
 
+#ifndef ENSURE_COMPATIBILITY
+/* GPIO_Init uses software shadows for CFGHR on this family. Keep them in sync. */
+static inline __attribute__((always_inline)) void GPIO_IPU_AllPins(GPIO_TypeDef *GPIOx, volatile uint32_t *high_shadow)
+{
+    GPIOx->BSHR = GPIO_Pin_All & 0xFFFFU;
+    GPIOx->BSXR = GPIO_Pin_All >> 16;
+    GPIOx->CFGLR = 0x88888888U;
+    GPIOx->CFGHR = 0x88888888U;
+    GPIOx->CFGXR = 0x88888888U;
+    *high_shadow = 0x88888888U;
+}
+#endif
+
 /*********************************************************************
  * @fn      GPIO_IPD_Unused
  *
@@ -574,18 +591,38 @@ void GPIO_EXTILineConfig(uint8_t GPIO_PortSource, uint16_t GPIO_PinSource)
  */
 void GPIO_IPD_Unused(void)
 {
-    GPIO_InitTypeDef GPIO_InitStructure = {};
+    #ifdef ENSURE_COMPATIBILITY
 
-    /* All pull-up */
-    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA | RCC_APB2Periph_GPIOB | RCC_APB2Periph_GPIOC | RCC_APB2Periph_AFIO, ENABLE);
-    RCC_APB1PeriphClockCmd(RCC_APB1Periph_PWR, ENABLE);
-    GPIO_PinRemapConfig(GPIO_Remap_SWJ_Disable, ENABLE);
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_All;
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;
+        GPIO_InitTypeDef GPIO_InitStructure = {};
 
-    GPIO_Init(GPIOA, &GPIO_InitStructure);
-    GPIO_Init(GPIOB, &GPIO_InitStructure);
-    GPIO_Init(GPIOC, &GPIO_InitStructure);
+        /* All pull-up */
+        RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA | RCC_APB2Periph_GPIOB | RCC_APB2Periph_GPIOC | RCC_APB2Periph_AFIO, ENABLE);
+        RCC_APB1PeriphClockCmd(RCC_APB1Periph_PWR, ENABLE);
+        GPIO_PinRemapConfig(GPIO_Remap_SWJ_Disable, ENABLE);
+        GPIO_InitStructure.GPIO_Pin = GPIO_Pin_All;
+        GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;
 
+        GPIO_Init(GPIOA, &GPIO_InitStructure);
+        GPIO_Init(GPIOB, &GPIO_InitStructure);
+        GPIO_Init(GPIOC, &GPIO_InitStructure);
+
+    #else
+        #if !defined(WCH_MCU_CHIP_ID)
+            #error "WCH_MCU_CHIP_ID must be defined by the selected variant when ENSURE_COMPATIBILITY is disabled."
+        #elif WCH_MCU_CHIP_ID == 0x03560600U || WCH_MCU_CHIP_ID == 0x035A0600U \
+           || WCH_MCU_CHIP_ID == 0x03500600U || WCH_MCU_CHIP_ID == 0x03510600U \
+           || WCH_MCU_CHIP_ID == 0x035E0600U || WCH_MCU_CHIP_ID == 0x035B0600U \
+           || WCH_MCU_CHIP_ID == 0x03570600U
+            /* Preserve this SDK version's all-pin pull-ups and SDI disable. */
+            RCC->APB2PCENR |= RCC_APB2Periph_GPIOA | RCC_APB2Periph_GPIOB | RCC_APB2Periph_GPIOC | RCC_APB2Periph_AFIO;
+            RCC->APB1PCENR |= RCC_APB1Periph_PWR;
+            AFIO->PCFR1 = (AFIO->PCFR1 & DBGAFR_SWJCFG_MASK) | ((GPIO_Remap_SWJ_Disable & LSB_MASK)
+                          << (((GPIO_Remap_SWJ_Disable & 0x00FFFFFFU) >> 0x15) * 0x10));
+            GPIO_IPU_AllPins(GPIOA, &CFGHR_tmpA);
+            GPIO_IPU_AllPins(GPIOB, &CFGHR_tmpB);
+            GPIO_IPU_AllPins(GPIOC, &CFGHR_tmpC);
+        #else
+            #error "WCH_MCU_CHIP_ID is not recognized. Please define the unused GPIO pins for this chip."
+        #endif
+    #endif
 }
-
