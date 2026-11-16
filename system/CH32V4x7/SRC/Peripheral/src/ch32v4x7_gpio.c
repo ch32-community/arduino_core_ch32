@@ -12,6 +12,10 @@
 #include "ch32v4x7_gpio.h"
 #include "ch32v4x7_rcc.h"
 
+#if defined(VARIANT_H) && !defined(ENSURE_COMPATIBILITY)
+    #include VARIANT_H
+#endif
+
 /* MASK */
 #define ECR_PORTPINCONFIG_MASK    ((uint16_t)0xFF80)
 #define LSB_MASK                  ((uint16_t)0xFFFF)
@@ -581,6 +585,29 @@ void GPIO_EXTILineConfig(uint8_t GPIO_PortSource, uint8_t GPIO_PinSource)
     AFIO->EXTICR[GPIO_PinSource >> 0x02] |= (((uint32_t)GPIO_PortSource) << (0x04 * (GPIO_PinSource & (uint8_t)0x03)));
 }
 
+#ifndef ENSURE_COMPATIBILITY
+/* Constant pin arguments fold into masks without per-pin loops. */
+static inline __attribute__((always_inline)) uint32_t GPIO_UnusedPinBits(uint32_t pins)
+{
+    return (pins & 0x01U) | ((pins & 0x02U) << 3)
+         | ((pins & 0x04U) << 6) | ((pins & 0x08U) << 9)
+         | ((pins & 0x10U) << 12) | ((pins & 0x20U) << 15)
+         | ((pins & 0x40U) << 18) | ((pins & 0x80U) << 21);
+}
+
+static inline __attribute__((always_inline)) void GPIO_IPD_UnusedPins(GPIO_TypeDef *GPIOx, uint32_t pins)
+{
+    const uint32_t low = GPIO_UnusedPinBits(pins);
+    const uint32_t high = GPIO_UnusedPinBits(pins >> 8);
+
+    GPIOx->BCR = pins;
+    if(pins & 0x00FFU)
+        GPIOx->CFGLR = (GPIOx->CFGLR & ~(low * 0x0FU)) | (low << 3);
+    if(pins & 0xFF00U)
+        GPIOx->CFGHR = (GPIOx->CFGHR & ~(high * 0x0FU)) | (high << 3);
+}
+#endif
+
 /*********************************************************************
  * @fn      GPIO_IPD_Unused
  *
@@ -712,35 +739,42 @@ void GPIO_IPD_Unused(void)
             
         }
     #else
-
         RCC->PB2PCENR |= RCC_PB2Periph_GPIOA | RCC_PB2Periph_GPIOB | RCC_PB2Periph_GPIOC | RCC_PB2Periph_GPIOD | RCC_PB2Periph_GPIOE;
 
-        /* Input Pull Down: CNF = 0b10, MODE = 0b00 */
-        #ifdef GPIOA
-            GPIOA->CFGLR = 0x88888888;  /* Mode with pull-up and pull-down */
-            GPIOA->CFGHR = 0x88888888;
-            GPIOA->BCR = 0xFFFF;        /* Set pins to pull-down */
+        /* Preserve the SDK pull direction and configure only unbonded pins. */
+        #if !defined(WCH_MCU_CHIP_ID)
+            #error "WCH_MCU_CHIP_ID must be defined by the selected variant when ENSURE_COMPATIBILITY is disabled."
+        #elif WCH_MCU_CHIP_ID == 0x46720002U /* CH32V407RET */
+            GPIO_IPD_UnusedPins(GPIOB, (GPIO_Pin_2));
+            GPIO_IPD_UnusedPins(GPIOC, (GPIO_Pin_6 | GPIO_Pin_7 | GPIO_Pin_8 | GPIO_Pin_9));
+            GPIO_IPD_UnusedPins(GPIOD, (GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_3 | GPIO_Pin_4 | GPIO_Pin_5 | GPIO_Pin_6 |
+                                      GPIO_Pin_7 | GPIO_Pin_9 | GPIO_Pin_10 | GPIO_Pin_11 | GPIO_Pin_12 | GPIO_Pin_13));
+            GPIO_IPD_UnusedPins(GPIOE, (GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_2 | GPIO_Pin_3 | GPIO_Pin_4 | GPIO_Pin_5 |
+                                      GPIO_Pin_6 | GPIO_Pin_7 | GPIO_Pin_8 | GPIO_Pin_9 | GPIO_Pin_10 | GPIO_Pin_11 | GPIO_Pin_12));
+        #elif WCH_MCU_CHIP_ID == 0x46750002U /* CH32V467RET */
+            GPIO_IPD_UnusedPins(GPIOB, (GPIO_Pin_2));
+            GPIO_IPD_UnusedPins(GPIOC, (GPIO_Pin_6 | GPIO_Pin_7 | GPIO_Pin_8 | GPIO_Pin_9));
+            GPIO_IPD_UnusedPins(GPIOD, (GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_3 | GPIO_Pin_4 | GPIO_Pin_5 | GPIO_Pin_6 |
+                                      GPIO_Pin_7 | GPIO_Pin_8 | GPIO_Pin_9 | GPIO_Pin_10 | GPIO_Pin_11 | GPIO_Pin_12 | GPIO_Pin_13));
+            GPIO_IPD_UnusedPins(GPIOE, (GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_2 | GPIO_Pin_3 | GPIO_Pin_4 | GPIO_Pin_5 |
+                                      GPIO_Pin_6 | GPIO_Pin_7 | GPIO_Pin_8 | GPIO_Pin_9 | GPIO_Pin_10 | GPIO_Pin_11 | GPIO_Pin_12));
+        #elif WCH_MCU_CHIP_ID == 0x46710001U /* CH32V407WEU */
+            GPIO_IPD_UnusedPins(GPIOC, (GPIO_Pin_6 | GPIO_Pin_7 | GPIO_Pin_8 | GPIO_Pin_9));
+            GPIO_IPD_UnusedPins(GPIOD, (GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_3 | GPIO_Pin_4 | GPIO_Pin_5 | GPIO_Pin_6 | GPIO_Pin_7 | 
+                                      GPIO_Pin_9 | GPIO_Pin_10 | GPIO_Pin_11 | GPIO_Pin_12 | GPIO_Pin_13 | GPIO_Pin_14 | GPIO_Pin_15));
+            GPIO_IPD_UnusedPins(GPIOE, (GPIO_Pin_2 | GPIO_Pin_3 | GPIO_Pin_4 | GPIO_Pin_5 | GPIO_Pin_6 | GPIO_Pin_7));
+        #elif WCH_MCU_CHIP_ID == 0x46740001U /* CH32V467WEU */
+            GPIO_IPD_UnusedPins(GPIOC, (GPIO_Pin_6 | GPIO_Pin_7 | GPIO_Pin_8 | GPIO_Pin_9));
+            GPIO_IPD_UnusedPins(GPIOD, (GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_3 | GPIO_Pin_4 | GPIO_Pin_5 | GPIO_Pin_6 |
+                                      GPIO_Pin_7 | GPIO_Pin_8 | GPIO_Pin_9 | GPIO_Pin_10 | GPIO_Pin_11 | GPIO_Pin_12 |
+                                      GPIO_Pin_13 | GPIO_Pin_14 | GPIO_Pin_15));
+            GPIO_IPD_UnusedPins(GPIOE, (GPIO_Pin_2 | GPIO_Pin_3 | GPIO_Pin_4 | GPIO_Pin_5 | GPIO_Pin_6 | GPIO_Pin_7));
+        #elif WCH_MCU_CHIP_ID == 0x46730000U /* CH32V467VET */
+            GPIO_IPD_UnusedPins(GPIOE, (GPIO_Pin_7));
+        #elif WCH_MCU_CHIP_ID == 0x46700000U /* CH32V407VET */
+            /* The SDK leaves this package's GPIO configuration unchanged. */
+        #else
+            #error "WCH_MCU_CHIP_ID is not recognized. Please define the unused GPIO pins for this chip."
         #endif
-        #ifdef GPIOB
-            GPIOB->CFGLR = 0x88888888;  /* Mode with pull-up and pull-down */
-            GPIOB->CFGHR = 0x88888888;
-            GPIOB->BCR = 0xFFFF;        /* Set pins to pull-down */
-        #endif
-        #ifdef GPIOC
-            GPIOC->CFGLR = 0x88888888;  /* Mode with pull-up and pull-down */
-            GPIOC->CFGHR = 0x88888888;
-            GPIOC->BCR = 0xFFFF;        /* Set pins to pull-down */
-        #endif
-        #ifdef GPIOD
-            GPIOD->CFGLR = 0x88888888;  /* Mode with pull-up and pull-down */
-            GPIOD->CFGHR = 0x88888888;
-            GPIOD->BCR = 0xFFFF;        /* Set pins to pull-down */
-        #endif
-        #ifdef GPIOE
-            GPIOE->CFGLR = 0x88888888;  /* Mode with pull-up and pull-down */
-            GPIOE->CFGHR = 0x88888888;
-            GPIOE->BCR = 0xFFFF;        /* Set pins to pull-down */
-        #endif
-        
     #endif
 }

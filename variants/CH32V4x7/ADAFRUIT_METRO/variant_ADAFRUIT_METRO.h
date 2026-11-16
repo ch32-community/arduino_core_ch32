@@ -2,6 +2,13 @@
 // SPDX-License-Identifier: BSD-3-Clause
 #pragma once
 
+/* The Metro variant is shared by two fitted MCU options. */
+#if defined(CH32V407)
+    #define WCH_MCU_CHIP_ID          0x46700000U /* CH32V407RET */
+#elif defined(CH32V467)
+    #define WCH_MCU_CHIP_ID          0x46730000U /* CH32V467RET */
+#endif
+
 #define ADC_MODULE_ENABLED
 #define DAC_MODULE_ENABLED
 #define UART_MODULE_ENABLED
