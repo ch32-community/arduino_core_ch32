@@ -34,6 +34,11 @@ DEFAULT_BOARD_OPTIONS = {'opt': 'oslto', 'dbg': 'enable_sym'}
 # Labels form the build/MemBrowse names; give new configurations distinct labels.
 BUILD_CASES = [
     {
+        'label': 'LTO_Heap',
+        'sketch': 'ci/miscellaneous/HeapAllocation',
+        'peripherals': [],
+    },
+    {
         'label': 'LTO_NoPeripherals',
         'sketch': 'ci/libraries/ArduinoBlinkExample',
         'peripherals': [],
@@ -90,6 +95,21 @@ def miscellaneous_builds(package='local:ch32v'):
             selected_ports = ports if case.get('each_serial') else [None]
             for port in selected_ports:
                 yield make_build(case, processor, board, port, package, properties, prefix, series)
+
+    # Metro variants share the CH32V4x7 family. Ordinary Serial sketches exercise USB
+    # discovery and linking above TinyUF2 at both supported CPU clocks.
+    for processor in ('CH32V407', 'CH32V467'):
+        for clock in ('100MHz', '200MHz'):
+            name = f'{processor}_Metro-{clock}-SimpleSerialRead'
+            yield {
+                'name': name,
+                'fqbn': f'{package}:CH32V4x7_BOARDS:pnum=ADAFRUIT_METRO_{processor},clock={clock}',
+                'sketch': 'ci/miscellaneous/SimpleSerialRead',
+                'build_properties': {},
+                'build_dir': f'build/Miscellaneous/{name}',
+                'ld': 'system/CH32V4x7/SRC/Ld/Link.ld',
+                'linker_vars': '__FLASH_SIZE=491520 __RAM_SIZE=203776 __FLASH_ORIGIN=0x8000',
+            }
 
 
 def make_build(case, processor, board, port, package, properties, prefix, series):

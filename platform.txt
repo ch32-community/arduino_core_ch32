@@ -28,7 +28,7 @@ compiler.path={toolchain_dir}/bin/
 compiler.S.cmd=riscv32-wch-elf-gcc
 compiler.c.cmd=riscv32-wch-elf-gcc
 compiler.cpp.cmd=riscv32-wch-elf-g++
-compiler.ar.cmd=riscv32-wch-elf-ar
+compiler.ar.cmd=riscv32-wch-elf-gcc-ar
 compiler.c.elf.cmd=riscv32-wch-elf-g++
 compiler.objcopy.cmd=riscv32-wch-elf-objcopy
 compiler.elf2hex.cmd=riscv32-wch-elf-objcopy
@@ -87,7 +87,7 @@ build.variant_h=
 compiler.c.extra_flags=-Wno-comment
 compiler.c.elf.extra_flags=-Wl,--defsym=__FLASH_SIZE={upload.maximum_size} -Wl,--defsym=__RAM_SIZE={upload.maximum_data_size}
 compiler.cpp.extra_flags=-Wno-comment
-compiler.cpp.std=gnu++14
+compiler.cpp.std=gnu++17
 compiler.S.extra_flags=
 ##{build.startup_file}   {build.peripheral_pins}
 compiler.ar.extra_flags=
@@ -157,7 +157,7 @@ recipe.S.o.pattern="{compiler.path}{compiler.S.cmd}" {compiler.S.flags} {build.i
 recipe.ar.pattern="{compiler.path}{compiler.ar.cmd}" {compiler.ar.flags} {compiler.ar.extra_flags} "{archive_file_path}" "{object_file}"
 
 ## Combine gc-sections, archives, and objects
-recipe.c.combine.pattern="{compiler.path}{compiler.c.elf.cmd}" {compiler.extra_flags} -T "{build.system.path}/{build.series}/SRC/Ld/{build.ldscript}" -nostartfiles -Xlinker --gc-sections "-Wl,-Map,{build.path}/{build.project_name}.map" {compiler.c.elf.extra_flags} {build.flags.ldflags} -o "{build.path}/{build.project_name}.elf" "-L{build.path}" -Wl,--start-group {object_files} {build.ch_extra_lib} -Wl,--whole-archive "{archive_file_path}" -Wl,--no-whole-archive -lc -Wl,--end-group 
+recipe.c.combine.pattern="{compiler.path}{compiler.c.elf.cmd}" {compiler.extra_flags} -T "{build.system.path}/{build.series}/SRC/Ld/{build.ldscript}" -nostartfiles -Xlinker --gc-sections "-Wl,-Map,{build.path}/{build.project_name}.map" -Wl,--wrap=_free_r,--wrap=_realloc_r {compiler.c.elf.extra_flags} {build.flags.ldflags} -o "{build.path}/{build.project_name}.elf" "-L{build.path}" -Wl,--start-group {object_files} {build.ch_extra_lib} -Wl,--whole-archive "{archive_file_path}" -Wl,--no-whole-archive -lc -Wl,--end-group
 
 ## Create output (.bin file)
 recipe.objcopy.bin.pattern="{compiler.path}{compiler.objcopy.cmd}" {compiler.elf2bin.flags} {compiler.elf2bin.extra_flags} "{build.path}/{build.project_name}.elf" "{build.path}/{build.project_name}.bin"
@@ -207,12 +207,12 @@ tools.wchisp.upload.pattern="{path}{cmd}" {upload.verbose} flash "{build.path}/{
 # UF2 is opt-in: boards supply the family ID and application flash offset.
 # Enter the bootloader first and select its mounted volume as the upload port.
 # Conversion-only mode avoids broadcasting firmware to every mounted UF2 drive.
-tools.uf2.python=python3
-tools.uf2.python.windows=python
-tools.uf2.convert.pattern="{tools.uf2.python}" "{runtime.platform.path}/tools/uf2/uf2conv.py" -c -f {build.uf2_family} -b {build.flash_offset} -o "{build.path}/{build.project_name}.uf2" "{build.path}/{build.project_name}.bin"
+# Installed by Boards Manager; local checkouts may override tools.uf2.python.
+tools.uf2.python={runtime.tools.pqt-python3-1.0.1-base-3a57aed-1.path}/python3
+tools.uf2.convert.pattern="{tools.uf2.python}" -I "{runtime.platform.path}/tools/uf2/uf2conv.py" -c -f {build.uf2_family} -b {build.flash_offset} -o "{build.path}/{build.project_name}.uf2" "{build.path}/{build.project_name}.bin"
 tools.uf2.upload.params.verbose=
 tools.uf2.upload.params.quiet=
-tools.uf2.upload.pattern="{tools.uf2.python}" "{runtime.platform.path}/tools/uf2/upload.py" --volume "{serial.port}" --family {build.uf2_family} --base {build.flash_offset} "{build.path}/{build.project_name}.bin"
+tools.uf2.upload.pattern="{tools.uf2.python}" -I "{runtime.platform.path}/tools/uf2/upload.py" --volume "{serial.port}" --family {build.uf2_family} --base {build.flash_offset} "{build.path}/{build.project_name}.bin"
 
 
 # Debugger configuration (general options)

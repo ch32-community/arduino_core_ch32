@@ -76,7 +76,7 @@ env.Append(
         "-fno-exceptions",
         "-fno-use-cxa-atexit",
         "-fpermissive",
-        "-std=gnu++14"
+        "-std=gnu++17"
     ],
 
     LINKFLAGS=machine_flags + [

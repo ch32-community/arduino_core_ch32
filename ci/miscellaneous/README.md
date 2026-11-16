@@ -17,7 +17,7 @@ the MemBrowse target generator. It selects these representative processors from
 | V30x | CH32V307VCT6 |
 | L10x | CH32L103C8T6 |
 
-The suite has 45 configurations and runs up to four concurrently. Smaller
+The suite has 53 configurations and runs up to four concurrently. Smaller
 package variants and alternate boards such as QTPy and LANA TNY are excluded.
 
 Edit `BUILD_CASES` near the top of `tools/miscellaneous_builds.py` to change the
@@ -44,6 +44,7 @@ flags does not automatically change the label. CI and MemBrowse share this list.
 
 | Sketch | Configuration | Processors |
 | --- | --- | --- |
+| HeapAllocation | `-Os`, LTO, no optional peripherals | All selected processors |
 | ArduinoBlinkExample | `-Os`, LTO, no optional peripherals | All selected processors |
 | ArduinoFadeExample | `-Os`, LTO, only TIM | All selected processors |
 | i2c_scanner | `-Os`, LTO, only I2C and UART | V003 and V002 |
@@ -53,6 +54,11 @@ Serial ports are discovered from each variant's `PIN_SERIALn_RX` and
 `PIN_SERIALn_TX` definitions. Family menu choices that a processor does not
 support are excluded (for example Serial2 on V002 and Serial3 on X033).
 V003 has no serial menu, so its only UART is selected with a compiler definition.
+
+HeapAllocation links ordinary malloc/calloc/realloc/free and the PSRAM allocation
+API on each processor. Unsupported PSRAM targets emit the expected call-site
+warnings and retain working internal allocations. This catches allocator-wrapper
+link failures even when the PSRAM-specific example is skipped.
 
 The suite force-includes `ci/miscellaneous/peripherals.h` in each C/C++ source
 file. This loads the original variant, clears its default module definitions,
