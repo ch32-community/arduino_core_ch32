@@ -12,6 +12,9 @@
  */
 #pragma once
 
+/* CH32V103R8T6: compile-time package selection. */
+#define WCH_MCU_CHIP_ID          0x2500410FU
+
 /* ENABLE Peripherals */
 #define                         ADC_MODULE_ENABLED
 #define                         UART_MODULE_ENABLED
