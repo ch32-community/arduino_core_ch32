@@ -268,6 +268,11 @@ class SPIClass {
         for (i = 0; i < NB_SPI_SETTINGS; i++) {
           if (spiSettings[i].pinCS == -1) {
             spiSettings[i].pinCS = _pin;
+            // Setters can register a device without begin(pin).
+            if ((_pin != CS_PIN_CONTROLLED_BY_USER) && (_spi.pin_ssel == NC)) {
+              pinMode(_pin, OUTPUT);
+              digitalWrite(_pin, HIGH);
+            }
             return i;
           }
         }
