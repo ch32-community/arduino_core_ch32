@@ -261,10 +261,37 @@ static void on_request(void *arg, struct udp_pcb *pcb, struct pbuf *p,
   }
 }
 
+void NetworkDhcpServer::expire(uint32_t now) {
+  for (uint8_t i = 0; i < count; i++) {
+    Lease &lease = leases[i];
+    if ((lease.state == OFFERED || lease.state == BOUND ||
+         lease.state == DECLINED) &&
+        (int32_t)(now - lease.until) >= 0) {
+      lease.state = ENDED;
+    }
+  }
+}
+
+bool NetworkDhcpServer::validPool(uint32_t address, uint32_t mask,
+                                  uint32_t first, uint8_t count) {
+  const uint32_t network = address & mask;
+  const uint32_t broadcast = network | ~mask;
+  // Require a contiguous subnet mask and strictly usable client addresses.
+  if (!count || !mask || (~mask & (~mask + 1)) || address <= network ||
+      address >= broadcast || first <= network || first >= broadcast ||
+      (uint32_t)(count - 1) > broadcast - 1 - first) {
+    return false;
+  }
+  const uint32_t last = first + count - 1; // bounded above, cannot wrap
+  return address < first || address > last;
+}
+
 NetworkDhcpServer *NetworkDhcpServer::start(struct netif *n, uint32_t first,
                                             uint8_t count, uint32_t router,
                                             uint32_t dns) {
-  if (!count) {
+  if (!n || !validPool(lwip_ntohl(ip4_addr_get_u32(netif_ip4_addr(n))),
+                       lwip_ntohl(ip4_addr_get_u32(netif_ip4_netmask(n))),
+                       first, count)) {
     return nullptr;
   }
   const size_t size = sizeof(NetworkDhcpServer) + (count - 1) * sizeof(Lease);

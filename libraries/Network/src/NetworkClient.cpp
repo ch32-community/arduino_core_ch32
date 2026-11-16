@@ -87,6 +87,8 @@ NetworkTcpConnection *NetworkTcpConnection::attach(struct tcp_pcb *pcb) {
 }
 
 void NetworkTcpConnection::close() {
+  connecting = false;
+  established = false;
   if (!pcb) {
     return;
   }
@@ -99,7 +101,6 @@ void NetworkTcpConnection::close() {
     tcp_abort(pcb);
   }
   pcb = nullptr;
-  established = false;
 }
 
 void NetworkTcpConnection::release() {
@@ -174,13 +175,20 @@ int NetworkClient::connect(IPAddress ip, uint16_t port, int32_t timeout_ms) {
     stop();
     return 0;
   }
+  // Callbacks while pumping the stack may stop or replace this connection.
+  c->retain();
   ch32rv_net::waitFor(
       [](void *a) {
         return !static_cast<NetworkTcpConnection *>(a)->connecting;
       },
       c, timeout_ms > 0 ? (uint32_t)timeout_ms : 0);
-  if (!c->established) {
-    stop();
+  const bool sameConnection = _conn == c;
+  const bool established = sameConnection && c->established;
+  c->release();
+  if (!established) {
+    if (sameConnection) {
+      stop();
+    }
     return 0;
   }
   return 1;
@@ -317,6 +325,9 @@ uint8_t NetworkClient::connected() {
   }
   /* Checked after the pump: the last data and the peer's FIN can arrive in
    * the same round, and data still to read counts as connected. */
+  if (!_conn) {
+    return 0;
+  }
   if (_conn->rxCount) {
     return 1;
   }

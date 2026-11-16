@@ -4,7 +4,10 @@
 #include <string.h>
 
 #include "lwip/apps/mdns.h"
+#include "lwip/def.h"
+#include "lwip/prot/iana.h"
 #include "lwip/netif.h"
+#include "lwip/udp.h"
 
 NetworkMdns MDNS;
 
@@ -19,9 +22,16 @@ struct Service {
 };
 
 bool running;
+bool explicitInstance;
 char host[MDNS_LABEL_MAXLEN + 1];
 char instance[MDNS_LABEL_MAXLEN + 1];
 Service services[MDNS_MAX_SERVICES];
+
+struct InterfaceServices {
+  struct netif *netif;
+  int8_t slots[MDNS_MAX_SERVICES]; // lwIP slots; negative means not registered
+};
+InterfaceServices interfaces[ch32rv_net::MAX_INTERFACES];
 } // namespace
 
 static void txt_items(struct mdns_service *service, void *userdata) {
@@ -32,13 +42,58 @@ static void txt_items(struct mdns_service *service, void *userdata) {
   }
 }
 
-static void add_services(struct netif *n) {
-  for (auto &s : services) {
-    if (s.used) {
-      mdns_resp_add_service(n, instance, s.service, (enum mdns_sd_proto)s.proto,
-                            s.port, txt_items, &s);
+static bool add_services(struct netif *n) {
+  if (!n->state) {
+    return true; // lwIP's loopback interface has no NetworkInterface owner.
+  }
+  InterfaceServices *registered = nullptr;
+  for (auto &entry : interfaces) {
+    if (entry.netif == n) {
+      registered = &entry;
+      break;
     }
   }
+  if (!registered) {
+    for (auto &entry : interfaces) {
+      if (!entry.netif) {
+        entry.netif = n;
+        for (auto &slot : entry.slots) {
+          slot = -1;
+        }
+        registered = &entry;
+        break;
+      }
+    }
+  }
+  if (!registered ||
+      (!mdns_resp_netif_active(n) && mdns_resp_add_netif(n, host) != ERR_OK)) {
+    return false;
+  }
+  bool success = true;
+  for (size_t i = 0; i < MDNS_MAX_SERVICES; i++) {
+    Service &s = services[i];
+    if (s.used && registered->slots[i] < 0) {
+      registered->slots[i] = mdns_resp_add_service(n, instance, s.service,
+                                                   (enum mdns_sd_proto)s.proto,
+                                                   s.port, txt_items, &s);
+      if (registered->slots[i] < 0) {
+        success = false;
+      }
+    }
+  }
+  mdns_resp_announce(n);
+  return success;
+}
+
+static bool add_all_services() {
+  bool success = true;
+  struct netif *n;
+  NETIF_FOREACH(n) {
+    if (!add_services(n)) {
+      success = false;
+    }
+  }
+  return success;
 }
 
 /* Interfaces starting and stopping, from the Network library. */
@@ -48,12 +103,16 @@ static void netif_changed(struct netif *n, bool up) {
              */
   }
   if (up) {
-    if (mdns_resp_add_netif(n, host) == ERR_OK) {
-      add_services(n);
-      mdns_resp_announce(n);
-    }
+    add_services(n); // addService() or begin() can retry a failed allocation.
   } else {
-    mdns_resp_remove_netif(n);
+    if (mdns_resp_netif_active(n)) {
+      mdns_resp_remove_netif(n);
+    }
+    for (auto &entry : interfaces) {
+      if (entry.netif == n) {
+        entry.netif = nullptr;
+      }
+    }
   }
 }
 
@@ -64,18 +123,31 @@ bool NetworkMdns::begin(const char *hostName) {
   ch32rv_net::start();
   end();
   strcpy(host, hostName);
-  if (!instance[0]) {
+  if (!explicitInstance) {
     strcpy(instance, hostName);
   }
   static bool initialised;
   if (!initialised) {
-    initialised = true;
+    // lwIP's void initializer assumes allocation and bind succeed. Probe both
+    // first; no yield or other allocator runs between releasing and reusing it.
+    struct udp_pcb *probe = udp_new_ip_type(IPADDR_TYPE_ANY);
+    if (!probe) {
+      return false;
+    }
+    const err_t bound = udp_bind(probe, IP_ANY_TYPE, LWIP_IANA_PORT_MDNS);
+    udp_remove(probe);
+    if (bound != ERR_OK) {
+      return false;
+    }
     mdns_resp_init();
+    initialised = true;
   }
   running = true;
   ch32rv_net::setNetifListener(netif_changed);
-  struct netif *n;
-  NETIF_FOREACH(n) { netif_changed(n, true); }
+  if (!add_all_services()) {
+    end();
+    return false;
+  }
   return true;
 }
 
@@ -86,11 +158,7 @@ void NetworkMdns::end() {
   running = false;
   ch32rv_net::setNetifListener(nullptr);
   struct netif *n;
-  NETIF_FOREACH(n) {
-    if (mdns_resp_netif_active(n)) {
-      mdns_resp_remove_netif(n);
-    }
-  }
+  NETIF_FOREACH(n) { netif_changed(n, false); }
 }
 
 bool NetworkMdns::setInstanceName(const char *name) {
@@ -98,6 +166,7 @@ bool NetworkMdns::setInstanceName(const char *name) {
     return false;
   }
   strcpy(instance, name);
+  explicitInstance = *name != '\0';
   return true;
 }
 
@@ -133,7 +202,7 @@ static Service *find(const char *service, const char *proto) {
 bool NetworkMdns::addService(const char *service, const char *proto,
                              uint16_t port) {
   if (find(service, proto)) {
-    return true;
+    return !running || add_all_services();
   }
   for (auto &s : services) {
     if (!s.used) {
@@ -145,18 +214,7 @@ bool NetworkMdns::addService(const char *service, const char *proto,
       s.port = port;
       s.txtLength = 0;
       s.used = true;
-      if (running) {
-        struct netif *n;
-        NETIF_FOREACH(n) {
-          if (mdns_resp_netif_active(n)) {
-            mdns_resp_add_service(n, instance, s.service,
-                                  (enum mdns_sd_proto)s.proto, s.port,
-                                  txt_items, &s);
-            mdns_resp_announce(n);
-          }
-        }
-      }
-      return true;
+      return !running || add_all_services();
     }
   }
   return false;
@@ -170,17 +228,33 @@ bool NetworkMdns::addServiceTxt(const char *service, const char *proto,
   }
   const size_t k = strlen(key), v = value ? strlen(value) : 0;
   const size_t item = k + (value ? 1 + v : 0);
-  if (item > 63 || s->txtLength + 1 + item > sizeof s->txt) {
+  if (!k || strchr(key, '=') || item > 63) {
     return false;
   }
-  uint8_t *at = s->txt + s->txtLength;
+  size_t offset = s->txtLength, replaced = 0;
+  for (size_t i = 0; i < s->txtLength; i += 1 + s->txt[i]) {
+    const char *oldKey = (const char *)s->txt + i + 1;
+    const char *equal = (const char *)memchr(oldKey, '=', s->txt[i]);
+    const size_t oldKeyLength = equal ? (size_t)(equal - oldKey) : s->txt[i];
+    if (oldKeyLength == k && lwip_strnicmp(oldKey, key, k) == 0) {
+      offset = i;
+      replaced = 1 + s->txt[i];
+      break;
+    }
+  }
+  const size_t newLength = s->txtLength - replaced + 1 + item;
+  if (newLength > sizeof s->txt) {
+    return false;
+  }
+  uint8_t *at = s->txt + offset;
+  memmove(at + 1 + item, at + replaced, s->txtLength - offset - replaced);
   *at++ = (uint8_t)item;
   memcpy(at, key, k);
   if (value) {
     at[k] = '=';
     memcpy(at + k + 1, value, v);
   }
-  s->txtLength = (uint8_t)(s->txtLength + 1 + item);
+  s->txtLength = (uint8_t)newLength;
   if (running) {
     struct netif *n;
     NETIF_FOREACH(n) {

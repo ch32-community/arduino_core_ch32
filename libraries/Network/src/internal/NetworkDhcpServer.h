@@ -24,6 +24,9 @@ struct NetworkDhcpServer {
    */
   static NetworkDhcpServer *start(struct netif *n, uint32_t first,
                                   uint8_t count, uint32_t router, uint32_t dns);
+  static bool validPool(uint32_t address, uint32_t mask, uint32_t first,
+                        uint8_t count); /* all addresses in host byte order */
+  void expire(uint32_t now);
   void stop(); /* frees this */
 
   struct netif *netif;

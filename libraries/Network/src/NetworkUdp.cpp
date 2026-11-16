@@ -95,6 +95,10 @@ int NetworkUDP::beginPacket() {
 
 int NetworkUDP::beginPacket(IPAddress ip, uint16_t port) {
   ch32rv_net::start();
+  // begin() clears pending data, so create the ephemeral socket before write().
+  if (!_pcb && !begin(0)) {
+    return 0;
+  }
   if (!_tx) {
     _tx = static_cast<uint8_t *>(malloc(UDP_MAX_PAYLOAD));
     if (!_tx) {
@@ -128,9 +132,6 @@ size_t NetworkUDP::write(const uint8_t *buffer, size_t size) {
 
 int NetworkUDP::endPacket() {
   if (!_tx || !_txPort) {
-    return 0;
-  }
-  if (!_pcb && !begin(0)) { /* sending without begin(): an ephemeral port */
     return 0;
   }
   struct pbuf *p = pbuf_alloc(PBUF_TRANSPORT, _txLength, PBUF_RAM);
