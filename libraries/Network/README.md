@@ -57,5 +57,6 @@ guarded by that core's defines; this community-core port enables CH32V407/467.
 
 The unmodified [lwIP submodule](https://github.com/lwip-tcpip/lwip/tree/77dcd25a72509eb83f72b033d219b1d40cd8eb95)
 is pinned to `STABLE-2_2_1_RELEASE` (`77dcd25a72509eb83f72b033d219b1d40cd8eb95`)
-and retains its [BSD license](lwip/COPYING). Configuration and the C wrappers
-that select its compiled sources live in `src/`, outside the submodule.
+and retains its [BSD license](lwip/COPYING). Configuration and the single
+[`src/lwip_sources.c`](src/lwip_sources.c) file that selects its compiled sources
+live outside the submodule.
