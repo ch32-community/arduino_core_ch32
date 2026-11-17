@@ -8,7 +8,7 @@ extern "C" int coremark_main(void);
 
 void setup()
 {
-	Serial.begin(9600); 
+	Serial.begin(115200); 
 	while (!Serial) ; // wait for Arduino Serial Monitor
 	delay(500);
 	Serial.println("CoreMark Performance Benchmark");
