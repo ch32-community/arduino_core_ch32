@@ -1,9 +1,48 @@
 # CoreMark - CPU Performance Benchmark
-source: [CoreMark](https://github.com/PaulStoffregen/CoreMark) by PaulStoffregen
+source: [CoreMark](https://github.com/PaulStoffregen/CoreMark) by Paul Stoffregen
 
+## Background info
+CoreMark was designed by EEMBC to replace Dhrystone by measuring basic processor pipeline efficiency using common embedded algorithms. 
+Paul Stoffregen’s version is an Arduino-friendly port of the [official EEMBC benchmark](https://www.eembc.org/coremark/) that runs the exact same core algorithms while wrapping them in Arduino environment setup and timing functions.
+
+## Functional description 
 Measures the number for times per second your processor can perform a
 variety of common tasks: linked list management, matrix multiply, and
 executing state machines.
+
+## CH32 configuration and compilation
+This release has been configured to run on the smallest CH32 processor: the cH32V003. To fit it into 16kB Flash and 1kB RAM, the following configuration applies:
+- Use `TOTAL_DATA_SIZE 2*500` instead of `TOTAL_DATA_SIZE 2*1000`
+- Select `MEM_METHOD MEM_STATIC` instead of `MEM_METHOD MEM_STACK`. This will produce link errors when data size is too large.
+- Use these options:
+    - `HAS_FLOAT 0`
+    - `HAS_STDIO 0`
+    - `HAS_PRINTF 0`
+- Compile using -Os LTO and only have the UART peripheral enabled.
+- Clockspeed is the the default clockspeed as set in the IDE, unless noted otherwise.
+
+Please note that the effect of these configuration changes may very well mean that the resulting score for CH32 is not 1:1 comparable to the scores of other boards. The numbers listed for those boards are the original scores, as published by Paul Stoffregen in 2019.
+
+## Scores for CH32 boards
+
+| Board                  | CoreMark |  Notes |
+| ---------------------- | :------: | :----: |
+| CH32V003               | 111      | 18s    |
+| CH32VM00X->V002        | 142      | 14s    | 
+| CH32VM00X->V006        | ?.??     |        |
+| CH32V10x               | ?.??     |        |
+| CH32V20x               | ?.??     |        |
+| CH32V30x               | ?.??     |        |
+| CH32V4x7               | ?.??     |        |
+| CH32L10x               | ?.??     |        |
+
+(larger numbers are better)
+
+CoreMark Size    : 333, 
+Iterations       : 2000
+
+
+## Scores for other Arduino boards
 
 | Board                  | CoreMark |
 | ---------------------- | :------: |
@@ -22,14 +61,6 @@ executing state machines.
 | Arduino Zero           | 56.86    |
 | Arduino Nano Every     | 8.20     |
 | Arduino Mega           | 7.03     |
-| CH32V003               | ?.??     |
-| CH32VM00X->V002        | ?.??     |
-| CH32VM00X->V006        | ?.??     |
-| CH32V10x               | ?.??     |
-| CH32V20x               | ?.??     |
-| CH32V30x               | ?.??     |
-| CH32V4x7               | ?.??     |
-| CH32L10x               | ?.??     |
 
 (larger numbers are better)
 
