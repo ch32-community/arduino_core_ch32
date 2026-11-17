@@ -1,7 +1,8 @@
 # UF2 converter
 
 `uf2conv.py` is from Microsoft's [UF2 tools](https://github.com/microsoft/uf2/tree/84444ddb9d2914edf7f6d9e89a7ce41b53d64d98),
-commit `84444ddb9d2914edf7f6d9e89a7ce41b53d64d98`. See `LICENSE.txt`.
+commit `84444ddb9d2914edf7f6d9e89a7ce41b53d64d98`, with a raw regex string
+to avoid Python invalid-escape warnings. See `LICENSE.txt`.
 
 The platform provides optional UF2 conversion and upload recipes. Existing
 boards keep their current output formats and upload tools.
@@ -77,5 +78,5 @@ directories, and stale mount directories are rejected. On Windows, a bare
 drive letter such as `D:` selects the drive's root.
 
 Both recipes use conversion-only mode with an explicit output path, avoiding
-the converter's automatic deployment to every UF2 drive. The vendor converter
-remains unmodified; volume validation is implemented separately in `upload.py`.
+the converter's automatic deployment to every UF2 drive. Volume validation is
+implemented separately in `upload.py`.
