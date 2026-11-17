@@ -9,7 +9,137 @@ PA_5_ALT1  = PA_5  | ALT1,
 PA_4_ALT2  = PA_4  | ALT2,
 PA_5_ALT2  = PA_5  | ALT2,
 
+/* USART1 remap on PB6/PB7 */
+PB_6_ALT1  = PB_6  | ALT1,
+PB_7_ALT1  = PB_7  | ALT1,
 
+/* USART1 remap on PA6/PA7 */
+PA_6_ALT1  = PA_6  | ALT1,
+PA_7_ALT1  = PA_7  | ALT1,
+
+/* USART2 remap on PD5/PD6 */
+PD_5_ALT1  = PD_5  | ALT1,
+PD_6_ALT1  = PD_6  | ALT1,
+
+/* USART3 remap on PC10/PC11 */
+PC_10_ALT1 = PC_10 | ALT1,
+PC_11_ALT1 = PC_11 | ALT1,
+
+/* USART3 full remap on PD8/PD9 */
+PD_8_ALT1  = PD_8  | ALT1,
+PD_9_ALT1  = PD_9  | ALT1,
+
+/* SPI1 remap on PB3/PB4/PB5 */
+PB_3_ALT1  = PB_3  | ALT1,
+PB_4_ALT1  = PB_4  | ALT1,
+PB_5_ALT1  = PB_5  | ALT1,
+
+/* I2C1 remap on PB8/PB9 */
+PB_8_ALT1  = PB_8  | ALT1,
+PB_9_ALT1  = PB_9  | ALT1,
+
+/* SPI3 remap on PC10/PC11/PC12 */
+PC_10_ALT2 = PC_10 | ALT2,
+PC_11_ALT2 = PC_11 | ALT2,
+PC_12_ALT2 = PC_12 | ALT2,
+
+/* SDIO_CK remap (PC12) */
+PC_12_ALT1 = PC_12 | ALT1,
+
+/* TIM2 partial remap (PA15/PB3) */
+PA_15_ALT1 = PA_15 | ALT1,
+
+/* TIM3 partial remap (PB4/PB5) */
+PB_4_ALT2  = PB_4  | ALT2,
+PB_5_ALT2  = PB_5  | ALT2,
+
+/* TIM3 full remap (PC6..PC9) */
+PC_6_ALT1  = PC_6  | ALT1,
+PC_7_ALT1  = PC_7  | ALT1,
+PC_8_ALT1  = PC_8  | ALT1,
+PC_9_ALT1  = PC_9  | ALT1,
+
+/* TIM4 remap (PD12..PD15) */
+PD_12_ALT1 = PD_12 | ALT1,
+PD_13_ALT1 = PD_13 | ALT1,
+PD_14_ALT1 = PD_14 | ALT1,
+PD_15_ALT1 = PD_15 | ALT1,
+
+/* TIM8 remap (PB6..PB9, PC13, PA13..PA15) */
+PB_6_ALT2  = PB_6  | ALT2,
+PB_7_ALT2  = PB_7  | ALT2,
+PB_8_ALT2  = PB_8  | ALT2,
+PB_9_ALT2  = PB_9  | ALT2,
+PC_13_ALT1 = PC_13 | ALT1,
+PA_13_ALT1 = PA_13 | ALT1,
+PA_14_ALT1 = PA_14 | ALT1,
+PA_15_ALT2 = PA_15 | ALT2,
+
+/* TIM9 remap (PD8..PD15) */
+PD_8_ALT2  = PD_8  | ALT2,
+PD_9_ALT2  = PD_9  | ALT2,
+PD_10_ALT1 = PD_10 | ALT1,
+PD_11_ALT1 = PD_11 | ALT1,
+PD_12_ALT2 = PD_12 | ALT2,
+PD_13_ALT2 = PD_13 | ALT2,
+PD_14_ALT2 = PD_14 | ALT2,
+PD_15_ALT2 = PD_15 | ALT2,
+
+/* TIM10 remap (PD0, PD1, PD3, PD5, PD7, PE2..PE5) */
+PD_0_ALT1  = PD_0  | ALT1,
+PD_1_ALT1  = PD_1  | ALT1,
+PD_3_ALT1  = PD_3  | ALT1,
+PD_5_ALT2  = PD_5  | ALT2,
+PD_7_ALT1  = PD_7  | ALT1,
+PE_2_ALT1  = PE_2  | ALT1,
+PE_3_ALT1  = PE_3  | ALT1,
+PE_4_ALT1  = PE_4  | ALT1,
+PE_5_ALT1  = PE_5  | ALT1,
+
+/* USART4 remap (PB0/PB1, PE0/PE1) */
+PB_0_ALT1  = PB_0  | ALT1,
+PB_1_ALT1  = PB_1  | ALT1,
+PE_0_ALT1  = PE_0  | ALT1,
+PE_1_ALT1  = PE_1  | ALT1,
+
+/* USART5 remap (PB4/PB5, PE8/PE9) */
+PB_4_ALT3  = PB_4  | ALT3,
+PB_5_ALT3  = PB_5  | ALT3,
+PE_8_ALT1  = PE_8  | ALT1,
+PE_9_ALT1  = PE_9  | ALT1,
+
+/* USART6 remap (PB8/PB9, PE10/PE11) */
+PE_10_ALT1 = PE_10 | ALT1,
+PE_11_ALT1 = PE_11 | ALT1,
+
+/* USART7 remap (PA6/PA7, PE12/PE13) */
+PA_6_ALT2  = PA_6  | ALT2,
+PA_7_ALT2  = PA_7  | ALT2,
+PE_12_ALT1 = PE_12 | ALT1,
+PE_13_ALT1 = PE_13 | ALT1,
+
+/* USART8 remap (PA14/PA15, PE14/PE15) */
+PA_14_ALT2 = PA_14 | ALT2,
+PA_15_ALT3 = PA_15 | ALT3,
+PE_14_ALT1 = PE_14 | ALT1,
+PE_15_ALT1 = PE_15 | ALT1,
+
+/* CAN1 remap (PB8/PB9, PD0/PD1) */
+PB_8_ALT3  = PB_8  | ALT3,
+PB_9_ALT3  = PB_9  | ALT3,
+PD_0_ALT2  = PD_0  | ALT2,
+PD_1_ALT2  = PD_1  | ALT2,
+
+/* CAN2 remap (PB5/PB6) */
+PB_5_ALT4  = PB_5  | ALT4,
+PB_6_ALT3  = PB_6  | ALT3,
+
+/* ETH remap (PD8..PD12) */
+PD_8_ALT3  = PD_8  | ALT3,
+PD_9_ALT3  = PD_9  | ALT3,
+PD_10_ALT2 = PD_10 | ALT2,
+PD_11_ALT2 = PD_11 | ALT2,
+PD_12_ALT3 = PD_12 | ALT3,
 
 /* SYS_WKUP */
 #ifdef PWR_WAKEUP_PIN1
