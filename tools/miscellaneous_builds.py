@@ -17,6 +17,8 @@ REPRESENTATIVE_PROCESSORS = {
     'CH32V307VCT6',
     'CH32X035G8U',
     'CH32L103C8T6',
+    'ADAFRUIT_METRO_CH32V407',
+    'ADAFRUIT_METRO_CH32V467',
 }
 
 # Defaults for every case. Per-case board_options override these Arduino menu
@@ -79,9 +81,16 @@ def miscellaneous_builds(package='local:ch32v'):
         if processor not in REPRESENTATIVE_PROCESSORS:
             continue
         prefix = key + '.'
-        series = properties[prefix + 'build.series']
-        variant = properties[prefix + 'build.variant']
-        header = ROOT / 'variants' / variant / f'variant_{processor}.h'
+        # Processor menus may inherit their configuration from the board.
+        resolved = dict(properties)
+        for field, value in properties.items():
+            if field.startswith(board + '.build.') or field.startswith(board + '.upload.'):
+                resolved.setdefault(prefix + field[len(board) + 1:], value)
+        series = resolved[prefix + 'build.series']
+        variant = resolved[prefix + 'build.variant']
+        header_name = resolved.get(prefix + 'build.variant_h', f'variant_{processor}.h')
+        header_name = header_name.replace('{build.board}', resolved[prefix + 'build.board'])
+        header = ROOT / 'variants' / variant / header_name
         source = header.read_text(encoding='utf-8')
         rx = set(re.findall(r'^\s*#\s*define\s+PIN_SERIAL([1-8])_RX\b', source, re.M))  # find all defined serial instances in the variant file
         tx = set(re.findall(r'^\s*#\s*define\s+PIN_SERIAL([1-8])_TX\b', source, re.M))
@@ -94,7 +103,7 @@ def miscellaneous_builds(package='local:ch32v'):
                 continue
             selected_ports = ports if case.get('each_serial') else [None]
             for port in selected_ports:
-                yield make_build(case, processor, board, port, package, properties, prefix, series)
+                yield make_build(case, processor, board, port, package, resolved, prefix, series)
 
     # Metro variants share the CH32V4x7 family. Ordinary Serial sketches exercise USB
     # discovery and linking above TinyUF2 at both supported CPU clocks.
@@ -119,7 +128,18 @@ def make_build(case, processor, board, port, package, properties, prefix, series
     unknown_modules = set(modules) - {'ADC', 'DAC', 'UART', 'SPI', 'I2C', 'TIM'}
     if unknown_modules:
         raise ValueError(f'Unknown peripherals in {label}: {sorted(unknown_modules)}')
-    options = {'pnum': processor, **DEFAULT_BOARD_OPTIONS, **case.get('board_options', {})}
+    options = {'pnum': processor}
+    default_properties = {}
+    for menu, choice in DEFAULT_BOARD_OPTIONS.items():
+        if f'{board}.menu.{menu}.{choice}' in properties:
+            options[menu] = choice
+        else:
+            # Boards without optimization/debug menus still use CI defaults.
+            default_properties.update({
+                'opt': {'build.flags.optimize': '-Os -flto'},
+                'dbg': {'build.flags.debug': '-g -DNDEBUG'},
+            }[menu])
+    options.update(case.get('board_options', {}))
     flags = ['-include "{runtime.platform.path}/ci/miscellaneous/peripherals.h"']
     flags.extend(f'-DCI_ENABLE_{module}' for module in modules)
     if port is not None:
@@ -131,7 +151,8 @@ def make_build(case, processor, board, port, package, properties, prefix, series
     elif 'UART' not in modules:
         flags.append('-DHWSERIAL_NONE')
     flags.extend(case.get('extra_flags', []))
-    build_properties = dict(case.get('build_properties', {}))
+    flags.append(properties.get(prefix + 'build.extra_flags', ''))
+    build_properties = {**default_properties, **case.get('build_properties', {})}
     # Keep the peripheral override when a case also supplies build.extra_flags.
     if build_properties.get('build.extra_flags'):
         flags.append(build_properties['build.extra_flags'])
@@ -148,5 +169,7 @@ def make_build(case, processor, board, port, package, properties, prefix, series
         'linker_vars': (
             f"__FLASH_SIZE={properties[prefix + 'upload.maximum_size']} "
             f"__RAM_SIZE={properties[prefix + 'upload.maximum_data_size']}"
+            + (f" __FLASH_ORIGIN={properties[prefix + 'build.flash_offset']}"
+               if prefix + 'build.flash_offset' in properties else '')
         ),
     }

@@ -16,8 +16,9 @@ the MemBrowse target generator. It selects these representative processors from
 | V20x | CH32V203RB |
 | V30x | CH32V307VCT6 |
 | L10x | CH32L103C8T6 |
+| V4x7 | ADAFRUIT_METRO_CH32V407, ADAFRUIT_METRO_CH32V467 |
 
-The suite has 58 configurations and runs up to four concurrently. Smaller
+The suite has 65 configurations and runs up to four concurrently. Smaller
 package variants and alternate boards such as QTPy and LANA TNY are excluded.
 
 Edit `BUILD_CASES` near the top of `tools/miscellaneous_builds.py` to change the
@@ -44,7 +45,7 @@ flags does not automatically change the label. CI and MemBrowse share this list.
 
 | Sketch | Configuration | Processors |
 | --- | --- | --- |
-| HeapAllocation | Metro defaults | CH32V467 only; other processors skipped via `.skip.txt` |
+| HeapAllocation | `-Os`, LTO, no optional peripherals | CH32V467 only; other processors skipped via `.skip.txt` |
 | ArduinoBlinkExample | `-Os`, LTO, no optional peripherals | All selected processors |
 | ArduinoFadeExample | `-Os`, LTO, only TIM | All selected processors |
 | i2c_scanner | `-Os`, LTO, only I2C and UART | V003 and V002 |
@@ -57,13 +58,13 @@ V003 has no serial menu, so its only UART is selected with a compiler definition
 
 HeapAllocation is for CH32V467 only and checks ordinary malloc/calloc/realloc/free
 along with PSRAM allocation. Its `.skip.txt` excludes unsupported processors from
-the example CI builds. A dedicated Metro CH32V467 configuration builds the sketch.
+the example CI builds. The shared build cases include the Metro CH32V467.
 
 The suite force-includes `ci/miscellaneous/peripherals.h` in each C/C++ source
 file. This loads the original variant, clears its default module definitions,
 and enables only the requested modules via `CI_ENABLE_*` compiler definitions.
 Variant files are unchanged. Builds retain debug symbols for memory analysis.
-USB remains at its default disabled setting.
+USB retains each board's default setting; it is enabled on the Metro V4x7 boards.
 
 MemBrowse report and onboarding workflows include the suite automatically.
 The report workflow processes it as the `Miscellaneous` group. MemBrowse target
