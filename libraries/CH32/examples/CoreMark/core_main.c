@@ -86,12 +86,15 @@ char *mem_name[3] = {"Static","Heap","Stack"};
 */
 
 #if MAIN_HAS_NOARGC
-MAIN_RETURN_TYPE main(void) {
+MAIN_RETURN_TYPE coremark_main(void) 
+{
+
 	int argc=0;
 	char *argv[1];
 #else
-MAIN_RETURN_TYPE main(int argc, char *argv[]) {
+MAIN_RETURN_TYPE coremark_main(int argc, char *argv[]) {
 #endif
+
 	ee_u16 i,j=0,num_algorithms=0;
 	ee_s16 known_id=-1,total_errors=0;
 	ee_u16 seedcrc=0;
@@ -100,6 +103,7 @@ MAIN_RETURN_TYPE main(int argc, char *argv[]) {
 #if (MEM_METHOD==MEM_STACK)
 	ee_u8 stack_memblock[TOTAL_DATA_SIZE*MULTITHREAD];
 #endif
+
 	/* first call any initializations needed */
 	portable_init(&(results[0].port), &argc, argv);
 	/* First some checks to make sure benchmark will run ok */
@@ -170,7 +174,9 @@ MAIN_RETURN_TYPE main(int argc, char *argv[]) {
 			num_algorithms++;
 	}
 	for (i=0 ; i<MULTITHREAD; i++) 
+	{
 		results[i].size=results[i].size/num_algorithms;
+	}
 	/* Assign pointers */
 	for (i=0; i<NUM_ALGORITHMS; i++) {
 		ee_u32 ctx;
