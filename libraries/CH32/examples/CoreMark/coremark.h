@@ -24,7 +24,9 @@ Original Author: Shay Gal-on
 	Define total size for data algorithms will operate on
 */
 #ifndef TOTAL_DATA_SIZE 
-#define TOTAL_DATA_SIZE 2*1000
+//#define TOTAL_DATA_SIZE 2*1000
+// V003 only has 1Kb RAM, set MEM_METHOD to MEM_STATIC in core_portne.h to get link errors when too large
+#define TOTAL_DATA_SIZE 2*500
 #endif
 
 #define SEED_ARG 0
