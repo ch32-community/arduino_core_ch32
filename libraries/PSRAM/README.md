@@ -50,8 +50,8 @@ The raw mapping belongs to the allocator; do not write directly to it.
 Pico's `PSRAM` global-variable attribute is not implemented in this change.
 
 See `PSRAMBuffer` for allocation, resizing, and release. Its `.skip.txt` excludes
-families without PSRAM from the generic example sweep; build it explicitly for
-a CH32V467 board.
+boards without PSRAM from the generic example sweep while retaining coverage
+for the CH32V467 board.
 
 The hardware setup is adapted from WCH's CH32V4x7 EVT example at
 [afee2d1](https://github.com/ch32-riscv-ug/CH32V407/tree/afee2d144b184176e5ca21202714ca9add1dd46f)
