@@ -219,6 +219,11 @@ bool CH32SDIO::initialize(bool fourBit) {
 bool CH32SDIO::cardReady() {
   uint32_t start = millis();
   do {
+    // DAT0 remains low while the card programs a block. Wait for its busy
+    // interval to end before starting the command-response timeout.
+    if (GPIO_ReadInputDataBit(GPIOB, GPIO_Pin_14) == Bit_RESET) {
+      continue;
+    }
     if (!command(CMD13, (uint32_t)_rca << 16) || !checkCardStatus()) {
       return false;
     }
@@ -390,7 +395,8 @@ bool CH32SDIO::syncDevice() {
  * failed. */
 bool CH32SDIO::isBusy() {
 #if defined(CH32V4x7)
-  if (!_ready || !command(CMD13, (uint32_t)_rca << 16) || !checkCardStatus()) {
+  if (!_ready || GPIO_ReadInputDataBit(GPIOB, GPIO_Pin_14) == Bit_RESET ||
+      !command(CMD13, (uint32_t)_rca << 16) || !checkCardStatus()) {
     return true;
   }
   return (_response & stateMask) != readyTransfer;
