@@ -161,6 +161,7 @@ void SDI_Printf_Enable(void)
     Delay_Ms(1);
 }
 
+#if 0
 /*********************************************************************
  * @fn      _write
  *
@@ -242,7 +243,7 @@ __attribute__((used)) int _write(int fd, char *buf, int size)
 #endif
     return size;
 }
-#endif 
+#endif
 
 /*********************************************************************
  * @fn      _sbrk
