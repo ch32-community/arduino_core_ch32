@@ -35,17 +35,18 @@ Memory location  : Static
 
 | Board                  | CoreMark |  Notes |
 | ---------------------- | :------: | :----: |
-| CH32V003               | 111      | 18s, 2000 it    |
-| CH32V002 @ 48 MHz HSI  | 142      | 14s, 2000 it     | 
-| CH32V002 @ 24 MHz HSI  | 100      | 11s, 1100 it    | 
-| CH32V002 @ 8 MHz HSI  | 40     | 15s, 400 it    | 
-| CH32VM00X->V006        | ?.??     |        |
-| CH32X03x               | ?.??     |        |
-| CH32V10x               | ?.??     |        |
-| CH32V20x               | ?.??     |        |
-| CH32V30x               | ?.??     |        |
-| CH32V4x7               | ?.??     |        |
-| CH32L10x               | ?.??     |        |
+| CH32V003               | 111      | 18s, 2000 it   |
+| CH32V002 @ 48 MHz HSI  | 142      | 14s, 2000 it   | 
+| CH32V002 @ 24 MHz HSI  | 100      | 11s, 1100 it   | 
+| CH32V002 @ 8 MHz HSI   | 40       | 15s, 400 it    | 
+| CH32VM00X->V006        | ???      |        |
+| CH32X03x               | ???      |        |
+| CH32V10x               | ???      |        |
+| CH32V20x               | ???      |        |
+| CH32V30x               | ???      |        |
+| CH32V307 @ 144 MHz HSI | 1000     | 11s, 11000 it  |
+| CH32V4x7               | ???      |        |
+| CH32L10x               | ???      |        |
 
 (larger numbers are better)
 
