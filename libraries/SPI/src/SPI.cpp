@@ -145,7 +145,7 @@ void SPIClass::end()
   */
 void SPIClass::setBitOrder(uint8_t _pin, BitOrder _bitOrder)
 {
-  uint8_t idx = pinIdx(_pin, GET_IDX);
+  uint8_t idx = pinIdx(_pin, ADD_NEW_PIN);
   if (idx >= NB_SPI_SETTINGS) {
     return;
   }
@@ -155,6 +155,7 @@ void SPIClass::setBitOrder(uint8_t _pin, BitOrder _bitOrder)
   spi_init(&_spi, spiSettings[idx].clk,
            spiSettings[idx].dMode,
            spiSettings[idx].bOrder);
+  _CSPinConfig = _pin;
 }
 
 /**
@@ -171,7 +172,7 @@ void SPIClass::setBitOrder(uint8_t _pin, BitOrder _bitOrder)
   */
 void SPIClass::setDataMode(uint8_t _pin, uint8_t _mode)
 {
-  uint8_t idx = pinIdx(_pin, GET_IDX);
+  uint8_t idx = pinIdx(_pin, ADD_NEW_PIN);
   if (idx >= NB_SPI_SETTINGS) {
     return;
   }
@@ -189,6 +190,7 @@ void SPIClass::setDataMode(uint8_t _pin, uint8_t _mode)
   spi_init(&_spi, spiSettings[idx].clk,
            spiSettings[idx].dMode,
            spiSettings[idx].bOrder);
+  _CSPinConfig = _pin;
 }
 
 /**
@@ -200,7 +202,7 @@ void SPIClass::setDataMode(uint8_t _pin, uint8_t _mode)
   */
 void SPIClass::setClockDivider(uint8_t _pin, uint8_t _divider)
 {
-  uint8_t idx = pinIdx(_pin, GET_IDX);
+  uint8_t idx = pinIdx(_pin, ADD_NEW_PIN);
   if (idx >= NB_SPI_SETTINGS) {
     return;
   }
@@ -214,6 +216,7 @@ void SPIClass::setClockDivider(uint8_t _pin, uint8_t _divider)
   spi_init(&_spi, spiSettings[idx].clk,
            spiSettings[idx].dMode,
            spiSettings[idx].bOrder);
+  _CSPinConfig = _pin;
 }
 
 /**
