@@ -113,6 +113,8 @@ ee_u32 default_num_contexts=1;
 */
 void portable_init(core_portable *p, int *argc, char *argv[])
 {
+	(void)argc;
+	(void)argv;
 	// Serial.begin(9600);
 	// #error "Call board initialization routines in portable init (if needed), in particular initialize UART!\n"
 	if (sizeof(ee_ptr_int) != sizeof(ee_u8 *)) {
