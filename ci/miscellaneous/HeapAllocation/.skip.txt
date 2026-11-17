@@ -15,3 +15,4 @@ CH32V103R8T6_LTO_Heap-HeapAllocation
 CH32V203RB_LTO_Heap-HeapAllocation
 CH32V307VCT6_LTO_Heap-HeapAllocation
 CH32L103C8T6_LTO_Heap-HeapAllocation
+ADAFRUIT_METRO_CH32V407_LTO_Heap-HeapAllocation
