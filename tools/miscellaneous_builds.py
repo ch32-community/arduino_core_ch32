@@ -139,7 +139,18 @@ def make_build(case, processor, board, port, package, properties, prefix, series
                 'opt': {'build.flags.optimize': '-Os -flto'},
                 'dbg': {'build.flags.debug': '-g -DNDEBUG'},
             }[menu])
-    options.update(case.get('board_options', {}))
+    for menu, choice in case.get('board_options', {}).items():
+        has_opt_menu = any(key.startswith(f'{board}.menu.opt.') for key in properties)
+        if menu == 'opt' and not has_opt_menu:
+            optimization = re.fullmatch(r'o([s123])(?:std|lto)|o([g0])std', choice)
+            if optimization is None:
+                raise ValueError(f'Unknown optimization choice: {choice}')
+            level = optimization.group(1) or optimization.group(2)
+            default_properties['build.flags.optimize'] = (
+                f'-O{level}' + (' -flto' if choice.endswith('lto') else '')
+            )
+        else:
+            options[menu] = choice
     flags = ['-include "{runtime.platform.path}/ci/miscellaneous/peripherals.h"']
     flags.extend(f'-DCI_ENABLE_{module}' for module in modules)
     if port is not None:
