@@ -2,7 +2,8 @@
 #include <stdio.h>
 
 // a minor hack to rename the main function, so we can call it from C++
-#define main(ignore) coremark_main(void)
+// MxRD 261117: renamed main to coremark_main
+//#define coremark_main(ignore) coremark_main(void)
 
 #define FLAGS_STR "(flags unknown)"
 
@@ -40,7 +41,7 @@ Original Author: Shay Gal-on
 	Define to 1 if the platform supports floating point.
 */
 #ifndef HAS_FLOAT 
-#define HAS_FLOAT 1
+#define HAS_FLOAT 0
 #endif
 /* Configuration : HAS_TIME_H
 	Define to 1 if platform has the time.h header file,
@@ -60,7 +61,7 @@ Original Author: Shay Gal-on
 	Define to 1 if the platform has stdio.h.
 */
 #ifndef HAS_STDIO
-#define HAS_STDIO 1
+#define HAS_STDIO 0
 #endif
 /* Configuration : HAS_PRINTF
 	Define to 1 if the platform has stdio.h and implements the printf function.
@@ -84,7 +85,9 @@ Original Author: Shay Gal-on
  #define COMPILER_FLAGS FLAGS_STR /* "Please put compiler flags here (e.g. -o3)" */
 #endif
 #ifndef MEM_LOCATION 
- #define MEM_LOCATION "STACK"
+// MxRD: string should match value for MEM_METHOD set below
+// "Static","Heap","Stack"};
+#define MEM_LOCATION "Static"
 #endif
 
 /* Data Types :
@@ -133,8 +136,10 @@ typedef ee_u32 CORE_TICKS;
 	MEM_STATIC - to use a static memory array.
 	MEM_STACK - to allocate the data block on the stack (NYI).
 */
+// MxRD: V003 only has 1Kb RAM, set TOTAL_DATA_SIZEin coremark.h to set the total size for data used 
 #ifndef MEM_METHOD
-#define MEM_METHOD MEM_STACK
+#define MEM_METHOD MEM_STATIC
+///MEM_STACK
 #endif
 
 /* Configuration : MULTITHREAD
