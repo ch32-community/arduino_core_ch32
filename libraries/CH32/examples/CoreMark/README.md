@@ -11,7 +11,7 @@ variety of common tasks: linked list management, matrix multiply, and
 executing state machines.
 
 ## CH32 configuration and compilation
-This release has been configured to run on the smallest CH32 processor: the cH32V003. To fit it into 16kB Flash and 1kB RAM, the following configuration applies:
+This release has been configured to run on the smallest CH32 processor: the CH32V003. To fit it into 16kB Flash and 1kB RAM, the following configuration applies:
 - Use `TOTAL_DATA_SIZE 2*500` instead of `TOTAL_DATA_SIZE 2*1000`
 - Select `MEM_METHOD MEM_STATIC` instead of `MEM_METHOD MEM_STACK`. This will produce link errors when data size is too large.
 - Use these options:
@@ -25,10 +25,14 @@ Please note that the effect of these configuration changes may very well mean th
 
 ## Scores for CH32 boards
 
+CoreMark Size    : 333, 
+Memory location  : Static
+
 | Board                  | CoreMark |  Notes |
 | ---------------------- | :------: | :----: |
-| CH32V003               | 111      | 18s    |
-| CH32VM00X->V002        | 142      | 14s    | 
+| CH32V003               | 111      | 18s, 2000 it    |
+| CH32VM00X->V002        | 142      | 14s, 2000 it     | 
+| V002 @ 24 MHz HSI      | 100      | 11s, 1100 it    | 
 | CH32VM00X->V006        | ?.??     |        |
 | CH32V10x               | ?.??     |        |
 | CH32V20x               | ?.??     |        |
@@ -38,8 +42,7 @@ Please note that the effect of these configuration changes may very well mean th
 
 (larger numbers are better)
 
-CoreMark Size    : 333, 
-Iterations       : 2000
+
 
 
 ## Scores for other Arduino boards
