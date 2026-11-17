@@ -11,7 +11,7 @@ variety of common tasks: linked list management, matrix multiply, and
 executing state machines.
 
 ## CH32 configuration and compilation
-This release has been configured to run on the smallest CH32 processor: the CH32V003. To fit it into 16kB Flash and 1kB RAM, the following configuration applies:
+This release has been configured to run on the smallest CH32 processor: the CH32V003. To fit it into 16kB Flash and 2kB RAM, the following configuration applies:
 - Use `TOTAL_DATA_SIZE 2*500` instead of `TOTAL_DATA_SIZE 2*1000`
 - Select `MEM_METHOD MEM_STATIC` instead of `MEM_METHOD MEM_STACK`. This will produce link errors when data size is too large.
 - Use these options:
@@ -19,9 +19,14 @@ This release has been configured to run on the smallest CH32 processor: the CH32
     - `HAS_STDIO 0`
     - `HAS_PRINTF 0`
 - Compile using -Os LTO and only have the UART peripheral enabled.
-- Clockspeed is the the default clockspeed as set in the IDE, unless noted otherwise.
+- If not mentioned explicitely, clockspeed is the the default clock frequency as set in the IDE.
 
-Please note that the effect of these configuration changes may very well mean that the resulting score for CH32 is not 1:1 comparable to the scores of other boards. The numbers listed for those boards are the original scores, as published by Paul Stoffregen in 2019.
+#### Incompatible scores
+Please note that the effect of these configuration changes means that the resulting score for CH32 is not 1:1 comparable to the scores of other boards. The numbers listed for those boards in the section below are the original scores, as published by Paul Stoffregen in 2019. They are provided for reference purposes only.
+ - Under EEMBC rules, changing TOTAL_DATA_SIZE from 2000 bytes to 1000 bytes invalidates the score for official comparison against other MCUs. Using a smaller dataset means linked lists have fewer nodes and matrices are smaller.
+ - While CoreMark normalizes scores by iterations per second, smaller loops reduce pointer-chasing overhead and branch mispredictions, often resulting in a slightly higher (optimistic) CoreMark/MHz score.
+ - Using the same configuration,  we can compare scores with other cH32 processors but they are not a fair comparison against benchmark scores running the 2000-byte standard.
+
 
 ## Scores for CH32 boards
 
@@ -33,6 +38,7 @@ Memory location  : Static
 | CH32V003               | 111      | 18s, 2000 it    |
 | CH32V002 @ 48 MHz HSI  | 142      | 14s, 2000 it     | 
 | CH32V002 @ 24 MHz HSI  | 100      | 11s, 1100 it    | 
+| CH32V002 @ 8 MHz HSI  | 40     | 15s, 400 it    | 
 | CH32VM00X->V006        | ?.??     |        |
 | CH32X03x               | ?.??     |        |
 | CH32V10x               | ?.??     |        |
