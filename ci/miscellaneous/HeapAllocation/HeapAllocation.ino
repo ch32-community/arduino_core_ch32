@@ -1,4 +1,4 @@
-// Link coverage for the newlib allocator wrappers on every CI processor.
+// CH32V467 only: checks ordinary heap and PSRAM allocation wrappers.
 // Inspect heapChecksPassed if this sketch is run on hardware.
 volatile bool heapChecksPassed;
 volatile size_t allocationBytes = 32;
