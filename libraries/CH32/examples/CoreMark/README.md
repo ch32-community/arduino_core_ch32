@@ -34,6 +34,7 @@ Memory location  : Static
 | CH32V002 @ 48 MHz HSI  | 142      | 14s, 2000 it     | 
 | CH32V002 @ 24 MHz HSI  | 100      | 11s, 1100 it    | 
 | CH32VM00X->V006        | ?.??     |        |
+| CH32X03x               | ?.??     |        |
 | CH32V10x               | ?.??     |        |
 | CH32V20x               | ?.??     |        |
 | CH32V30x               | ?.??     |        |
