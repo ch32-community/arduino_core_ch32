@@ -211,7 +211,8 @@ def build_sketch(variant, sketch, local_build, build_properties=None, display_na
                 env=build_env, stdout=PIPE, stderr=PIPE,
             )
         # get stderr into a form where warning/error was output to stderr
-        if build_result.returncode != 0:
+        emit_warnings_as_errors = os.environ.get('CH32_WARNINGS_AS_ERRORS') == '1'
+        if build_result.returncode != 0 or (build_result.stderr and emit_warnings_as_errors):
             success = FAILED
             ret[1] = 1
         else:
