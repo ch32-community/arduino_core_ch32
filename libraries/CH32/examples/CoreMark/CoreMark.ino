@@ -18,6 +18,7 @@ void setup()
 	Serial.println();
 	Serial.println("Iterations/Sec is the main benchmark result, higher numbers are better");
 	Serial.println("Running.... (usually requires 12 to 20 seconds)");
+	ee_printf("\nCPU clock (MHz)  : %d.%d", F_CPU/1000000L, F_CPU%1000000L);
 	Serial.println();
 	delay(250);
 	coremark_main(); // Run the benchmark  :-)
