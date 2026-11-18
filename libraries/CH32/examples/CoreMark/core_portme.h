@@ -116,6 +116,14 @@ typedef size_t ee_size_t;
 #define CORETIMETYPE ee_u32 
 typedef ee_u32 CORE_TICKS;
 
+/* Arduino_millis() supplies millisecond ticks, including for integer reporting. */
+#define EE_TICKS_PER_SEC 1000
+
+#if !HAS_FLOAT
+/* Compact division for reporting; the caller must supply a nonzero divisor. */
+uint64_t portable_div_u64(uint64_t numerator, uint64_t divisor);
+#endif
+
 /* Configuration : SEED_METHOD
 	Defines method to get seed values that cannot be computed at compile time.
 	

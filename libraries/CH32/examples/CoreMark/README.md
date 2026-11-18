@@ -20,6 +20,8 @@ This release has been configured to run on the smallest CH32 processor: the CH32
     - `HAS_PRINTF 0`
 - Compile using -Os LTO and only have the UART peripheral enabled.
 
+With `HAS_FLOAT 0`, elapsed time retains millisecond precision and iterations per second are calculated from raw ticks using integer arithmetic, then rounded to two decimal places. Earlier versions divided by elapsed time truncated to whole seconds, which inflated the reported score. The CH32 scores below predate this correction and have not been remeasured.
+
 #### Incompatible scores
 Please note that the effect of these configuration changes means that the resulting score for CH32 is not 1:1 comparable to the scores of other boards. The numbers listed for those boards in the section below are the original scores, as published by Paul Stoffregen in 2019. They are provided for reference purposes only.
  - Under EEMBC rules, changing TOTAL_DATA_SIZE from 2000 bytes to 1000 bytes invalidates the score for official comparison against other MCUs. Using a smaller dataset means linked lists have fewer nodes and matrices are smaller.
