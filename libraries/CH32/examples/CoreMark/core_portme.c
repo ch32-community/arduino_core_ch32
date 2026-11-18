@@ -45,20 +45,9 @@ extern uint32_t Arduino_millis();
 CORETIMETYPE barebones_clock() {
 	return Arduino_millis();
 }
-/* Define : TIMER_RES_DIVIDER
-	Divider to trade off timer resolution and total time that can be measured.
-
-	Use lower values to increase resolution, but make sure that overflow does not occur.
-	If there are issues with the return value overflowing, increase this value.
-	*/
-#define CLOCKS_PER_SEC 1000.0
-#define TIMER_RES_DIVIDER 1
-
 #define GETMYTIME(_t) (*_t=barebones_clock())
 #define MYTIMEDIFF(fin,ini) ((fin)-(ini))
-#define TIMER_RES_DIVIDER 1
 #define SAMPLE_TIME_IMPLEMENTATION 1
-#define EE_TICKS_PER_SEC (CLOCKS_PER_SEC / TIMER_RES_DIVIDER)
 
 /** Define Host specific (POSIX), or target specific global time variables. */
 static CORETIMETYPE start_time_val, stop_time_val;
@@ -87,8 +76,7 @@ void stop_time(void) {
 	Actual value returned may be cpu cycles, milliseconds or any other value,
 	as long as it can be converted to seconds by <time_in_secs>.
 	This methodology is taken to accomodate any hardware or simulated platform.
-	The sample implementation returns millisecs by default, 
-	and the resolution is controlled by <TIMER_RES_DIVIDER>
+	This Arduino implementation returns elapsed milliseconds.
 */
 CORE_TICKS get_time(void) {
 	CORE_TICKS elapsed=(CORE_TICKS)(MYTIMEDIFF(stop_time_val, start_time_val));
@@ -98,12 +86,34 @@ CORE_TICKS get_time(void) {
 	Convert the value returned by get_time to seconds.
 
 	The <secs_ret> type is used to accomodate systems with no support for floating point.
-	Default implementation implemented by the EE_TICKS_PER_SEC macro above.
+	The tick frequency is defined by EE_TICKS_PER_SEC in core_portme.h.
 */
 secs_ret time_in_secs(CORE_TICKS ticks) {
 	secs_ret retval=((secs_ret)ticks) / (secs_ret)EE_TICKS_PER_SEC;
 	return retval;
 }
+
+#if !HAS_FLOAT
+/* Keep reporting small enough for V003: the generic 64-bit division runtime
+ * exceeds its flash budget. This runs after timing, never in the benchmark. */
+uint64_t portable_div_u64(uint64_t numerator, uint64_t divisor) {
+	uint64_t quotient = 0;
+	uint64_t bit = 1;
+	while (divisor <= (numerator >> 1)) {
+		divisor <<= 1;
+		bit <<= 1;
+	}
+	do {
+		if (numerator >= divisor) {
+			numerator -= divisor;
+			quotient |= bit;
+		}
+		divisor >>= 1;
+		bit >>= 1;
+	} while (bit);
+	return quotient;
+}
+#endif
 
 ee_u32 default_num_contexts=1;
 

@@ -297,9 +297,24 @@ MAIN_RETURN_TYPE coremark_main(int argc, char *argv[]) {
 	if (time_in_secs(total_time) > 0)
 		ee_printf("Iterations/Sec   : %f\n",default_num_contexts*results[0].iterations/time_in_secs(total_time));
 #else 
-	ee_printf("Total time (secs): %d\n",time_in_secs(total_time));
-	if (time_in_secs(total_time) > 0)
-		ee_printf("Iterations/Sec   : %d\n",default_num_contexts*results[0].iterations/time_in_secs(total_time));
+	/* Keep the millisecond resolution without requiring floating point. */
+	ee_u32 millis = (total_time % EE_TICKS_PER_SEC) * 1000 / EE_TICKS_PER_SEC;
+	ee_printf("Total time (secs): %lu.%lu%lu%lu\n",
+		(long unsigned)(total_time / EE_TICKS_PER_SEC),
+		(long unsigned)(millis / 100), (long unsigned)(millis / 10 % 10),
+		(long unsigned)(millis % 10));
+	if (total_time > 0) {
+		/* Widen before scaling; round only the final hundredth of an iteration/s. */
+		uint64_t score = portable_div_u64((uint64_t)default_num_contexts
+			* results[0].iterations * EE_TICKS_PER_SEC * 100 + total_time / 2,
+			total_time);
+		ee_u32 whole = portable_div_u64(score, 100);
+		ee_u32 fraction = score - (uint64_t)whole * 100;
+		/* ee_printf() ignores field widths, so print fractional digits separately. */
+		ee_printf("Iterations/Sec   : %lu.%lu%lu\n",
+			(long unsigned)whole, (long unsigned)(fraction / 10),
+			(long unsigned)(fraction % 10));
+	}
 #endif
 	if (time_in_secs(total_time) < 10) {
 		ee_printf("ERROR! Must execute for at least 10 secs for a valid result!\n");
