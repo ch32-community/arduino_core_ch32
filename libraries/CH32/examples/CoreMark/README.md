@@ -46,7 +46,7 @@ Please note that the effect of these configuration changes means that the result
 | CH32VM00X->V006        | ???      |        |
 | CH32X03x               | ???      |        |
 | CH32V103 @ 72MHz HSI   | 352      | 17s, 6000 it   |
-| CH32V203 144MHz HSI    | 846      | 13s, 11000 it  |
+| CH32V203 @ 144MHz HSI    | 846      | 13s, 11000 it  |
 | CH32V307 @ 144 MHz HSI | 1000     | 11s, 11000 it  |
 | CH32V4x7               | ???      |        |
 | CH32L10x               | ???      |        |
