@@ -103,7 +103,7 @@ If uploads fail, make sure your WCH-LinkE firmware matches the latest version sh
 After installing the board package for the first time, run the setup script once so the udev rules and libraries get installed:
 
 ```bash
-cd ~/.arduino15/packages/WCH/tools/beforeinstall/1.0.0
+cd ~/.arduino15/packages/ch32-community/tools/beforeinstall/1.0.0
 ./start.sh
 ```
 
@@ -116,6 +116,17 @@ copy rules
 Reload rules
 DONE
 ```
+
+Unplug and reconnect the WCH-LinkE after installing the rules. If OpenOCD reports `LIBUSB_ERROR_ACCESS`, add a udev rule for the LinkE (USB ID `1a86:8010`):
+
+```bash
+sudo tee /etc/udev/rules.d/70-wch-linke.rules >/dev/null <<'EOF'
+SUBSYSTEM=="usb", ATTR{idVendor}=="1a86", ATTR{idProduct}=="8010", MODE="0660", TAG+="uaccess"
+EOF
+sudo udevadm control --reload-rules
+```
+
+Then unplug and reconnect the WCH-LinkE again.
 
 </details>
 
