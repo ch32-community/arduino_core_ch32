@@ -1,5 +1,5 @@
 # CoreMark - CPU Performance Benchmark
-source: [CoreMark](https://github.com/PaulStoffregen/CoreMark) by Paul Stoffregen
+Source: [CoreMark](https://github.com/PaulStoffregen/CoreMark) by Paul Stoffregen
 
 ## Background info
 CoreMark was designed by EEMBC to replace Dhrystone by measuring basic processor pipeline efficiency using common embedded algorithms. 
@@ -37,7 +37,7 @@ Please note that the effect of these configuration changes means that the result
 
 | Board                  | CoreMark |  Duration |
 | ---------------------- | :------: | :----: |
-| CH32V003               | 111      | 18s, 2000 it   |
+| CH32V003 @ 48 MHz HSI  | 111      | 18s, 2000 it   |
 | CH32V002 @ 48 MHz HSI<sup>+</sup> | 142    | 14s, 2000 it   | 
 | CH32V002 @ 48 MHz HSI<sup>-</sup> | 84     | 13s, 1100 it   | 
 | CH32V002 @ 24 MHz HSI<sup>+</sup> | 100    | 11s, 1100 it   | 
