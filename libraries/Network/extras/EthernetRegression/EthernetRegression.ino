@@ -281,7 +281,7 @@ void testTcpUdp() {
   delete[] copies;
   client.write(message, sizeof(message));
   start = millis();
-  while (peer.available() < sizeof(message) && millis() - start < 1000) Network.poll();
+  while (peer.available() < (int)sizeof(message) && millis() - start < 1000) Network.poll();
   check("300 TCP copies release without corrupting live client",
         client.connected() && peer.read(received, sizeof(received)) == sizeof(received) &&
         memcmp(message, received, sizeof(message)) == 0);
