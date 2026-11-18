@@ -123,7 +123,6 @@
 
 /* The internal PHY (MDIO address 1; the V307's SMI ignores the address). */
 #define PHY_ADDR 1u
-#define PHY_BCR 0x00
 #define PHY_BSR 0x01
 #define PHY_ANLPAR 0x05
 #define PHY_ANER 0x06

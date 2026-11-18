@@ -71,7 +71,7 @@ void runTests() {
   client.stop();
   // Repeated destruction must release the server's pending-client array.
   { NetworkServer warmup(4342, 2); warmup.begin(); }
-  int before = mallinfo().uordblks;
+  const auto before = mallinfo().uordblks;
   bool servers = true;
   for (unsigned i = 0; i < 100; i++) {
     NetworkServer temporary(4342, 2);
