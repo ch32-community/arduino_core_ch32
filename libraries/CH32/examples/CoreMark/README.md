@@ -19,7 +19,6 @@ This release has been configured to run on the smallest CH32 processor: the CH32
     - `HAS_STDIO 0`
     - `HAS_PRINTF 0`
 - Compile using -Os LTO and only have the UART peripheral enabled.
-- If not mentioned explicitely, clockspeed is the the default clock frequency as set in the IDE.
 
 #### Incompatible scores
 Please note that the effect of these configuration changes means that the resulting score for CH32 is not 1:1 comparable to the scores of other boards. The numbers listed for those boards in the section below are the original scores, as published by Paul Stoffregen in 2019. They are provided for reference purposes only.
@@ -30,20 +29,24 @@ Please note that the effect of these configuration changes means that the result
 
 ## Scores for CH32 boards
 
-CoreMark Size    : 333, 
-Memory location  : Static
+- If not mentioned explicitely, clockspeed is the the default clock frequency as set in the IDE.
+- CoreMark Size    : 333, 
+- Memory location  : Static
+- VM002 tested both with<sup>+</sup> and without<sup>-</sup> _zmmul compilation option for hardware multiplication.
 
-| Board                  | CoreMark |  Notes |
+
+| Board                  | CoreMark |  Duration |
 | ---------------------- | :------: | :----: |
 | CH32V003               | 111      | 18s, 2000 it   |
-| CH32V002 @ 48 MHz HSI  | 142      | 14s, 2000 it   | 
-| CH32V002 @ 24 MHz HSI  | 100      | 11s, 1100 it   | 
-| CH32V002 @ 8 MHz HSI   | 40       | 15s, 600 it    | 
+| CH32V002 @ 48 MHz HSI<sup>+</sup> | 142    | 14s, 2000 it   | 
+| CH32V002 @ 48 MHz HSI<sup>-</sup> | 84     | 13s, 1100 it   | 
+| CH32V002 @ 24 MHz HSI<sup>+</sup> | 100    | 11s, 1100 it   | 
+| CH32V002 @ 8 MHz HSI<sup>+</sup>  | 40     | 15s, 600 it    | 
+| CH32V002 @ 8 MHz HSI<sup>-</sup>  | 14     | 14s, 200 it    | 
 | CH32VM00X->V006        | ???      |        |
 | CH32X03x               | ???      |        |
-| CH32V10x               | ???      |        |
-| CH32V20x               | ???      |        |
-| CH32V30x               | ???      |        |
+| CH32V103 @ 72MHz HSI   | 352      | 17s, 6000 it   |
+| CH32V203 144MHz HSI    | 846      | 13s, 11000 it  |
 | CH32V307 @ 144 MHz HSI | 1000     | 11s, 11000 it  |
 | CH32V4x7               | ???      |        |
 | CH32L10x               | ???      |        |
