@@ -76,7 +76,7 @@ env.Append(
         "-fno-exceptions",
         "-fno-use-cxa-atexit",
         "-fpermissive",
-        "-std=gnu++14"
+        "-std=gnu++17"
     ],
 
     LINKFLAGS=machine_flags + [
@@ -110,6 +110,7 @@ env.Append(
     ],
 
     CPPPATH=[
+        join(FRAMEWORK_DIR, "libraries", "Network", "lwip", "src", "include"),
         join(FRAMEWORK_DIR, "cores", "arduino"),
         join(FRAMEWORK_DIR, "cores", "arduino", "avr"),
         join(FRAMEWORK_DIR, "cores", "arduino", "ch32"),

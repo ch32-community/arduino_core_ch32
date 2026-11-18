@@ -13,6 +13,7 @@
 #include "analog.h"
 #include "ch32yyxx_adc.h"
 #include "PinAF_ch32yyxx.h"
+#include "wiring_time.h"
 
 
 #ifdef __cplusplus
@@ -34,10 +35,16 @@ static PinName g_current_pin = NC;
 /* Private_Defines */
 #if defined(ADC_MODULE_ENABLED) && !defined(ADC_MODULE_ONLY)
 
-#if (defined(CH32V20x) || defined(CH32V30x) || defined(CH32V30x_C) || defined(CH32V10x) || defined(CH32L10x) || defined(CH32VM00X) )
+#if defined(CH32V4x7)
+// ADC1/ADC2 share the clock divider and g_current_pin. Serialize their complete
+// read lifecycle without making an interrupt wait for the interrupted caller.
+static uint32_t adc_read_busy = 0;
+#endif
+
+#if (defined(CH32V20x) || defined(CH32V30x) || defined(CH32V30x_C) || defined(CH32V4x7) || defined(CH32V10x) || defined(CH32L10x) || defined(CH32VM00X) )
 
 /* Default to use maximum sampling period */
-#if defined(CH32L10x) || defined(CH32VM00X)
+#if defined(CH32L10x) || defined(CH32VM00X) || defined(CH32V4x7)
 
 #ifndef ADC_SAMPLINGTIME
 #if defined(ADC_SampleTime_CyclesMode7) 
@@ -88,7 +95,7 @@ static PinName g_current_pin = NC;
  * Default to use maximum sampling period 
  */
 
-#if defined(CH32L10x) || defined(CH32VM00X)
+#if defined(CH32L10x) || defined(CH32VM00X) || defined(CH32V4x7)
 
 #ifndef ADC_SAMPLINGTIME_INTERNAL
 #if defined(ADC_SampleTime_CyclesMode7)
@@ -614,10 +621,17 @@ void ADC_Stop(ADC_TypeDef *padc)
   * @brief  This function will set the ADC to the required value
   * @param  pin : the pin to use
   * @param  resolution : resolution for converted data: 8/10/12
-  * @retval the value of the adc
+  * @retval ADC value; on CH32V4x7, zero if another ADC read is in progress.
   */
 uint16_t adc_read_value(PinName pin, uint32_t resolution)
 {
+#if defined(CH32V4x7)
+  // RV32A exchange is atomic even when called from an interrupt; no IRQ state
+  // is changed. A contending read must not initialize or reset either ADC.
+  if (__atomic_exchange_n(&adc_read_busy, 1, __ATOMIC_ACQUIRE)) {
+    return 0;
+  }
+#endif
 
   ADC_TypeDef *padc ;
   ADC_InitTypeDef ADC_InitStructure={};
@@ -661,7 +675,7 @@ uint16_t adc_read_value(PinName pin, uint32_t resolution)
   ADC_InitStructure.ADC_ContinuousConvMode   = DISABLE;
   ADC_InitStructure.ADC_NbrOfChannel         = 1; 
   ADC_InitStructure.ADC_ExternalTrigConv     = ADC_ExternalTrigConv_None;
- #if !defined(CH32V00x) && !defined(CH32V10x)  && !defined(CH32VM00X)
+ #if !defined(CH32V00x) && !defined(CH32V10x)  && !defined(CH32VM00X) && !defined(CH32V4x7)
   ADC_InitStructure.ADC_OutputBuffer         = ENABLE;
 #endif
   ADC_Init(padc, &ADC_InitStructure);
@@ -671,7 +685,18 @@ uint16_t adc_read_value(PinName pin, uint32_t resolution)
   /*##-2- Configure ADC regular channel ######################################*/  
   ADC_RegularChannelConfig(padc, channel, ADC_REGULAR_RANK_1, samplingTime );	  
 
-#if defined(ADC_CTLR_ADCAL) 
+#if defined(CH32V4x7)
+  // RM 12.2.2 requires at least two ADC clocks after power-on. The supported
+  // clock settings satisfy this with 2 us. Follow WCH's ADC example: calibration
+  // corrects the hardware result; this SDK has no Get_CalibrationValue API.
+  delayMicroseconds(2);
+  ADC_ResetCalibration(padc);
+  while (ADC_GetResetCalibrationStatus(padc)) {
+  }
+  ADC_StartCalibration(padc);
+  while (ADC_GetCalibrationStatus(padc)) {
+  }
+#elif defined(ADC_CTLR_ADCAL)
   /*##-2.1- Calibrate ADC then Start the conversion process ####################*/
    #if !defined(CH32V00x) 
   ADC_BufferCmd(padc, DISABLE);   //disable buffer
@@ -684,6 +709,15 @@ uint16_t adc_read_value(PinName pin, uint32_t resolution)
 	ADC_BufferCmd(padc, ENABLE);   //enable buffer  
 #endif
 
+#if defined(CH32V4x7)
+  if (pin == PADC_TEMP || pin == PADC_VREF) {
+    // ADC_DeInit below resets this gate after every read. RM section 12.2.6
+    // requires startup settling; allow a conservative 100 us before sampling.
+    ADC_TempSensorVrefintCmd(ENABLE);
+    delayMicroseconds(100);
+  }
+#endif
+
   /*##-3- Start the conversion process ####################*/
   ADC_SoftwareStartConvCmd(padc, ENABLE);
   /*##-4- Wait for the end of conversion #####################################*/
@@ -694,6 +728,10 @@ uint16_t adc_read_value(PinName pin, uint32_t resolution)
   uhADCxConvertedValue = padc->RDATAR;
   ADC_Stop(padc);
   ADC_DeInit(padc);
+
+#if defined(CH32V4x7)
+  __atomic_store_n(&adc_read_busy, 0, __ATOMIC_RELEASE);
+#endif
 
 #if defined(ADC_CTLR_ADCAL)
   #if (ADC_RESOLUTION == 8)

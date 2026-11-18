@@ -2,6 +2,12 @@
 
 ### MemBrowse
 
+The report workflow uploads reports with `MEMBROWSE_API_KEY` for same-repository
+PRs and pushes. Fork PRs upload without an API key using MemBrowse's tokenless
+GitHub mode, which requires the project to be marked as open source in the
+MemBrowse Portal. The separate `workflow_run` comment workflow uses the base
+repository's secrets and permissions to fetch the summary and post the PR comment.
+
 [MemBrowse](https://membrowse.com/public/ch32-community/arduino_core_ch32) is a handy tool to track changes in used flash/ram memory as result of a PR.
 - For each board the i2c_scanner example is used as basis for the report.
 - To add new boards or variants, edit the targets configuration: /.github/membrowse-targets.json
@@ -9,6 +15,12 @@
 - When using a variant, make sure to include the pnum in the fqbn parameter of the `build_cmd`: `--fqbn ch32-community:ch32v:CH32VM00X_EVT:pnum=CH32V002F4,dbg=enable_sym`
 
 ### Autmatic build of examples 
+
+CH32V4x7 builds cover both the Adafruit Metro CH32V407 and CH32V467 at the
+default 100 MHz clock, including TinyUSB examples. The miscellaneous builds
+also check Serial on both variants at 100 and 200 MHz. The USB-PD example is
+skipped because these boards do not support PD. MemBrowse tracks both variants
+with separate build directories and reports.
 
 As of PR #69, we can now test specific variants:
 - Build step compile_examples.yml builds the V006K8 and V002F4 variants as specified.

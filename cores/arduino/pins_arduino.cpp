@@ -36,8 +36,20 @@ WEAK uint32_t pinNametoDigitalPin(PinName p)
   return i;
 }
 
+/**
+ * @brief Map an Arduino analog input or internal ADC identifier to a PinName.
+ * @param pin Analog input number or supported internal channel identifier.
+ * @return Mapped pin, or NC if the input is unavailable.
+ */
 PinName analogInputToPinName(uint32_t pin)
 {
+#if defined(CH32V4x7) && defined(ADC_MODULE_ENABLED)
+  // Internal channel identifiers must not be interpreted as header pin numbers.
+  if (pin == PADC_TEMP || pin == PADC_VREF) {
+    return (PinName)pin;
+  }
+#endif
+
   PinName pn = digitalPinToPinName(analogInputToDigitalPin(pin));
   // MMOLE 240330: Don't know what's going on, but PADC_VREF maps to PA_1 instead of just PADC_VREF
   // --->>>

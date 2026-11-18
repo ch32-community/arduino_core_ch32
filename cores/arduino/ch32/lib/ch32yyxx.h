@@ -1,6 +1,10 @@
 #ifndef _CH32YYXX_H_
 #define _CH32YYXX_H_
 
+#if defined(CH32V4x7)
+#include "ch32v4x7.h"
+#endif
+
 /* Include Low Layers drivers */
 #include "ch32yyxx_adc.h"
 #include "ch32yyxx_bkp.h"

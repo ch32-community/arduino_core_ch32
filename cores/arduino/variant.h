@@ -4,21 +4,25 @@
 #include VARIANT_H
 
 // Resolve Board Default (or a platform without a routing menu) to its port.
+// If SERIAL_UART_INSTANCE==0, the board default serial port should be used
+// (When No Serial is selected HWSERIAL_NONE should be defined)
 #if !defined(SERIAL_UART_INSTANCE) || SERIAL_UART_INSTANCE == 0
   #undef SERIAL_UART_INSTANCE
   #if defined(BOARD_DEFAULT_SERIAL)
     #define SERIAL_UART_INSTANCE BOARD_DEFAULT_SERIAL
   #else
-    #define SERIAL_UART_INSTANCE 1
+    #define SERIAL_UART_INSTANCE 1 // 1: by default serial port 1 is used
   #endif
 #endif
 
+// If SERIAL_UART_PINMAP==0, the board default serial pinmap should be used
+// If SERIAL_UART_PINMAP==-1, no serial pinmap will be used
 #if !defined(SERIAL_UART_PINMAP) || SERIAL_UART_PINMAP == 0
-  #undef SERIAL_UART_PINMAP
+  #undef SERIAL_UART_PINMAP  // From this point on, both 0 and -1 mean no pinmap is used
   #if defined(BOARD_DEFAULT_SERIALMAP)
     #define SERIAL_UART_PINMAP BOARD_DEFAULT_SERIALMAP
   #else
-    #define SERIAL_UART_PINMAP 0  // 0 means no pinmap to be used
+    #define SERIAL_UART_PINMAP 0  // 0: by default no serial pinmap is used 
   #endif
 #endif
 

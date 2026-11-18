@@ -50,20 +50,20 @@ class TwoWire : public Stream {
     typedef std::function<void(void)> cb_function_request_t;
 
   private:
-    uint8_t *rxBuffer;           //Dynamic application and release 
+    uint8_t *rxBuffer = nullptr; //Dynamic application and release
     uint16_t rxBufferAllocated;   
     uint16_t rxBufferIndex;
     uint16_t rxBufferLength;
 
     uint8_t txAddress;
-    uint8_t *txBuffer;           //Dynamic application and release
+    uint8_t *txBuffer = nullptr; //Dynamic application and release
     uint16_t txBufferAllocated;
     uint16_t txDataSize;
 
     uint8_t transmitting;
 
     uint8_t ownAddress;
-    i2c_t _i2c;
+    i2c_t _i2c = {};
 
     std::function<void(int)> user_onReceive;
     std::function<void(void)> user_onRequest;
@@ -81,6 +81,13 @@ class TwoWire : public Stream {
   public:
     TwoWire();
     TwoWire(uint32_t sda, uint32_t scl);
+#if defined(WIRE_I3C)
+    ~TwoWire();
+    // Each hardware peripheral and its dynamically allocated buffers have one
+    // owner.
+    TwoWire(const TwoWire &) = delete;
+    TwoWire &operator=(const TwoWire &) = delete;
+#endif
     // setSCL/SDA have to be called before begin()
     void setSCL(uint32_t scl)
     {
@@ -152,5 +159,8 @@ class TwoWire : public Stream {
 
 
 extern TwoWire Wire;
+#if defined(PIN_WIRE1_SDA) && defined(PIN_WIRE1_SCL)
+extern TwoWire Wire1;
+#endif
 
 #endif
