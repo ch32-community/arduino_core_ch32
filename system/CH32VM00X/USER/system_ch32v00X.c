@@ -1,9 +1,9 @@
 /********************************** (C) COPYRIGHT *******************************
- * File Name          : system_ch32v00x.c
+ * File Name          : system_ch32v00X.c
  * Author             : WCH
  * Version            : V1.0.0
- * Date               : 2022/08/08
- * Description        : CH32V00x Device Peripheral Access Layer System Source File.
+ * Date               : 2024/01/01
+ * Description        : CH32V00X Device Peripheral Access Layer System Source File.
 *********************************************************************************
 * Copyright (c) 2021 Nanjing Qinheng Microelectronics Co., Ltd.
 * Attention: This software (modified or not) and binary are used for 
@@ -18,20 +18,19 @@
 */
 
 //#define SYSCLK_FREQ_8MHz_HSI    8000000
-// #define SYSCLK_FREQ_24MHZ_HSI   HSI_VALUE
-// #define SYSCLK_FREQ_48MHZ_HSI   48000000
+//#define SYSCLK_FREQ_24MHz_HSI   HSI_VALUE
+//#define SYSCLK_FREQ_48MHz_HSI   48000000
 //#define SYSCLK_FREQ_8MHz_HSE    8000000
-// #define SYSCLK_FREQ_24MHz_HSE   HSE_VALUE
-// #define SYSCLK_FREQ_48MHz_HSE   48000000
+//#define SYSCLK_FREQ_24MHz_HSE   HSE_VALUE
+//#define SYSCLK_FREQ_48MHz_HSE   48000000
 
 /* Clock Definitions */
-
 #ifdef SYSCLK_FREQ_1_5MHz_HSI
   uint32_t SystemCoreClock         = SYSCLK_FREQ_1_5MHz_HSI;       /* System Clock Frequency (Core Clock) */
 #elif defined SYSCLK_FREQ_4MHz_HSI
   uint32_t SystemCoreClock         = SYSCLK_FREQ_4MHz_HSI;         /* System Clock Frequency (Core Clock) */
 #elif defined SYSCLK_FREQ_8MHz_HSI
-  uint32_t SystemCoreClock         = SYSCLK_FREQ_8MHz_HSI;         /* System Clock Frequency (Core Clock) */
+  uint32_t SystemCoreClock         = SYSCLK_FREQ_8MHz_HSI;          /* System Clock Frequency (Core Clock) */
 #elif defined SYSCLK_FREQ_24MHz_HSI
   uint32_t SystemCoreClock         = SYSCLK_FREQ_24MHz_HSI;        /* System Clock Frequency (Core Clock) */
 #elif defined SYSCLK_FREQ_48MHz_HSI
@@ -46,7 +45,7 @@
   uint32_t SystemCoreClock         = HSI_VALUE;
 #endif
 
-__I uint8_t AHBPrescTable[16] = {1, 2, 3, 4, 5, 6, 7, 8, 1, 2, 3, 4, 5, 6, 7, 8};
+__I uint8_t HBPrescTable[16] = {1, 2, 3, 4, 5, 6, 7, 8, 1, 2, 3, 4, 5, 6, 7, 8};
 
 
 /* system_private_function_proto_types */
@@ -81,14 +80,23 @@ static void SetSysClock(void);
  */
 void SystemInit (void)
 {
-  RCC->CTLR |= (uint32_t)0x00000001;
-  RCC->CFGR0 &= (uint32_t)0xFCFF0000;
-  RCC->CTLR &= (uint32_t)0xFEF6FFFF;
-  RCC->CTLR &= (uint32_t)0xFFFBFFFF;
-  RCC->CFGR0 &= (uint32_t)0xFFFEFFFF;
-  RCC->INTR = 0x009F0000;
+    uint32_t tmp = 0;
 
-  SetSysClock();
+    /* Flash 2 wait state */
+    FLASH->ACTLR = (uint32_t)FLASH_ACTLR_LATENCY_2;
+    RCC->CTLR |= (uint32_t)0x00000001;
+    RCC->CFGR0 &= (uint32_t)0x68FF0000;
+
+    tmp = RCC->CTLR;
+    tmp &= (uint32_t)0xFE16FFFB;
+    tmp |= (uint32_t)(1<<22)|(1<<20);
+    RCC->CTLR = tmp;
+
+    RCC->CTLR &= (uint32_t)0xFFFBFFFF;
+    RCC->CFGR0 &= (uint32_t)0xFFFEFFFF;
+    RCC->INTR = 0x009D0000;
+
+    SetSysClock();
 }
 
 
@@ -129,7 +137,7 @@ void SystemCoreClockUpdate (void)
             break;
     }
 
-    tmp = AHBPrescTable[((RCC->CFGR0 & RCC_HPRE) >> 4)];
+    tmp = HBPrescTable[((RCC->CFGR0 & RCC_HPRE) >> 4)];
 
     if(((RCC->CFGR0 & RCC_HPRE) >> 4) < 8)
     {
@@ -151,12 +159,18 @@ void SystemCoreClockUpdate (void)
  */
 static void SetSysClock(void)
 {
+RCC->PB2PCENR |= RCC_PB2Periph_GPIOD;
+GPIOD->CFGLR&=(~0xF0);
+GPIOD->CFGLR|=0x80;
+GPIOD->BSHR =0x2;
+GPIO_IPD_Unused();
+
 #ifdef SYSCLK_FREQ_1_5MHz_HSI
     SetSysClockTo_1_5MHz_HSI();
 #elif defined SYSCLK_FREQ_4MHz_HSI
     SetSysClockTo_4MHz_HSI();
 #elif defined SYSCLK_FREQ_8MHz_HSI
-    SetSysClockTo_8MHz_HSI();
+	SetSysClockTo_8MHz_HSI();
 #elif defined SYSCLK_FREQ_24MHz_HSI
     SetSysClockTo_24MHz_HSI();
 #elif defined SYSCLK_FREQ_48MHz_HSI
@@ -224,18 +238,17 @@ static void SetSysClockTo_4MHz_HSI(void)
  */
 static void SetSysClockTo_8MHz_HSI(void)
 {
-    /* Flash 0 wait state */
-    FLASH->ACTLR &= (uint32_t)((uint32_t)~FLASH_ACTLR_LATENCY);
-    FLASH->ACTLR |= (uint32_t)FLASH_ACTLR_LATENCY_0;
-
-    /* HCLK = SYSCLK = APB1 */
+    /* HCLK = SYSCLK = PB1 */
     RCC->CFGR0 |= (uint32_t)RCC_HPRE_DIV3;
+
+    /* Flash 0 wait state */
+    FLASH->ACTLR = (uint32_t)FLASH_ACTLR_LATENCY_0;
 }
 
 #elif defined SYSCLK_FREQ_24MHz_HSI
 
 /*********************************************************************
- * @fn      SetSysClockTo_24MHZ_HSI
+ * @fn      SetSysClockTo_24MHz_HSI
  *
  * @brief   Sets System clock frequency to 24MHz and configure HCLK, PCLK2 and PCLK1 prescalers.
  *
@@ -243,19 +256,18 @@ static void SetSysClockTo_8MHz_HSI(void)
  */
 static void SetSysClockTo_24MHz_HSI(void)
 {
-    /* Flash 0 wait state */
-    FLASH->ACTLR &= (uint32_t)((uint32_t)~FLASH_ACTLR_LATENCY);
-    FLASH->ACTLR |= (uint32_t)FLASH_ACTLR_LATENCY_0;
-
-    /* HCLK = SYSCLK = APB1 */
+    /* HCLK = SYSCLK = PB1 */
     RCC->CFGR0 |= (uint32_t)RCC_HPRE_DIV1;
+
+    /* Flash 1 wait state */
+    FLASH->ACTLR = (uint32_t)FLASH_ACTLR_LATENCY_1;
 }
 
 
 #elif defined SYSCLK_FREQ_48MHz_HSI
 
 /*********************************************************************
- * @fn      SetSysClockTo_48MHZ_HSI
+ * @fn      SetSysClockTo_48MHz_HSI
  *
  * @brief   Sets System clock frequency to 48MHz and configure HCLK, PCLK2 and PCLK1 prescalers.
  *
@@ -263,11 +275,7 @@ static void SetSysClockTo_24MHz_HSI(void)
  */
 static void SetSysClockTo_48MHz_HSI(void)
 {
-    /* Flash 0 wait state */
-    FLASH->ACTLR &= (uint32_t)((uint32_t)~FLASH_ACTLR_LATENCY);
-    FLASH->ACTLR |= (uint32_t)FLASH_ACTLR_LATENCY_1;
-
-    /* HCLK = SYSCLK = APB1 */
+    /* HCLK = SYSCLK = PB1 */
     RCC->CFGR0 |= (uint32_t)RCC_HPRE_DIV1;
 
     /* PLL configuration: PLLCLK = HSI * 2 = 48 MHz */
@@ -287,6 +295,8 @@ static void SetSysClockTo_48MHz_HSI(void)
     while ((RCC->CFGR0 & (uint32_t)RCC_SWS) != (uint32_t)0x08)
     {
     }
+    /* Flash 2 wait state */
+    FLASH->ACTLR = (uint32_t)FLASH_ACTLR_LATENCY_2;
 }
 
 #elif defined SYSCLK_FREQ_8MHz_HSE
@@ -294,7 +304,7 @@ static void SetSysClockTo_48MHz_HSI(void)
 /*********************************************************************
  * @fn      SetSysClockTo_8MHz_HSE
  *
- * @brief   Sets System clock frequency to 56MHz and configure HCLK, PCLK2 and PCLK1 prescalers.
+ * @brief   Sets System clock frequency to 8MHz and configure HCLK, PCLK2 and PCLK1 prescalers.
  *
  * @return  none
  */
@@ -302,9 +312,9 @@ static void SetSysClockTo_8MHz_HSE(void)
 {
     __IO uint32_t StartUpCounter = 0, HSEStatus = 0;
 
-    /* Close PA0-PA1 GPIO function */
-    RCC->APB2PCENR |= RCC_AFIOEN;
-    AFIO->PCFR1 |= (1<<15);
+    /* Close PA1-PA2 GPIO function */
+    RCC->PB2PCENR |= RCC_AFIOEN;
+    AFIO->PCFR1 |= (1<<17);
 
     RCC->CTLR |= ((uint32_t)RCC_HSEON);
 
@@ -314,9 +324,6 @@ static void SetSysClockTo_8MHz_HSE(void)
         HSEStatus = RCC->CTLR & RCC_HSERDY;
         StartUpCounter++;
     } while((HSEStatus == 0) && (StartUpCounter != HSE_STARTUP_TIMEOUT));
-
-    RCC->APB2PCENR |= RCC_AFIOEN;
-    AFIO->PCFR1 |= (1<<15);
 
     if ((RCC->CTLR & RCC_HSERDY) != RESET)
     {
@@ -329,11 +336,7 @@ static void SetSysClockTo_8MHz_HSE(void)
 
     if (HSEStatus == (uint32_t)0x01)
     {
-        /* Flash 0 wait state */
-        FLASH->ACTLR &= (uint32_t)((uint32_t)~FLASH_ACTLR_LATENCY);
-        FLASH->ACTLR |= (uint32_t)FLASH_ACTLR_LATENCY_0;
-
-        /* HCLK = SYSCLK = APB1 */
+        /* HCLK = SYSCLK = PB1 */
         RCC->CFGR0 |= (uint32_t)RCC_HPRE_DIV3;
 
         /* Select HSE as system clock source */
@@ -343,6 +346,8 @@ static void SetSysClockTo_8MHz_HSE(void)
         while ((RCC->CFGR0 & (uint32_t)RCC_SWS) != (uint32_t)0x04)
         {
         }
+        /* Flash 0 wait state */
+        FLASH->ACTLR = (uint32_t)FLASH_ACTLR_LATENCY_0;
     }
     else
     {
@@ -358,7 +363,7 @@ static void SetSysClockTo_8MHz_HSE(void)
 /*********************************************************************
  * @fn      SetSysClockTo_24MHz_HSE
  *
- * @brief   Sets System clock frequency to 72MHz and configure HCLK, PCLK2 and PCLK1 prescalers.
+ * @brief   Sets System clock frequency to 24MHz and configure HCLK, PCLK2 and PCLK1 prescalers.
  *
  * @return  none
  */
@@ -366,9 +371,9 @@ static void SetSysClockTo_24MHz_HSE(void)
 {
     __IO uint32_t StartUpCounter = 0, HSEStatus = 0;
 
-    /* Close PA0-PA1 GPIO function */
-    RCC->APB2PCENR |= RCC_AFIOEN;
-    AFIO->PCFR1 |= (1<<15);
+    /* Close PA1-PA2 GPIO function */
+    RCC->PB2PCENR |= RCC_AFIOEN;
+    AFIO->PCFR1 |= (1<<17);
 
     RCC->CTLR |= ((uint32_t)RCC_HSEON);
 
@@ -378,9 +383,6 @@ static void SetSysClockTo_24MHz_HSE(void)
         HSEStatus = RCC->CTLR & RCC_HSERDY;
         StartUpCounter++;
     } while((HSEStatus == 0) && (StartUpCounter != HSE_STARTUP_TIMEOUT));
-
-    RCC->APB2PCENR |= RCC_AFIOEN;
-    AFIO->PCFR1 |= (1<<15);
 
     if ((RCC->CTLR & RCC_HSERDY) != RESET)
     {
@@ -393,11 +395,7 @@ static void SetSysClockTo_24MHz_HSE(void)
 
     if (HSEStatus == (uint32_t)0x01)
     {
-        /* Flash 0 wait state */
-        FLASH->ACTLR &= (uint32_t)((uint32_t)~FLASH_ACTLR_LATENCY);
-        FLASH->ACTLR |= (uint32_t)FLASH_ACTLR_LATENCY_0;
-
-        /* HCLK = SYSCLK = APB1 */
+        /* HCLK = SYSCLK = PB1 */
         RCC->CFGR0 |= (uint32_t)RCC_HPRE_DIV1;
 
         /* Select HSE as system clock source */
@@ -407,6 +405,8 @@ static void SetSysClockTo_24MHz_HSE(void)
         while ((RCC->CFGR0 & (uint32_t)RCC_SWS) != (uint32_t)0x04)
         {
         }
+        /* Flash 1 wait state */
+        FLASH->ACTLR = (uint32_t)FLASH_ACTLR_LATENCY_1;
     }
     else
     {
@@ -422,7 +422,7 @@ static void SetSysClockTo_24MHz_HSE(void)
 /*********************************************************************
  * @fn      SetSysClockTo_48MHz_HSE
  *
- * @brief   Sets System clock frequency to 72MHz and configure HCLK, PCLK2 and PCLK1 prescalers.
+ * @brief   Sets System clock frequency to 48MHz and configure HCLK, PCLK2 and PCLK1 prescalers.
  *
  * @return  none
  */
@@ -430,9 +430,9 @@ static void SetSysClockTo_48MHz_HSE(void)
 {
     __IO uint32_t StartUpCounter = 0, HSEStatus = 0;
 
-    /* Close PA0-PA1 GPIO function */
-    RCC->APB2PCENR |= RCC_AFIOEN;
-    AFIO->PCFR1 |= (1<<15);
+    /* Close PA1-PA2 GPIO function */
+    RCC->PB2PCENR |= RCC_AFIOEN;
+    AFIO->PCFR1 |= (1<<17);
 
     RCC->CTLR |= ((uint32_t)RCC_HSEON);
 
@@ -454,11 +454,7 @@ static void SetSysClockTo_48MHz_HSE(void)
 
     if (HSEStatus == (uint32_t)0x01)
     {
-        /* Flash 0 wait state */
-        FLASH->ACTLR &= (uint32_t)((uint32_t)~FLASH_ACTLR_LATENCY);
-        FLASH->ACTLR |= (uint32_t)FLASH_ACTLR_LATENCY_1;
-
-        /* HCLK = SYSCLK = APB1 */
+        /* HCLK = SYSCLK = PB1 */
         RCC->CFGR0 |= (uint32_t)RCC_HPRE_DIV1;
 
         /* PLL configuration: PLLCLK = HSE * 2 = 48 MHz */
@@ -478,6 +474,8 @@ static void SetSysClockTo_48MHz_HSE(void)
         while ((RCC->CFGR0 & (uint32_t)RCC_SWS) != (uint32_t)0x08)
         {
         }
+        /* Flash 2 wait state */
+        FLASH->ACTLR = (uint32_t)FLASH_ACTLR_LATENCY_2;
     }
     else
     {
