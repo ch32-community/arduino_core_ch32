@@ -204,7 +204,15 @@ static void SetSysClockTo_1_5MHz_HSI(void)
     FLASH->ACTLR &= (uint32_t)((uint32_t)~FLASH_ACTLR_LATENCY);
     FLASH->ACTLR |= (uint32_t)FLASH_ACTLR_LATENCY_0;
 
+static void SetSysClockTo_1_5MHz_HSI(void)
+{
     /* HCLK = SYSCLK = APB1 */
+    RCC->CFGR0 |= (uint32_t)RCC_HPRE_DIV16;
+
+    /* Flash 0 wait state */
+    FLASH->ACTLR &= (uint32_t)((uint32_t)~FLASH_ACTLR_LATENCY);
+    FLASH->ACTLR |= (uint32_t)FLASH_ACTLR_LATENCY_0;
+}
     RCC->CFGR0 |= (uint32_t)RCC_HPRE_DIV16;
 }
 
