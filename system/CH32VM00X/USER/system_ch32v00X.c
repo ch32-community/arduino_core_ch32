@@ -9,7 +9,7 @@
 * Attention: This software (modified or not) and binary are used for 
 * microcontroller manufactured by Nanjing Qinheng Microelectronics.
 *******************************************************************************/
-#include <ch32v00x.h>
+#include <ch32v00X.h>
 
 /* 
 * Uncomment the line corresponding to the desired System clock (SYSCLK) frequency (after 
