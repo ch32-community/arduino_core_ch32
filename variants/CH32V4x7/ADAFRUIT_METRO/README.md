@@ -10,6 +10,10 @@ In the Arduino IDE, choose **Board > CH32V4x7**, then choose
 match the fitted chip. **Clock Select** and **Upload method > TinyUF2 (USB drive)**
 are shared by both variants.
 
+The selected MCU also determines `WCH_MCU_CHIP_ID` for compile-time GPIO
+initialization. V407VET needs no GPIO changes; V467VET configures only PE7 as
+input pull-down. See [GPIO initialization by package](../../GPIO-initialization.md).
+
 | Arduino pins | MCU pins, in the same order |
 | --- | --- |
 | D0–D7 | PB7, PB6, PB8, PB9, PC0, PC1, PC2, PC3 |
