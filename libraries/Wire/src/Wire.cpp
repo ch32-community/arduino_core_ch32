@@ -576,4 +576,8 @@ TwoWire Wire;
 TwoWire Wire1(PIN_WIRE1_SDA, PIN_WIRE1_SCL);
 #endif
 
+#ifdef SYSCLK_FREQ_1_5MHz_HSI
+  #warning "I2C may not function correctly with a clock below 2MHz!"
+#endif
+
 #endif
