@@ -47,7 +47,11 @@
 extern "C" {
 #endif
 
-#if defined(UART_MODULE_ENABLED) 
+#if defined(UART_MODULE_ENABLED)
+
+#ifdef SYSCLK_FREQ_1_5MHz_HSI
+#pragma message "Only 74880 baud and slower works with a 1.5MHz clock."
+#endif
 
 typedef struct __UART_HandleTypeDef
 {
