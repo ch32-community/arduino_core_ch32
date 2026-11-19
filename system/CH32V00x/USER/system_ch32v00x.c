@@ -422,7 +422,7 @@ static void SetSysClockTo_24MHz_HSE(void)
 /*********************************************************************
  * @fn      SetSysClockTo_48MHz_HSE
  *
- * @brief   Sets System clock frequency to 72MHz and configure HCLK, PCLK2 and PCLK1 prescalers.
+ * @brief   Sets System clock frequency to 48MHz and configure HCLK, PCLK2 and PCLK1 prescalers.
  *
  * @return  none
  */
