@@ -29,7 +29,9 @@ the scores of other boards. The numbers listed for those boards in the section b
 by Paul Stoffregen in 2019. They are provided for reference purposes only.
  - Under EEMBC rules, changing TOTAL_DATA_SIZE from 2000 bytes to 1000 bytes invalidates the score for official comparison against other MCUs. Using a smaller dataset means linked lists have fewer nodes and matrices are smaller.
  - While CoreMark normalizes scores by iterations per second, smaller loops reduce pointer-chasing overhead and branch mispredictions, often resulting in a slightly higher (optimistic) CoreMark/MHz score.
- - Using the same configuration,  we can compare scores with other cH32 processors but they are not a fair comparison against benchmark scores running the 2000-byte standard.
+ - Using the same configuration,  we can compare scores with other CH32 processors but they are not a fair comparison against benchmark scores running the 2000-byte standard.
+ - Optimization matters a lot. We've chosen to use `-Os LTO` to allow comparing V003 and V002.
+ - In Application Note AN03002 WCH lists guidelines and some CoreMark scores: [CN original](https://github.com/openwch/ch32_application_notes/blob/main/zh/AN03002/AN03002.md) - [EN translated](https://github-com.translate.goog/openwch/ch32_application_notes/blob/main/zh/AN03002/AN03002.md?_x_tr_sl=auto&_x_tr_tl=en&_x_tr_hl=nl&_x_tr_pto=wapp).
 
 
 ## Scores for CH32 boards
@@ -38,21 +40,22 @@ by Paul Stoffregen in 2019. They are provided for reference purposes only.
 - CoreMark Size    : 333, 
 - Memory location  : Static
 - VM002 tested both with<sup>+</sup> and without<sup>-</sup> _zmmul compilation option for hardware multiplication.
-- With `HAS_FLOAT 0`, elapsed time retains millisecond precision and iterations per second are calculated from raw ticks using integer arithmetic, then rounded to two decimal places. Earlier versions divided by elapsed time truncated to whole seconds, which inflated the reported score. The CH32 scores below that are in **_italics_** predate this correction but have been recalculated using stored measurements for ticks and iterations.
+- With `HAS_FLOAT 0`, elapsed time retains millisecond precision and iterations per second are calculated from raw ticks using integer arithmetic, then rounded to two decimal places. Earlier versions divided by elapsed time truncated to whole seconds, which inflated the reported score. The CH32 scores below listed in **_italics_** predate this correction but have been recalculated using stored measurements for ticks and iterations.
+- Using the same configuration and compilation settings, V002 and V006 scored the same. X033 and X035 also scored the same. Using optimization `-O3 (fastest)` gave a much larger binary, but also gave a much better score. See row `CH32V006 -O3` in the table below.
 
 
-| Board                  | CoreMark |  Duration |
+| Board + speed option   | CoreMark |  Duration |
 | ---------------------- | :------: | :----: |
 | CH32V003 @ 48 MHz HSI  | _110.85_ | 18.1s, 2000 it  |
 | CH32V002 @ 48 MHz HSI<sup>+</sup> | 136.41 | 14.7s, 2000 it | 
 | CH32V002 @ 48 MHz HSI<sup>-</sup> | _80.95_| 13.6s, 1100 it | 
 | CH32V002 @ 24 MHz HSI<sup>+</sup> | 92.62  | 11.9s, 1100 it | 
-| CH32V002 @ 8 MHz HSI<sup>+</sup>  | _39.13_| 15.3s, 600 it  | 
+| CH32V002 @ 8 MHz HSI<sup>+</sup>  | 39.13  | 15.3s, 600 it  | 
 | CH32V002 @ 8 MHz HSI<sup>-</sup>  | _13.44_| 14.9s, 200 it  | 
-| CH32VM00X->V006        | ???      |        |
-| CH32X035/X033          | ???      |        |
-| CH32V103 @ 72MHz HSI   | _339.54_ | 17.7s, 6000 it  |
-| CH32V203 @ 144MHz HSI  | _792.45_ | 13.9s, 11000 it |
+| CH32V006 -O3 (fastest)<sup>+</sup>| 192.15 | 15.6s 3000 it  |
+| CH32X033 @ 48 MHz HSI  | 106.19   | 18.8s, 2000 it  |
+| CH32V103 @ 72 MHz HSI  | _339.54_ | 17.7s, 6000 it  |
+| CH32V203 @ 144 MHz HSI | _792.45_ | 13.9s, 11000 it |
 | CH32V307 @ 144 MHz HSI | _933,31_ | 11.8s, 11000 it |
 | CH32V4x7               | ???      |        |
 | Metro CH32V467 @100 MHz| 659.04   | 16.7s, 11000 it |
@@ -60,8 +63,6 @@ by Paul Stoffregen in 2019. They are provided for reference purposes only.
 | CH32L10x               | ???      |        |
 
 (larger numbers are better)
-
-
 
 
 ## Scores for other Arduino boards
