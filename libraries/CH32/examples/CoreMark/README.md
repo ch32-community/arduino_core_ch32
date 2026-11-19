@@ -48,10 +48,12 @@ by Paul Stoffregen in 2019. They are provided for reference purposes only.
 | ---------------------- | :------: | :----: |
 | CH32V003 @ 48 MHz HSI  | _110.85_ | 18.1s, 2000 it  |
 | CH32V002 @ 48 MHz HSI<sup>+</sup> | 136.41 | 14.7s, 2000 it | 
-| CH32V002 @ 48 MHz HSI<sup>-</sup> | _80.95_| 13.6s, 1100 it | 
+| CH32V002 @ 48 MHz HSI<sup>-</sup> | _80.95<sup>-</sup>_| 13.6s, 1100 it | 
 | CH32V002 @ 24 MHz HSI<sup>+</sup> | 92.62  | 11.9s, 1100 it | 
 | CH32V002 @ 8 MHz HSI<sup>+</sup>  | 39.13  | 15.3s, 600 it  | 
-| CH32V002 @ 8 MHz HSI<sup>-</sup>  | _13.44_| 14.9s, 200 it  | 
+| CH32V002 @ 8 MHz HSI<sup>-</sup>  | _13.44<sup>-</sup>_| 14.9s, 200 it  | 
+| CH32V002 @ 4 MHz HSI<sup>+</sup>  | 19.48  | 15.4s, 300 it  | 
+| CH32V002 @ 1.5 MHz HSI<sup>+</sup>| 7.20   | 15.3s, 110 it  | 
 | CH32V006 -O3 (fastest)<sup>+</sup>| 192.15 | 15.6s 3000 it  |
 | CH32X033 @ 48 MHz HSI  | 106.19   | 18.8s, 2000 it  |
 | CH32V103 @ 72 MHz HSI  | _339.54_ | 17.7s, 6000 it  |
