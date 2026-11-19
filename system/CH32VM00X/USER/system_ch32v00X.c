@@ -200,11 +200,11 @@ GPIO_IPD_Unused();
  */
 static void SetSysClockTo_1_5MHz_HSI(void)
 {
-    /* Flash 0 wait state */
+    RCC->CFGR0 |= (uint32_t)RCC_HPRE_DIV16;
+
+	/* Flash 0 wait state */
     FLASH->ACTLR &= (uint32_t)((uint32_t)~FLASH_ACTLR_LATENCY);
     FLASH->ACTLR |= (uint32_t)FLASH_ACTLR_LATENCY_0;
-
-    RCC->CFGR0 |= (uint32_t)RCC_HPRE_DIV16;
 }
 
 #elif defined SYSCLK_FREQ_4MHz_HSI
@@ -218,11 +218,11 @@ static void SetSysClockTo_1_5MHz_HSI(void)
  */
 static void SetSysClockTo_4MHz_HSI(void)
 {
+    RCC->CFGR0 |= (uint32_t)RCC_HPRE_DIV6;
+	
     /* Flash 0 wait state */
     FLASH->ACTLR &= (uint32_t)((uint32_t)~FLASH_ACTLR_LATENCY);
     FLASH->ACTLR |= (uint32_t)FLASH_ACTLR_LATENCY_0;
-
-    RCC->CFGR0 |= (uint32_t)RCC_HPRE_DIV6;
 }
 
 #elif defined SYSCLK_FREQ_8MHz_HSI
