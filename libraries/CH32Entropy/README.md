@@ -48,6 +48,10 @@ reports initialization failures; `ch32EntropyRequests()` counts successful outpu
 requests without exposing seeds. These APIs are for single-threaded main-loop
 use, not interrupts. Reseeding explicitly replaces the old state.
 
+After a hardware seed error, the failed attempt remains rejected. An explicit
+`ch32EntropyBegin()` retry clears the latched seed-error status and restarts the
+RNG before repeating the full startup discard, settling, and collection sequence.
+
 Eight consecutive identical words, fewer than 128 distinct words per pool,
 hardware error flags, and bounded-wait timeouts reject initialization. These
 are gross-fault checks, **not** calibrated SP 800-90B health tests. No samples,
