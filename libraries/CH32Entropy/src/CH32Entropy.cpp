@@ -135,6 +135,10 @@ bool ch32EntropyBegin() {
   // CPU, USB, or Ethernet clocks. This module owns the RNG peripheral.
   RCC_RNGCLKConfig(RCC_RNGCLKSource_SYSCLK);
   RCC_HBPeriphClockCmd(RCC_HBPeriph_RNG, ENABLE);
+  // CH32V407 RM section 30.2.2: clear SEIS, then toggle RNGEN before reuse
+  // after a seed error. Preserve the other status/configuration register bits.
+  RNG->SR &= ~(uint32_t)RNG_IT_SEI;
+  RNG_Cmd(DISABLE);
   RNG_Cmd(ENABLE);
   uint32_t word = 0;
   uint32_t started = micros();
