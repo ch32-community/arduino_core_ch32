@@ -1,6 +1,6 @@
 # Experimental CH32 entropy
 
-Local prototype for CH32V407/467. **Not validated for production security.**
+Opt-in prototype for CH32V407/467. **Not validated for production security.**
 The observed hardware RNG output is correlated and its minimum entropy has not
 been established. SHA-256 and a software RNG cannot manufacture missing entropy.
 
@@ -52,3 +52,38 @@ Eight consecutive identical words, fewer than 128 distinct words per pool,
 hardware error flags, and bounded-wait timeouts reject initialization. These
 are gross-fault checks, **not** calibrated SP 800-90B health tests. No samples,
 digests, or generator state are logged or stored in flash.
+
+## TLS with ESP_SSLClient
+
+Install ESP_SSLClient through Library Manager and enable the compiler flags
+above. The library supplies BearSSL; no ESP_SSLClient source changes are needed.
+It must expose BearSSL's `getentropy` system seeder. A missing hook causes
+`ch32EntropyBegin()` to fail with `IntegrationError`.
+
+After starting Ethernet and obtaining a DHCP address, call `ch32EntropyBegin()`
+once and stop if it fails. Wrap the core's `NetworkClient` in `ESP_SSLClient`,
+configure CA trust anchors with `setTrustAnchors()`, and supply current Unix time
+with `setX509Time()`. Keep the TCP client and trust-anchor objects alive for the
+TLS connection. Connect by hostname so certificate hostname checks apply.
+
+Guard **every** connection attempt, including reconnects:
+
+```cpp
+if (!ch32EntropyReady()) {
+  return; // Do not attempt TLS without an initialized experimental seed.
+}
+uint64_t requestsBefore = ch32EntropyRequests();
+if (!tls.connect(hostname, 443)) {
+  tls.stop();
+  return;
+}
+if (ch32EntropyRequests() == requestsBefore) {
+  tls.stop(); // Require the system seeder before sending application data.
+  return;
+}
+```
+
+This fragment assumes `tls` is a configured `ESP_SSLClient` and `hostname` is
+the intended server name. Certificate validation and current time are required;
+do not use `setInsecure()` as a workaround. The guards verify integration and
+operational readiness only; the RNG security limitation still applies.
