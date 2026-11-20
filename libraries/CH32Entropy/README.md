@@ -4,6 +4,25 @@ Local prototype for CH32V407/467. **Not validated for production security.**
 The observed hardware RNG output is correlated and its minimum entropy has not
 been established. SHA-256 and a software RNG cannot manufacture missing entropy.
 
+## TLS security limitation
+
+The CH32 hardware RNG has shown poor output quality, including substantial
+repetition and correlation. This implementation collects and conditions that
+output, but has no established lower bound on unpredictable seed bits. Reading
+more words does not by itself establish that the seed is secure.
+
+TLS connections can complete and validate server certificates while their
+locally generated secrets remain insufficiently unpredictable. If an attacker
+can predict the generator state, TLS confidentiality can be compromised even
+when certificate checks pass. This is an unverified security property, not a
+known percentage reduction in randomness or security. Keep this implementation
+experimental; do not rely on it alone to protect sensitive data or credentials.
+
+The experimental opt-in and initialization checks remain required. A successful
+`ch32EntropyReady()` result reports operational readiness, not secure seeding.
+
+## Usage
+
 This optional core-bundled library reuses the SHA-256 and HMAC_DRBG implementation
 in an unmodified ESP_SSLClient installation. It does not alter Arduino
 `random()` or `randomSeed()` and does not add a dependency to ordinary sketches.
