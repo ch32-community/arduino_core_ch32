@@ -84,8 +84,8 @@ void USART_DeInit(USART_TypeDef *USARTx)
 void USART_Init(USART_TypeDef *USARTx, USART_InitTypeDef *USART_InitStruct)
 {
     uint32_t          tmpreg = 0x00, apbclock = 0x00;
-    uint32_t          integerdivider = 0x00;
-    uint32_t          fractionaldivider = 0x00;
+    uint32_t          baud = 0x00;
+    uint32_t          remainder = 0x00;
     uint32_t          usartxbase = 0;
     RCC_ClocksTypeDef RCC_ClocksStatus;
 
@@ -121,13 +121,10 @@ void USART_Init(USART_TypeDef *USARTx, USART_InitTypeDef *USART_InitStruct)
         apbclock = RCC_ClocksStatus.PCLK1_Frequency;
     }
 
-    integerdivider = ((25 * apbclock) / (4 * (USART_InitStruct->USART_BaudRate)));
-
-    tmpreg = (integerdivider / 100) << 4;
-
-    fractionaldivider = integerdivider - (100 * (tmpreg >> 4));
-
-    tmpreg |= ((((fractionaldivider * 16) + 50) / 100)) & ((uint8_t)0x0F);
+    baud = USART_InitStruct->USART_BaudRate;
+    tmpreg = apbclock / baud;
+    remainder = apbclock % baud;
+    tmpreg += (remainder >= baud - remainder); // Very tricky way to round
 
     USARTx->BRR = (uint16_t)tmpreg;
 }
