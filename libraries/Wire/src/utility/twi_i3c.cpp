@@ -189,9 +189,94 @@ static i2c_status_e transfer(i2c_t *obj, uint8_t address, uint8_t *data,
   return result;
 }
 
-/** @brief Write one message and return its transfer status. */
+/** @brief Release SCL and allow a bounded clock-stretch interval. */
+static bool probeClockHigh() {
+  GPIO_SetBits(GPIOB, GPIO_Pin_10);
+  uint32_t start = micros();
+  while (!GPIO_ReadInputDataBit(GPIOB, GPIO_Pin_10)) {
+    if (micros() - start >= 1000)
+      return false;
+  }
+  delayMicroseconds(5);
+  return true;
+}
+
+/**
+ * @brief Send a real address-only write using open-drain GPIO, then restore
+ * I3C. Like Arduino-Pico's Wire probe, this handles a transaction the hardware
+ * cannot express. No dummy data byte is sent and success requires a real ACK.
+ * Data transfers remain in hardware. This is a single-controller bus path.
+ */
+static i2c_status_e probeAddress(i2c_t *obj, uint8_t address, bool sendStop) {
+  if (owner != obj || !obj->i3cReady || !sendStop)
+    return I2C_ERROR;
+  if (!digitalReadFast(obj->scl) || !digitalReadFast(obj->sda))
+    return I2C_BUSY;
+  delayMicroseconds(5);
+  if (!digitalReadFast(obj->scl) || !digitalReadFast(obj->sda))
+    return I2C_BUSY;
+
+  I3C_Cmd(DISABLE);
+  // Set the output latches to released before selecting open-drain GPIO.
+  GPIO_SetBits(GPIOB, GPIO_Pin_10 | GPIO_Pin_11);
+  GPIO_InitTypeDef pins = {};
+  pins.GPIO_Pin = GPIO_Pin_10 | GPIO_Pin_11;
+  pins.GPIO_Speed = GPIO_Speed_50MHz;
+  pins.GPIO_Mode = GPIO_Mode_Out_OD;
+  GPIO_Init(GPIOB, &pins);
+  i2c_status_e result = I2C_TIMEOUT;
+  if (probeClockHigh()) {
+    GPIO_ResetBits(GPIOB, GPIO_Pin_11); // START while SCL is high.
+    delayMicroseconds(5);
+    bool clockOK = true;
+    for (uint8_t mask = 0x80; mask; mask >>= 1) {
+      GPIO_ResetBits(GPIOB, GPIO_Pin_10);
+      // Keep SDA stable while SCL falls. This 1 us guard exceeds the 300 ns
+      // Standard-mode bus fall-time limit; analog timing depends on bus load.
+      delayMicroseconds(1);
+      if (address & mask)
+        GPIO_SetBits(GPIOB, GPIO_Pin_11);
+      else
+        GPIO_ResetBits(GPIOB, GPIO_Pin_11);
+      delayMicroseconds(5);
+      if (!probeClockHigh()) {
+        clockOK = false;
+        break;
+      }
+    }
+    if (clockOK) {
+      GPIO_ResetBits(GPIOB, GPIO_Pin_10);
+      delayMicroseconds(1); // Hold SDA through the SCL falling edge.
+      GPIO_SetBits(GPIOB, GPIO_Pin_11); // Release SDA for the target's ACK.
+      delayMicroseconds(5);
+      if (probeClockHigh())
+        result =
+            GPIO_ReadInputDataBit(GPIOB, GPIO_Pin_11) ? I2C_NACK_ADDR : I2C_OK;
+    }
+  }
+  // STOP, also on a NACK. A held-low SCL is bounded and reported as timeout.
+  GPIO_ResetBits(GPIOB, GPIO_Pin_10);
+  delayMicroseconds(1); // Do not create a START while SCL is still falling.
+  GPIO_ResetBits(GPIOB, GPIO_Pin_11);
+  delayMicroseconds(5);
+  if (!probeClockHigh())
+    result = I2C_TIMEOUT;
+  GPIO_SetBits(GPIOB, GPIO_Pin_11);
+  delayMicroseconds(5);
+  if (result == I2C_OK && !GPIO_ReadInputDataBit(GPIOB, GPIO_Pin_11))
+    result = I2C_BUSY;
+
+  pins.GPIO_Mode = GPIO_Mode_AF_PP;
+  GPIO_Init(GPIOB, &pins);
+  configureController();
+  return result;
+}
+
+/** @brief Write one message, or probe an address without sending data. */
 i2c_status_e i2c_master_write(i2c_t *obj, uint8_t address, uint8_t *data,
                               uint16_t size, uint8_t sendStop) {
+  if (!size)
+    return probeAddress(obj, address, sendStop);
   return transfer(obj, address, data, size, false, sendStop);
 }
 
