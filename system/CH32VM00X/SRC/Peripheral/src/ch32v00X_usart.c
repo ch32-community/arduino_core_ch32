@@ -121,7 +121,7 @@ void USART_Init(USART_TypeDef *USARTx, USART_InitTypeDef *USART_InitStruct)
     }
 
     baud = USART_InitStruct->USART_BaudRate;
-    USARTx->BRR = (uint16_t)(apbclock + (baud >> 1) / baud);
+    USARTx->BRR = (uint16_t)((apbclock + (baud >> 1)) / baud);
 }
 
 /*********************************************************************
