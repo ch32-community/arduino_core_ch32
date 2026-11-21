@@ -85,7 +85,6 @@ void USART_Init(USART_TypeDef *USARTx, USART_InitTypeDef *USART_InitStruct)
 {
     uint32_t          tmpreg = 0x00, apbclock = 0x00;
     uint32_t          baud = 0x00;
-    uint32_t          remainder = 0x00;
     uint32_t          usartxbase = 0;
     RCC_ClocksTypeDef RCC_ClocksStatus;
 
@@ -122,11 +121,10 @@ void USART_Init(USART_TypeDef *USARTx, USART_InitTypeDef *USART_InitStruct)
     }
 
     baud = USART_InitStruct->USART_BaudRate;
-    tmpreg = apbclock / baud;
-    remainder = apbclock % baud;
-    tmpreg += (remainder >= baud - remainder); // Very tricky way to round
-
-    USARTx->BRR = (uint16_t)tmpreg;
+    // (DF) <<4 because BRR is a fixed point number with four binary places
+    // Multiply then divide preserves resolution
+    // (Baud >> 1) adds rounding, << 1 and >> 1 preserves the 1/2 rounding
+    USARTx->BRR = (uint16_t)(((((apbclock << 4) + (baud >> 1)) << 1) / baud) >> 1);
 }
 
 /*********************************************************************
