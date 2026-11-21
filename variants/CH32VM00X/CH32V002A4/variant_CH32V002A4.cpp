@@ -25,16 +25,16 @@ The largest package has 20 pins. For compatibility of Arduino pin numbers the TS
 
 CH32V003/V002A4M6 SOP16 PINOUT
               +-----v-----+
-RX'/SDA D3  1-+PC1     PC0+-16 D2~/TX'
-    SCL D4  2-+PC2     VDD+-15 VCC
-        D5~ 3-+PC3     VSS+-14 GND
-        D6~ 4-+PC4     PA2+-13 D1/A0
-        D8  5-+PC6     PA1+-12 D0~/A1
-     SS/D9  6-+PC7     PD7+-11 RST
-      SWIO  7-+PD1     PD6+-10 RX/A6/MOSI
-SCK/A7/D14~ 8-+PD4     PD5+-9  TX/A5/MISO
+RX'/SDA/D3  1-+PC1     PC0+-16 ~D2/TX'
+    SCL/D4  2-+PC2     VDD+-15  VCC
+        D5~ 3-+PC3     VSS+-14  GND
+        D6~ 4-+PC4     PA2+-13 ~D1/A0
+        D7  5-+PC6     PA1+-12 ~D0/A1
+     SS/D8  6-+PC7     PD7+-11 ~D13/RST
+   SWIO/D9~ 7-+PD1     PD6+-10  D12/RX/A6/MOSI
+SCK/A7/D10~ 8-+PD4     PD5+-9   D11/TX/A5/MISO
               +-----------+
-TX'/RX' - when I2C is enabled TX/RX=PD5/PD6, when not enabled TX/RX=PC0/PC1
+TX'/RX' - when I2C is enabled use Serial1 TX/RX=PD5/PD6; when not enabled use Serial1_3: TX`/RX`=PC0/PC1
 
 CH32V002 vs CH32V003
 
@@ -45,28 +45,22 @@ V005: RV32EmC, 32K Flash, 6KB SRAM, 3328B bootloader, 256B user mem, 12-bit ADC,
 V006: RV32EmC, 62K Flash, 8KB SRAM, 3328B bootloader, 256B user mem, 12-bit ADC, 8-ch touch. System Clock Monitor, 2-5V, OPA, UART2, 16-bit simple timer, QFN32
 */
 
-// Digital PinName array. On smaller packages some GPIOs are bound to the same pin.
-// Leading pinout is TSSOP20 (18x gpio), same as V003 TSSOP20
-// For SOP16 (A4M6) we keep the same pin numbering as on TSSOP20
+// Digital PinName array. Some GPIOs are bound to the same pin. 
 const PinName digitalPin[] = {
-  PA_1,   // D0/A1
+  PA_1,   // D0/A1   
   PA_2,   // D1/A0
   PC_0,   // D2
   PC_1,   // D3
   PC_2,   // D4
-  PC_3,   // D5
+  PC_3,   // D5 
   PC_4,   // D6/A2
-  NC,     // D7        No PC_5 on A4M6
-  PC_6,   // D8
-  PC_7,   // D9 (recommended software CS/SS)
-  NC,     // D10       No PD_0 on A4M6
-  PD_1,   // D11/SWIO
-  NC,     // D12/A3    No PD_2 on A4M6
-  NC,     // D13/A4    No PD_3 on A4M6
-  PD_4,   // D14/A7/SCK
-  PD_5,   // D15/A5/TX/MISO
-  PD_6,   // D16/A6/RX/MOSI
-  PD_7    // D17/RST
+  PC_6,   // D7
+  PC_7,   // D8 (recommended software CS/SS)
+  PD_1,   // D9
+  PD_4,   // D10/A7/SCK
+  PD_5,   // D11/A5/TX/MISO
+  PD_6,   // D12/A6/RX/MOSI
+  PD_7    // D13/RST
 };
 
 // Analog (Ax) pin number array
@@ -74,9 +68,9 @@ const uint32_t analogInputPin[] = {
   1,    // A0/PA2
   0,    // A1/PA1
   6,    // A2/PC4
-  12,   // A3/PD2    No PD2 on A4M6
-  13,   // A4/PD3    No PD3 on A4M6
-  15,   // A5/PD5
-  16,   // A6/PD6
-  14    // A7/PD4 
+  NC,   // A3 NC
+  NC,   // A4 NC
+  11,   // A5/PD5
+  12,   // A6/PD6
+  10    // A7/PD4 
 };
