@@ -200,6 +200,7 @@ GPIO_IPD_Unused();
  */
 static void SetSysClockTo_1_5MHz_HSI(void)
 {
+	RCC->CFGR0 &= ~(RCC_HPRE);
     RCC->CFGR0 |= (uint32_t)RCC_HPRE_DIV16;
 
 	/* Flash 0 wait state */
@@ -218,6 +219,7 @@ static void SetSysClockTo_1_5MHz_HSI(void)
  */
 static void SetSysClockTo_4MHz_HSI(void)
 {
+	RCC->CFGR0 &= ~(RCC_HPRE);
     RCC->CFGR0 |= (uint32_t)RCC_HPRE_DIV6;
 	
     /* Flash 0 wait state */
@@ -237,6 +239,7 @@ static void SetSysClockTo_4MHz_HSI(void)
 static void SetSysClockTo_8MHz_HSI(void)
 {
     /* HCLK = SYSCLK = PB1 */
+	RCC->CFGR0 &= ~(RCC_HPRE);
     RCC->CFGR0 |= (uint32_t)RCC_HPRE_DIV3;
 
     /* Flash 0 wait state */
@@ -255,6 +258,7 @@ static void SetSysClockTo_8MHz_HSI(void)
 static void SetSysClockTo_24MHz_HSI(void)
 {
     /* HCLK = SYSCLK = PB1 */
+	RCC->CFGR0 &= ~(RCC_HPRE);
     RCC->CFGR0 |= (uint32_t)RCC_HPRE_DIV1;
 
     /* Flash 1 wait state */
@@ -274,6 +278,7 @@ static void SetSysClockTo_24MHz_HSI(void)
 static void SetSysClockTo_48MHz_HSI(void)
 {
     /* HCLK = SYSCLK = PB1 */
+	RCC->CFGR0 &= ~(RCC_HPRE);
     RCC->CFGR0 |= (uint32_t)RCC_HPRE_DIV1;
 
     /* PLL configuration: PLLCLK = HSI * 2 = 48 MHz */
