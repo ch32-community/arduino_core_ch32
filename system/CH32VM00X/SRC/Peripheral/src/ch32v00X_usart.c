@@ -121,10 +121,7 @@ void USART_Init(USART_TypeDef *USARTx, USART_InitTypeDef *USART_InitStruct)
     }
 
     baud = USART_InitStruct->USART_BaudRate;
-    // (DF) <<4 because BRR is a fixed point number with four binary places
-    // Multiply then divide preserves resolution
-    // (Baud >> 1) adds rounding, << 1 and >> 1 preserves the 1/2 rounding
-    USARTx->BRR = (uint16_t)(((((apbclock << 4) + (baud >> 1)) << 1) / baud) >> 1);
+    USARTx->BRR = (uint16_t)(apbclock + (baud >> 1) / baud);
 }
 
 /*********************************************************************
