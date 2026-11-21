@@ -80,7 +80,7 @@ static inline void delayMicroseconds(uint32_t us)
   uint32_t  tickPerMs = SysTick->CMP + 1;
   // Number of ticks to spend in the busy-loop 
   // uint32_t  nbTicks = ((us - ((us > 0) ? 1 : 0)) * tickPerMs) / 1000U;
-  uint32_t  nbTicks = ((us - ((us > 0) ? 1 : 0)) * (tickPerMs/(tickPerMs>=1000U?1000U:1)) / (tickPerMs>=1000U?1:1000U) ); // Dividing first sets back any overflow, but for LSI tickPerMs could be < 1000 (<1MHz). 
+  uint32_t  nbTicks = ((us - ((us > 0) ? 1 : 0)) * (tickPerMs/(tickPerMs>=2000U?1000U:1)) / (tickPerMs>=2000U?1:1000U) ); // Dividing first sets back any overflow, but for LSI tickPerMs could be < 1000 (<1MHz). 
   // Number of elapsed ticks (incremented in the do-while loop).
   uint32_t  elapsedTicks = 0;
   __IO uint32_t oldTicks = currentTicks;

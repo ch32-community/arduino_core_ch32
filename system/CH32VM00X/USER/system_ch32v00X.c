@@ -25,7 +25,11 @@
 //#define SYSCLK_FREQ_48MHz_HSE   48000000
 
 /* Clock Definitions */
-#ifdef SYSCLK_FREQ_8MHz_HSI
+#ifdef SYSCLK_FREQ_1_5MHz_HSI
+  uint32_t SystemCoreClock         = SYSCLK_FREQ_1_5MHz_HSI;       /* System Clock Frequency (Core Clock) */
+#elif defined SYSCLK_FREQ_4MHz_HSI
+  uint32_t SystemCoreClock         = SYSCLK_FREQ_4MHz_HSI;         /* System Clock Frequency (Core Clock) */
+#elif defined SYSCLK_FREQ_8MHz_HSI
   uint32_t SystemCoreClock         = SYSCLK_FREQ_8MHz_HSI;          /* System Clock Frequency (Core Clock) */
 #elif defined SYSCLK_FREQ_24MHz_HSI
   uint32_t SystemCoreClock         = SYSCLK_FREQ_24MHz_HSI;        /* System Clock Frequency (Core Clock) */
@@ -47,7 +51,11 @@ __I uint8_t HBPrescTable[16] = {1, 2, 3, 4, 5, 6, 7, 8, 1, 2, 3, 4, 5, 6, 7, 8};
 /* system_private_function_proto_types */
 static void SetSysClock(void);
 
-#ifdef SYSCLK_FREQ_8MHz_HSI
+#ifdef SYSCLK_FREQ_1_5MHz_HSI
+  static void SetSysClockTo_1_5MHz_HSI(void);
+#elif defined SYSCLK_FREQ_4MHz_HSI
+  static void SetSysClockTo_4MHz_HSI(void);
+#elif defined SYSCLK_FREQ_8MHz_HSI
   static void SetSysClockTo_8MHz_HSI(void);
 #elif defined SYSCLK_FREQ_24MHz_HSI
   static void SetSysClockTo_24MHz_HSI(void);
@@ -156,8 +164,13 @@ GPIOD->CFGLR&=(~0xF0);
 GPIOD->CFGLR|=0x80;
 GPIOD->BSHR =0x2;
 GPIO_IPD_Unused();
-#ifdef SYSCLK_FREQ_8MHz_HSI
-    SetSysClockTo_8MHz_HSI();
+
+#ifdef SYSCLK_FREQ_1_5MHz_HSI
+    SetSysClockTo_1_5MHz_HSI();
+#elif defined SYSCLK_FREQ_4MHz_HSI
+    SetSysClockTo_4MHz_HSI();
+#elif defined SYSCLK_FREQ_8MHz_HSI
+	SetSysClockTo_8MHz_HSI();
 #elif defined SYSCLK_FREQ_24MHz_HSI
     SetSysClockTo_24MHz_HSI();
 #elif defined SYSCLK_FREQ_48MHz_HSI
@@ -176,7 +189,43 @@ GPIO_IPD_Unused();
 }
 
 
-#ifdef SYSCLK_FREQ_8MHz_HSI
+#ifdef SYSCLK_FREQ_1_5MHz_HSI
+
+/*********************************************************************
+ * @fn      SetSysClockTo_1_5MHz_HSI
+ *
+ * @brief   Sets HSI as System clock source and configure HCLK, PCLK2 and PCLK1 prescalers.
+ *
+ * @return  none
+ */
+static void SetSysClockTo_1_5MHz_HSI(void)
+{
+    RCC->CFGR0 |= (uint32_t)RCC_HPRE_DIV16;
+
+	/* Flash 0 wait state */
+    FLASH->ACTLR &= (uint32_t)((uint32_t)~FLASH_ACTLR_LATENCY);
+    FLASH->ACTLR |= (uint32_t)FLASH_ACTLR_LATENCY_0;
+}
+
+#elif defined SYSCLK_FREQ_4MHz_HSI
+
+/*********************************************************************
+ * @fn      SetSysClockTo_4MHz_HSI
+ *
+ * @brief   Sets HSI as System clock source and configure HCLK, PCLK2 and PCLK1 prescalers.
+ *
+ * @return  none
+ */
+static void SetSysClockTo_4MHz_HSI(void)
+{
+    RCC->CFGR0 |= (uint32_t)RCC_HPRE_DIV6;
+	
+    /* Flash 0 wait state */
+    FLASH->ACTLR &= (uint32_t)((uint32_t)~FLASH_ACTLR_LATENCY);
+    FLASH->ACTLR |= (uint32_t)FLASH_ACTLR_LATENCY_0;
+}
+
+#elif defined SYSCLK_FREQ_8MHz_HSI
 
 /*********************************************************************
  * @fn      SetSysClockTo_8MHz_HSI
