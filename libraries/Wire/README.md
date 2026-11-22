@@ -12,13 +12,17 @@ The timing registers select 1.5 us low and 1.1 us high, keeping the actual bus
 rate below 400 kHz. The 8-bit timing fields cannot represent 100 kHz at this
 HCLK. At 200 MHz even the longest low period is shorter than Fast-mode's
 1.3 us minimum, so transfers are disabled at that clock. This backend does
-not change the system clock or provide a software fallback.
+not change the system clock. Only address-only probes use GPIO; it provides
+no software fallback for data transfers.
 
 The CH32V407 reference manual, section 19.4.1, requires `MEND=1` and nonzero
 `DCNT` for legacy I2C messages. Consequently:
 
 * `endTransmission(false)` returns 4 without sending the message.
-* A zero-byte `endTransmission()` probe returns 4 without touching the bus.
+* A zero-byte `endTransmission()` uses an open-drain GPIO address-only probe,
+  then restores I3C. It returns 0 only for an actual ACK and 2 for a NACK.
+  Data transfers still use hardware; no dummy data byte is sent. SCL stretching
+  is bounded to 1 ms per clock. The bus must have a single controller.
 * `requestFrom(..., false)` and the combined internal-address read overload
   return zero bytes without touching the bus.
 * `endTransmission()` returns 2 for address NACK and 3 for data NACK.
@@ -27,7 +31,7 @@ The CH32V407 reference manual, section 19.4.1, requires `MEND=1` and nonzero
   is restored. `setClock()` itself has no return value in the Arduino API.
 
 Devices that accept STOP-separated command writes and reads can use ordinary
-`Wire` calls. Devices requiring repeated START, zero-byte detection, or a
+`Wire` calls. Devices requiring repeated START or a
 100 kHz bus are not supported by this backend. Unsupported operations are
 never converted into a different bus transaction.
 
