@@ -231,9 +231,9 @@ static i2c_status_e probeAddress(i2c_t *obj, uint8_t address, bool sendStop) {
     bool clockOK = true;
     for (uint8_t mask = 0x80; mask; mask >>= 1) {
       GPIO_ResetBits(GPIOB, GPIO_Pin_10);
-      // Keep SDA stable while SCL falls. This 1 us guard exceeds the 300 ns
-      // Standard-mode bus fall-time limit; analog timing depends on bus load.
-      delayMicroseconds(1);
+      // Keep SDA stable while SCL falls. delayMicroseconds subtracts 1 us
+      // from nonzero requests, so request 2 us for at least 1 us of waiting.
+      delayMicroseconds(2);
       if (address & mask)
         GPIO_SetBits(GPIOB, GPIO_Pin_11);
       else
@@ -246,7 +246,7 @@ static i2c_status_e probeAddress(i2c_t *obj, uint8_t address, bool sendStop) {
     }
     if (clockOK) {
       GPIO_ResetBits(GPIOB, GPIO_Pin_10);
-      delayMicroseconds(1); // Hold SDA through the SCL falling edge.
+      delayMicroseconds(2); // Include the core's 1 us delay compensation.
       GPIO_SetBits(GPIOB, GPIO_Pin_11); // Release SDA for the target's ACK.
       delayMicroseconds(5);
       if (probeClockHigh())
@@ -256,7 +256,7 @@ static i2c_status_e probeAddress(i2c_t *obj, uint8_t address, bool sendStop) {
   }
   // STOP, also on a NACK. A held-low SCL is bounded and reported as timeout.
   GPIO_ResetBits(GPIOB, GPIO_Pin_10);
-  delayMicroseconds(1); // Do not create a START while SCL is still falling.
+  delayMicroseconds(2); // Hold SDA through SCL falling, including compensation.
   GPIO_ResetBits(GPIOB, GPIO_Pin_11);
   delayMicroseconds(5);
   if (!probeClockHigh())
@@ -266,9 +266,11 @@ static i2c_status_e probeAddress(i2c_t *obj, uint8_t address, bool sendStop) {
   if (result == I2C_OK && !GPIO_ReadInputDataBit(GPIOB, GPIO_Pin_11))
     result = I2C_BUSY;
 
+  // Keep the bus released by GPIO while resetting/configuring I3C. Exposing
+  // the disabled controller first can create an extra SCL edge after STOP.
+  configureController();
   pins.GPIO_Mode = GPIO_Mode_AF_PP;
   GPIO_Init(GPIOB, &pins);
-  configureController();
   return result;
 }
 
