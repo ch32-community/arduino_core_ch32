@@ -9,7 +9,7 @@ CH32V002A4M6 SOP16 PINOUT
 RX'/SDA/D3  1-+PC1     PC0+-16 ~D2/TX'
     SCL/D4  2-+PC2     VDD+-15  VCC
         D5~ 3-+PC3     VSS+-14  GND
-        D6~ 4-+PC4     PA2+-13 ~D1/A0
+     A2/D6~ 4-+PC4     PA2+-13 ~D1/A0
         D7  5-+PC6     PA1+-12 ~D0/A1
      SS/D8  6-+PC7     PD7+-11 ~D13/RST
    SWIO/D9~ 7-+PD1     PD6+-10  D12/RX/A6/MOSI

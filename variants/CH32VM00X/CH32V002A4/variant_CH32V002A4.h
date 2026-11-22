@@ -42,14 +42,10 @@
 #define VARIANT_NO_ANALOG_A3
 #define VARIANT_NO_ANALOG_A4
 
-/*
-// Alternate pins number
-#define PD5_ALT1                (PD5  | ALT1)
-#define PD6_ALT1                (PD6  | ALT1)
-
-#define NUM_DIGITAL_PINS        18
-#define NUM_ANALOG_INPUTS       8
-*/
+/* TODO: Define alternate pins like PC_0_ALT1 in PinNamesVar.h
+         Then add pinmap entries for alternate pins.
+         See V003 PinNamesVar.h and PeripheraPins.c for TIM mappings.
+   Note: Having the additional definitions listed below, for notations like PC0_ALT1 require matching mappings and may be unwanted.
 
 // Alternate pin numbers
 #define PC0_ALT1                (PC0  | ALT1)
@@ -80,7 +76,7 @@
 #define PD6_ALT3                (PD6  | ALT3)
 
 #define PC7_ALT4                (PC7  | ALT4)
-
+*/
 
 #define NUM_DIGITAL_PINS        14
 #define NUM_ANALOG_INPUTS       8
