@@ -156,8 +156,25 @@ recipe.S.o.pattern="{compiler.path}{compiler.S.cmd}" {compiler.S.flags} {build.i
 ## Create archives
 recipe.ar.pattern="{compiler.path}{compiler.ar.cmd}" {compiler.ar.flags} {compiler.ar.extra_flags} "{archive_file_path}" "{object_file}"
 
+## Core archive members that must be linked even though nothing references
+## them by name. The core archive is not linked with --whole-archive, so that
+## an unused HardwareSerialX.cpp (object, RX buffer, constructor, IRQ handler)
+## is left out. The archive scan is order-sensitive, so these are forced in
+## up front:
+##  - while1_handler: the system misc.c file holding the weak default vector
+##    handlers. Loading it first means the vector table is fully resolved
+##    before the linker reaches HardwareSerialX/HardwareTimer/interrupt.cpp,
+##    so their handlers are linked only when their objects are used.
+##  - SysTick_Handler: clock.c. hw_config_init() enables the SysTick
+##    interrupt even in sketches that never call millis()/delay().
+##  - NMI_Handler, HardFault_Handler: the series' *_it.c overrides.
+## (psram.cpp, the --wrap target of _free_r/_realloc_r, is pulled in by a
+## reference in main.cpp instead: an -u symbol would also be a --gc-sections
+## root and link malloc into every sketch.)
+compiler.c.elf.core_symbols=-Wl,-u,while1_handler,-u,SysTick_Handler,-u,NMI_Handler,-u,HardFault_Handler
+
 ## Combine gc-sections, archives, and objects
-recipe.c.combine.pattern="{compiler.path}{compiler.c.elf.cmd}" {compiler.extra_flags} -T "{build.system.path}/{build.series}/SRC/Ld/{build.ldscript}" -nostartfiles -Xlinker --gc-sections "-Wl,-Map,{build.path}/{build.project_name}.map" -Wl,--wrap=_free_r,--wrap=_realloc_r {compiler.c.elf.extra_flags} {build.flags.ldflags} -o "{build.path}/{build.project_name}.elf" "-L{build.path}" -Wl,--start-group {object_files} {build.ch_extra_lib} -Wl,--whole-archive "{archive_file_path}" -Wl,--no-whole-archive -lc -Wl,--end-group
+recipe.c.combine.pattern="{compiler.path}{compiler.c.elf.cmd}" {compiler.extra_flags} -T "{build.system.path}/{build.series}/SRC/Ld/{build.ldscript}" -nostartfiles -Xlinker --gc-sections "-Wl,-Map,{build.path}/{build.project_name}.map" -Wl,--wrap=_free_r,--wrap=_realloc_r {compiler.c.elf.core_symbols} {compiler.c.elf.extra_flags} {build.flags.ldflags} -o "{build.path}/{build.project_name}.elf" "-L{build.path}" -Wl,--start-group {object_files} {build.ch_extra_lib} "{archive_file_path}" -lc -Wl,--end-group
 
 ## Create output (.bin file)
 recipe.objcopy.bin.pattern="{compiler.path}{compiler.objcopy.cmd}" {compiler.elf2bin.flags} {compiler.elf2bin.extra_flags} "{build.path}/{build.project_name}.elf" "{build.path}/{build.project_name}.bin"
