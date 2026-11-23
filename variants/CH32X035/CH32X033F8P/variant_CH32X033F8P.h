@@ -12,6 +12,9 @@
  */
 #pragma once
 
+/* Package ID with revision bits cleared for compile-time selection. */
+#define WCH_MCU_CHIP_ID          0x035A0600U
+
 /* ENABLE Peripherals */
 #ifndef IDE_MENU_PERIPHERALS   // defined when peripherals are enabled/disabled via the IDE menu
 #define                         ADC_MODULE_ENABLED

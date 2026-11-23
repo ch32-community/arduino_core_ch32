@@ -13,6 +13,16 @@ Currently supported board variants (listed in **bold**):
  - See [notes below](#known-issues--limitations) for known issues and installation instructions.
  - CH32M007 also available in QFN26/QSOP28 (E8U7/G8R6 - no specific support yet).
 
+Each variant header defines `WCH_MCU_CHIP_ID` using the WCH package ID without its
+revision nibble. `GPIO_IPD_Unused()` uses this constant to compile only the
+selected package's register writes, removing runtime chip detection and the
+other package cases. Select the board variant that matches the physical chip.
+
+The CH32V002F4 and CH32V006F8 variants support both TSSOP20 and QFN20. Their
+macros use the TSSOP20 ID because both packages have identical unused-pin masks.
+CH32M007E8 selects the QSOP24 E8R package. Builds require `WCH_MCU_CHIP_ID` unless
+`ENSURE_COMPATIBILITY` is defined; that option retains its existing SDK path.
+
 ------------------
 
 ### TSSOP20 PINOUT ###
