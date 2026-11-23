@@ -46,26 +46,7 @@ V006: RV32EmC, 62K Flash, 8KB SRAM, 3328B bootloader, 256B user mem, 12-bit ADC,
 // Digital PinName array. On SOP8 some GPIOs are bound to the same pin: PD1=PD5=PD4, PA1=PD6
 // For CH32V002J4M6 (SOP8) the pinout is the same as CH32V003J4M6 (SOP8), using the same pin numbering.
 // CH32V002J4M6 pins:  1:PA1=PD6/TX', 3:PA2, 5:PC1/SDA, 6:PC2/SCL, 7: PC4, 8: PD1=PD4=PD5=SWIO/RX'
-const PinName digitalPin[] = {
-  PA_1,   // D0/A1
-  PA_2,   // D1/A0
-  PC_1,   // D2/SDA
-  PC_2,   // D3/SCL
-  PC_4,   // D4/A2
-  PD_1,   // D5/SWIO
-  PD_4,   // D6/A7
-  PD_5,   // D7/A5/RX'
-  PD_6    // D8/A6/TX'
-};
+const PinName digitalPin[] = VARIANT_DIGITAL_PIN_MAP;
 
 // Analog (Ax) pin number array
-const uint32_t analogInputPin[] = {
-  1,    // A0/PA2
-  0,    // A1/PA1
-  4,    // A2/PC4
-  NC,   // A3/PD2 no pin
-  NC,   // A4/PD3 no pin
-  7,    // A5/PD5
-  8,    // A6/PD6
-  6     // A7/PD4 
-};
+const uint32_t analogInputPin[] = VARIANT_ANALOG_PIN_MAP;
