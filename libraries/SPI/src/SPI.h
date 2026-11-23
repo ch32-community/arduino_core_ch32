@@ -118,8 +118,7 @@ class SPIClass {
     // Arduino pin numbers. Inline so that constant pins convert to PinName at
     // compile time (see pins_arduino_constexpr.h).
     __attribute__((always_inline)) SPIClass(uint32_t mosi, uint32_t miso, uint32_t sclk, uint32_t ssel = PNUM_NOT_DEFINED)
-      : SPIClass(ch32::pinToPinName(mosi), ch32::pinToPinName(miso),
-                 ch32::pinToPinName(sclk), ch32::pinToPinName(ssel)) {}
+      : SPIClass(ch32::pinToPinName(mosi), ch32::pinToPinName(miso), ch32::pinToPinName(sclk), ch32::pinToPinName(ssel)) {}
     SPIClass(PinName mosi, PinName miso, PinName sclk, PinName ssel = NC);
 
     // setMISO/MOSI/SCLK/SSEL have to be called before begin()
