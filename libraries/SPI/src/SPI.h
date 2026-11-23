@@ -15,6 +15,7 @@
 #define _SPI_H_INCLUDED
 
 #include "Arduino.h"
+#include "pins_arduino_constexpr.h"
 #include <stdio.h>
 extern "C" {
 #include "utility/spi_com.h"
@@ -114,24 +115,28 @@ class SPISettings {
 class SPIClass {
   public:
     SPIClass();
-    SPIClass(uint32_t mosi, uint32_t miso, uint32_t sclk, uint32_t ssel = PNUM_NOT_DEFINED);
+    // Arduino pin numbers. Inline so that constant pins convert to PinName at
+    // compile time (see pins_arduino_constexpr.h).
+    __attribute__((always_inline)) SPIClass(uint32_t mosi, uint32_t miso, uint32_t sclk, uint32_t ssel = PNUM_NOT_DEFINED)
+      : SPIClass(ch32::pinToPinName(mosi), ch32::pinToPinName(miso), ch32::pinToPinName(sclk), ch32::pinToPinName(ssel)) {}
+    SPIClass(PinName mosi, PinName miso, PinName sclk, PinName ssel = NC);
 
     // setMISO/MOSI/SCLK/SSEL have to be called before begin()
     void setMISO(uint32_t miso)
     {
-      _spi.pin_miso = digitalPinToPinName(miso);
+      _spi.pin_miso = ch32::pinToPinName(miso);
     };
     void setMOSI(uint32_t mosi)
     {
-      _spi.pin_mosi = digitalPinToPinName(mosi);
+      _spi.pin_mosi = ch32::pinToPinName(mosi);
     };
     void setSCLK(uint32_t sclk)
     {
-      _spi.pin_sclk = digitalPinToPinName(sclk);
+      _spi.pin_sclk = ch32::pinToPinName(sclk);
     };
     void setSSEL(uint32_t ssel)
     {
-      _spi.pin_ssel = digitalPinToPinName(ssel);
+      _spi.pin_ssel = ch32::pinToPinName(ssel);
     };
 
     void setMISO(PinName miso)

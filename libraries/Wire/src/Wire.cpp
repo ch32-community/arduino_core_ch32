@@ -37,14 +37,17 @@ static const uint8_t MASTER_ADDRESS = 0x01;
 
 TwoWire::TwoWire()
 {
-  _i2c.sda = digitalPinToPinName(SDA);
-  _i2c.scl = digitalPinToPinName(SCL);
+  // The variant's pins are fixed for the build: convert them at compile time.
+  constexpr PinName sda = ch32::digitalPinToPinNameConstexpr(SDA);
+  constexpr PinName scl = ch32::digitalPinToPinNameConstexpr(SCL);
+  _i2c.sda = sda;
+  _i2c.scl = scl;
 }
 
-TwoWire::TwoWire(uint32_t sda, uint32_t scl)
+TwoWire::TwoWire(PinName sda, PinName scl)
 {
-  _i2c.sda = digitalPinToPinName(sda);
-  _i2c.scl = digitalPinToPinName(scl);
+  _i2c.sda = sda;
+  _i2c.scl = scl;
 }
 
 // Public Methods //////////////////////////////////////////////////////////////
@@ -54,13 +57,6 @@ TwoWire::TwoWire(uint32_t sda, uint32_t scl)
  */
 TwoWire::~TwoWire() { end(); }
 #endif
-
-void TwoWire::begin(uint32_t sda, uint32_t scl)
-{
-  _i2c.sda = digitalPinToPinName(sda);
-  _i2c.scl = digitalPinToPinName(scl);
-  begin();
-}
 
 void TwoWire::begin(bool generalCall)
 {

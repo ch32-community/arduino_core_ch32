@@ -799,18 +799,6 @@ void HardwareTimer::setCount(uint32_t counter, TimerFormat_t format)
   * @brief  Set channel mode
   * @param  channel: Arduino channel [1..4]
   * @param  mode: mode configuration for the channel (see TimerModes_t)
-  * @param  pin: Arduino pin number, ex: D1, 1 or PA1
-  * @retval None
-  */
-void HardwareTimer::setMode(uint32_t channel, TimerModes_t mode, uint32_t pin)
-{
-  setMode(channel, mode, digitalPinToPinName(pin));
-}
-
-/**
-  * @brief  Set channel mode
-  * @param  channel: Arduino channel [1..4]
-  * @param  mode: mode configuration for the channel (see TimerModes_t)
   * @param  pin: pin name, ex: PB_0
   * @retval None
   */
@@ -1161,20 +1149,6 @@ uint32_t HardwareTimer::getCaptureCompare(uint32_t channel,  TimerCompareFormat_
       break;
   }
   return return_value;
-}
-
-/**
-  * @param  channel: Arduino channel [1..4]
-  * @param  pin: Arduino pin number, ex D1, 1 or PA1
-  * @param  frequency: PWM frequency expressed in hertz
-  * @param  dutycycle: PWM dutycycle expressed in percentage
-  * @param  PeriodCallback: timer period callback (timer rollover upon update event)
-  * @param  CompareCallback: timer compare callback
-  * @retval None
-  */
-void HardwareTimer::setPWM(uint32_t channel, uint32_t pin, uint32_t frequency, uint32_t dutycycle, callback_function_t PeriodCallback, callback_function_t CompareCallback)
-{
-  setPWM(channel, digitalPinToPinName(pin), frequency, dutycycle, PeriodCallback, CompareCallback);
 }
 
 /**

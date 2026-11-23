@@ -30,6 +30,7 @@
 #include <inttypes.h>
 #include "Stream.h"
 #include "uart.h"
+#include "pins_arduino_constexpr.h"
 
 // Define constants and variables for buffering incoming serial data.  We're
 // using a ring buffer (I think), in which head is the index of the location
@@ -145,15 +146,32 @@ public:
       return true;
     }
 
-    void setRx(uint32_t _rx);
-    void setTx(uint32_t _tx);
+    // Arduino pin number overloads. Inline so that a constant pin converts to
+    // PinName at compile time (see pins_arduino_constexpr.h).
+    __attribute__((always_inline)) void setRx(uint32_t _rx)
+    {
+      setRx(ch32::pinToPinName(_rx));
+    }
+    __attribute__((always_inline)) void setTx(uint32_t _tx)
+    {
+      setTx(ch32::pinToPinName(_tx));
+    }
     void setRx(PinName _rx);
     void setTx(PinName _tx);
 
     // Enable HW flow control on RTS, CTS or both
-    void setRts(uint32_t _rts);
-    void setCts(uint32_t _cts);
-    void setRtsCts(uint32_t _rts, uint32_t _cts);
+    __attribute__((always_inline)) void setRts(uint32_t _rts)
+    {
+      setRts(ch32::pinToPinName(_rts));
+    }
+    __attribute__((always_inline)) void setCts(uint32_t _cts)
+    {
+      setCts(ch32::pinToPinName(_cts));
+    }
+    __attribute__((always_inline)) void setRtsCts(uint32_t _rts, uint32_t _cts)
+    {
+      setRtsCts(ch32::pinToPinName(_rts), ch32::pinToPinName(_cts));
+    }
     void setRts(PinName _rts);
     void setCts(PinName _cts);
     void setRtsCts(PinName _rts, PinName _cts);

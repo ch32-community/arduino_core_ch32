@@ -12,6 +12,21 @@
 // Metro rev A with the separate Ethernet transformer and RJ45.
 #define NUM_DIGITAL_PINS 38
 #define NUM_ANALOG_INPUTS 6
+
+// Pin tables. The variant .cpp defines the runtime digitalPin[] and
+// analogInputPin[] from these, and pins_arduino_constexpr.h builds
+// compile-time copies so constant pin numbers convert to PinName without
+// a runtime lookup. Use /* */ comments: these are continued macro lines.
+#define VARIANT_DIGITAL_PIN_MAP {                                      \
+    PB_7,  PB_6,  PB_8, PB_9,  PC_0,  PC_1,  PC_2,  PC_3,  PA_0, PA_1, \
+    PA_2,  PA_8,  PA_9, PB_12, PA_4,  PA_3,  PB_0,  PB_1,  PC_4, PC_5, \
+    PB_11, PB_10, PA_7, PA_6,  PA_5,  PC_14, PC_15, PA_15, PB_3, PB_4, \
+    PB_5,  PC_12, PD_2, PB_14, PB_15, PC_10, PC_11, PA_10              \
+}
+
+#define VARIANT_ANALOG_PIN_MAP { \
+  14, 15, 16, 17, 18, 19         \
+}
 #define ADC_RESOLUTION 12
 #define PB7 0
 #define PB6 1

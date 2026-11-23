@@ -111,11 +111,13 @@ HardwareSerial::HardwareSerial(void *peripheral)
   setTx(pinmap_pin(peripheral, PinMap_UART_TX));
 #else
   // SERIAL_RX/TX are defined by the Serial port/map selection (see cores/arduino/variant.h)
-  // Flash minimization: using digitalPinToPinName avoids overloaded setRX (works only for -Os, not for LTO)
-  // setRx(PIN_SERIAL_RX);   // TODO: check if serial can be initialized as TX-only (for V002/V003 SOP8)
-  // setTx(PIN_SERIAL_TX);
-  setRx(digitalPinToPinName(PIN_SERIAL_RX));   // TODO: check if serial can be initialized as TX-only (for V002/V003 SOP8)
-  setTx(digitalPinToPinName(PIN_SERIAL_TX));  
+  // The pins are fixed for the build, so convert them at compile time rather
+  // than with a startup lookup in the variant's pin tables.
+  // TODO: check if serial can be initialized as TX-only (for V002/V003 SOP8)
+  constexpr PinName rx = ch32::digitalPinToPinNameConstexpr(PIN_SERIAL_RX);
+  constexpr PinName tx = ch32::digitalPinToPinNameConstexpr(PIN_SERIAL_TX);
+  setRx(rx);
+  setTx(tx);
 #endif
   
 #if ENABLE_RX_BUFFER
@@ -441,16 +443,6 @@ size_t HardwareSerial::write(uint8_t c)
   return uart_putc(&_serial, c);
 }
 
-void HardwareSerial::setRx(uint32_t _rx)
-{
-  _serial.pin_rx = digitalPinToPinName(_rx);
-}
-
-void HardwareSerial::setTx(uint32_t _tx)
-{
-  _serial.pin_tx = digitalPinToPinName(_tx);
-}
-
 void HardwareSerial::setRx(PinName _rx)
 {
   _serial.pin_rx = _rx;
@@ -459,22 +451,6 @@ void HardwareSerial::setRx(PinName _rx)
 void HardwareSerial::setTx(PinName _tx)
 {
   _serial.pin_tx = _tx;
-}
-
-void HardwareSerial::setRts(uint32_t _rts)
-{
-  _serial.pin_rts = digitalPinToPinName(_rts);
-}
-
-void HardwareSerial::setCts(uint32_t _cts)
-{
-  _serial.pin_cts = digitalPinToPinName(_cts);
-}
-
-void HardwareSerial::setRtsCts(uint32_t _rts, uint32_t _cts)
-{
-  _serial.pin_rts = digitalPinToPinName(_rts);
-  _serial.pin_cts = digitalPinToPinName(_cts);
 }
 
 void HardwareSerial::setRts(PinName _rts)
