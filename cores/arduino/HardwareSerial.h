@@ -30,7 +30,7 @@
 #include <inttypes.h>
 #include "Stream.h"
 #include "uart.h"
-#include "pins_arduino.h"   // digitalPinToPinName() for the pin-number constructor
+#include "pins_arduino_constexpr.h"   // ch32::pinToPinName() for the pin-number constructor
 
 // Define constants and variables for buffering incoming serial data.  We're
 // using a ring buffer (I think), in which head is the index of the location
@@ -109,10 +109,11 @@ class HardwareSerial : public Stream {
 
   serial_t _serial;
 public:
-    // Arduino pin numbers (PA9, D1, ...). Inline so the conversion is done
-    // at each SerialX definition rather than in a shared out-of-line copy.
-    HardwareSerial(void *peripheral, uint32_t tx, uint32_t rx)
-      : HardwareSerial(peripheral, digitalPinToPinName(tx), digitalPinToPinName(rx)) {}
+    // Arduino pin numbers (PA9, D1, ...). Always inlined so that constant pins,
+    // such as each SerialX's PIN_SERIALx_TX/RX, convert to PinName at compile
+    // time (see pins_arduino_constexpr.h) instead of by a startup table lookup.
+    __attribute__((always_inline)) HardwareSerial(void *peripheral, uint32_t tx, uint32_t rx)
+      : HardwareSerial(peripheral, ch32::pinToPinName(tx), ch32::pinToPinName(rx)) {}
     // Pin names (PA_9, ...). Pass NC as rx for a TX-only port.
     HardwareSerial(void *peripheral, PinName tx, PinName rx);
     HardwareSerial(void *peripheral);
