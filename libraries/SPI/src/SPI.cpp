@@ -20,9 +20,13 @@ SPIClass SPI;
   */
 SPIClass::SPIClass() : _CSPinConfig(NO_CONFIG)
 {
-  _spi.pin_miso = digitalPinToPinName(MISO);
-  _spi.pin_mosi = digitalPinToPinName(MOSI);
-  _spi.pin_sclk = digitalPinToPinName(SCK);
+  // The variant's pins are fixed for the build: convert them at compile time.
+  constexpr PinName miso = ch32::digitalPinToPinNameConstexpr(MISO);
+  constexpr PinName mosi = ch32::digitalPinToPinNameConstexpr(MOSI);
+  constexpr PinName sclk = ch32::digitalPinToPinNameConstexpr(SCK);
+  _spi.pin_miso = miso;
+  _spi.pin_mosi = mosi;
+  _spi.pin_sclk = sclk;
   _spi.pin_ssel = NC;
 }
 
@@ -45,12 +49,12 @@ SPIClass::SPIClass() : _CSPinConfig(NO_CONFIG)
   *         another CS pin and don't pass a CS pin as parameter to any functions
   *         of the class.
   */
-SPIClass::SPIClass(uint32_t mosi, uint32_t miso, uint32_t sclk, uint32_t ssel) : _CSPinConfig(NO_CONFIG)
+SPIClass::SPIClass(PinName mosi, PinName miso, PinName sclk, PinName ssel) : _CSPinConfig(NO_CONFIG)
 {
-  _spi.pin_miso = digitalPinToPinName(miso);
-  _spi.pin_mosi = digitalPinToPinName(mosi);
-  _spi.pin_sclk = digitalPinToPinName(sclk);
-  _spi.pin_ssel = digitalPinToPinName(ssel);
+  _spi.pin_miso = miso;
+  _spi.pin_mosi = mosi;
+  _spi.pin_sclk = sclk;
+  _spi.pin_ssel = ssel;
 }
 
 /**
