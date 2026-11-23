@@ -106,9 +106,10 @@ typedef enum {
 
 class HardwareSerial : public Stream {
 
-  serial_t _serial;  
+  serial_t _serial;
 public:
-    HardwareSerial(void *peripheral); 
+    HardwareSerial(void *peripheral);
+    HardwareSerial(void *peripheral, PinName rx, PinName tx);
     
     void begin(unsigned long baud)
     {
@@ -165,12 +166,35 @@ public:
     volatile rx_buffer_index_t _rx_buffer_head;
     volatile rx_buffer_index_t _rx_buffer_tail;
     unsigned char _rx_buffer[SERIAL_RX_BUFFER_SIZE];
+
+    // Receive interrupt body. Called from the U(S)ARTx_IRQHandler defined
+    // next to its SerialX object in HardwareSerialX.cpp; public because the
+    // handler is extern "C". Takes the peripheral as a constant so each
+    // handler compiles to direct register accesses.
+    inline __attribute__((always_inline)) void _rx_irq(USART_TypeDef *uart)
+    {
+      if (USART_GetITStatus(uart, USART_IT_RXNE) != RESET) {
+        USART_ClearITPendingBit(uart, USART_IT_RXNE);
+
+        unsigned char c = USART_ReceiveData(uart);
+        rx_buffer_index_t next_head = (_rx_buffer_head + 1) % SERIAL_RX_BUFFER_SIZE;
+
+        if (next_head != _rx_buffer_tail) {
+          _rx_buffer[_rx_buffer_head] = c;
+          _rx_buffer_head = next_head;
+        }
+      }
+    }
 #endif
 
   private:
     void init(PinName _rx, PinName _tx, PinName _rts = NC, PinName _cts = NC);
 };
 
+// Each SerialX is defined, together with its receive buffer and interrupt
+// handler, in its own HardwareSerialX.cpp. The core archive is linked without
+// --whole-archive, so a port is linked into a sketch only when something
+// references it; declaring every port here costs nothing for unused ones.
 #if defined(HAVE_HWSERIAL1) && defined(USART1)
   extern HardwareSerial Serial1;
 #endif
