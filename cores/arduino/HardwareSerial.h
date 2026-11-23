@@ -108,8 +108,13 @@ class HardwareSerial : public Stream {
 
   serial_t _serial;
 public:
+    // Arduino pin numbers (PA9, D1, ...). Inline so the conversion is done
+    // at each SerialX definition rather than in a shared out-of-line copy.
+    HardwareSerial(void *peripheral, uint32_t tx, uint32_t rx)
+      : HardwareSerial(peripheral, digitalPinToPinName(tx), digitalPinToPinName(rx)) {}
+    // Pin names (PA_9, ...). Pass NC as rx for a TX-only port.
+    HardwareSerial(void *peripheral, PinName tx, PinName rx);
     HardwareSerial(void *peripheral);
-    HardwareSerial(void *peripheral, PinName rx, PinName tx);
     
     void begin(unsigned long baud)
     {
