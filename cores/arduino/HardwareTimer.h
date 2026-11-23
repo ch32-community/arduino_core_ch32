@@ -32,6 +32,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "timer.h"
 #include "ch32yyxx_tim.h"
+#include "pins_arduino_constexpr.h"
 
 #if defined(TIM_MODULE_ENABLED) && !defined(TIM_MODULE_ONLY)
 
@@ -129,13 +130,22 @@ class HardwareTimer {
     uint32_t getOverflow(TimerFormat_t format = TICK_FORMAT); // return overflow depending on format provided
 
     void setPWM(uint32_t channel, PinName pin, uint32_t frequency, uint32_t dutycycle, callback_function_t PeriodCallback = nullptr, callback_function_t CompareCallback = nullptr); // Set all in one command freq in HZ, Duty in percentage. Including both interrupt.
-    void setPWM(uint32_t channel, uint32_t pin, uint32_t frequency, uint32_t dutycycle, callback_function_t PeriodCallback = nullptr, callback_function_t CompareCallback = nullptr);
+    // Arduino pin number overload. Inline so that a constant pin converts to
+    // PinName at compile time (see pins_arduino_constexpr.h).
+    __attribute__((always_inline)) void setPWM(uint32_t channel, uint32_t pin, uint32_t frequency, uint32_t dutycycle, callback_function_t PeriodCallback = nullptr, callback_function_t CompareCallback = nullptr)
+    {
+      setPWM(channel, ch32::pinToPinName(pin), frequency, dutycycle, std::move(PeriodCallback), std::move(CompareCallback));
+    }
 
     void setCount(uint32_t val, TimerFormat_t format = TICK_FORMAT); // set timer counter to value 'val' depending on format provided
     uint32_t getCount(TimerFormat_t format = TICK_FORMAT);  // return current counter value of timer depending on format provided
 
     void setMode(uint32_t channel, TimerModes_t mode, PinName pin = NC); // Configure timer channel with specified mode on specified pin if available
-    void setMode(uint32_t channel, TimerModes_t mode, uint32_t pin);
+    // Arduino pin number overload, ex: D1, 1 or PA1. Inline for the same reason as setPWM().
+    __attribute__((always_inline)) void setMode(uint32_t channel, TimerModes_t mode, uint32_t pin)
+    {
+      setMode(channel, mode, ch32::pinToPinName(pin));
+    }
 
     TimerModes_t getMode(uint32_t channel);  // Retrieve configured mode
 

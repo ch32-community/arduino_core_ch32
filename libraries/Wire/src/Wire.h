@@ -28,6 +28,7 @@
 
 #include "Stream.h"
 #include "Arduino.h"
+#include "pins_arduino_constexpr.h"
 
 extern "C" {
 #include "utility/twi.h"
