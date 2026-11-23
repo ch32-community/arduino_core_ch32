@@ -93,9 +93,6 @@
 //    TX_3: PC1
 // If I2C is enabled we cannot use these alternatives but there are no other combinations available.
 // Using both I2C/SPI and UART is too much (but flash gets limited then also)
-#if defined(SERIAL_UART_ENABLE_ALL)
-  #error "CH32V002J4 only supports Serial1; Dual Serial is unavailable"
-#endif
 #if (defined(SERIAL_UART_INSTANCE) && SERIAL_UART_INSTANCE>1)
   #error "CH32V002J4 only supports Serial1; Serial2 cannot be selected"
 #endif

@@ -66,9 +66,7 @@
 // TODO: it would be nice to give some warning, but adding a #warning here causea a whole ugly load of them to show when compiling.
 // V002D4 as no pins for standard Serial1 (PD5/PD6), Serial1_1 (PD6/PD5) or Serial1_3 (PC0/PC1)
 // It only allows Board default and always uses PD0/PD1 using Remap2
-#if defined(SERIAL_UART_ENABLE_ALL)
-  #error "CH32V002D4 only supports Serial1; Dual Serial is unavailable"
-#elif (defined(SERIAL_UART_INSTANCE) && SERIAL_UART_INSTANCE>1)
+#if (defined(SERIAL_UART_INSTANCE) && SERIAL_UART_INSTANCE>1)
   #error "CH32V002D4 only supports Serial1; Serial2 cannot be selected"
 #elif (defined(SERIAL_UART_INSTANCE) && SERIAL_UART_INSTANCE==1) || defined(SERIAL_UART_PINMAP)
   #error "CH32V002D4 can only select Board default for Serial (TX/RX=PD0/PD1)"

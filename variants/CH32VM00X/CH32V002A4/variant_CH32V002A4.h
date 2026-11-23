@@ -121,9 +121,6 @@
 // CH32V002A4M6 SOP16 has RX1/TX1, but it is shared with SPI. 
 // When SPI is enabled alternative pins UART_3 (RX'/TX') are used, but these conflict with I2C
 // If I2C is enabled the default UART pins are used as board default, but user can override this. 
-#if defined(SERIAL_UART_ENABLE_ALL)
-  #error "CH32V002A4 only supports Serial1; Dual Serial is unavailable"
-#endif
 #if (defined(SERIAL_UART_INSTANCE) && SERIAL_UART_INSTANCE>1)
   #error "CH32V002A4 only supports Serial1; Serial2 cannot be selected"
 #endif
