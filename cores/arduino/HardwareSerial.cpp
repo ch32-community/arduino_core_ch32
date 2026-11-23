@@ -35,25 +35,18 @@
 // references are linked. See HardwareSerial.h.
 
 HardwareSerial::HardwareSerial(void *peripheral)
-  : HardwareSerial(peripheral,
+  : HardwareSerial(peripheral, PIN_SERIAL_TX, PIN_SERIAL_RX)
   // Using the IDE menu, the user can select which Serial port to use.
   // The default port is defined in the variant header (BOARD_DEFAULT_SERIAL).
   // Some board support selecting a pinmap. Default is no map (BOARD_DEFAULT_SERIALMAP).
   // SERIAL_RX/TX are defined by the Serial port/map selection (see cores/arduino/variant.h)
-                   digitalPinToPinName(PIN_SERIAL_RX),
-                   digitalPinToPinName(PIN_SERIAL_TX))
 {
 }
 
-HardwareSerial::HardwareSerial(void *peripheral, PinName rx, PinName tx)
+// Pin names (PA_9, ...). Pass NC as rx for a TX-only port.
+HardwareSerial::HardwareSerial(void *peripheral, PinName tx, PinName rx)
 {
   setHandler(peripheral);
-
-#if ENABLE_RX_BUFFER
-  // Initialize buffer pointers for all CH32 series MCUs
-  _rx_buffer_head = 0;
-  _rx_buffer_tail = 0;
-#endif
 
   // No interrupt is enabled until begin() succeeds; end() checks this.
   _serial.irq = (IRQn_Type)0;

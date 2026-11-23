@@ -19,9 +19,9 @@
 #if defined(HAVE_HWSERIAL8) && defined(UART8)
 
 #if defined(SERIAL_UART_INSTANCE) && SERIAL_UART_INSTANCE == 8
-    HardwareSerial Serial8(UART8, digitalPinToPinName(PIN_SERIAL_RX), digitalPinToPinName(PIN_SERIAL_TX));
+    HardwareSerial Serial8(UART8, PIN_SERIAL_TX, PIN_SERIAL_RX);
 #else
-    HardwareSerial Serial8(UART8, digitalPinToPinName(PIN_SERIAL8_RX), digitalPinToPinName(PIN_SERIAL8_TX));
+    HardwareSerial Serial8(UART8, PIN_SERIAL8_TX, PIN_SERIAL8_RX);
 #endif
 
 #if ENABLE_RX_BUFFER

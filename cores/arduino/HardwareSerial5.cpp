@@ -19,9 +19,9 @@
 #if defined(HAVE_HWSERIAL5) && defined(UART5)
 
 #if defined(SERIAL_UART_INSTANCE) && SERIAL_UART_INSTANCE == 5
-    HardwareSerial Serial5(UART5, digitalPinToPinName(PIN_SERIAL_RX), digitalPinToPinName(PIN_SERIAL_TX));
+    HardwareSerial Serial5(UART5, PIN_SERIAL_TX, PIN_SERIAL_RX);
 #else
-    HardwareSerial Serial5(UART5, digitalPinToPinName(PIN_SERIAL5_RX), digitalPinToPinName(PIN_SERIAL5_TX));
+    HardwareSerial Serial5(UART5, PIN_SERIAL5_TX, PIN_SERIAL5_RX);
 #endif
 
 #if ENABLE_RX_BUFFER

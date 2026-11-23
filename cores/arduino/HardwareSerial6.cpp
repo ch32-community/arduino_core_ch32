@@ -19,9 +19,9 @@
 #if defined(HAVE_HWSERIAL6) && defined(UART6)
 
 #if defined(SERIAL_UART_INSTANCE) && SERIAL_UART_INSTANCE == 6
-    HardwareSerial Serial6(UART6, digitalPinToPinName(PIN_SERIAL_RX), digitalPinToPinName(PIN_SERIAL_TX));
+    HardwareSerial Serial6(UART6, PIN_SERIAL_TX, PIN_SERIAL_RX);
 #else
-    HardwareSerial Serial6(UART6, digitalPinToPinName(PIN_SERIAL6_RX), digitalPinToPinName(PIN_SERIAL6_TX));
+    HardwareSerial Serial6(UART6, PIN_SERIAL6_TX, PIN_SERIAL6_RX);
 #endif
 
 #if ENABLE_RX_BUFFER

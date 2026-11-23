@@ -19,9 +19,9 @@
 #if defined(HAVE_HWSERIAL3) && defined(USART3)
 
 #if defined(SERIAL_UART_INSTANCE) && SERIAL_UART_INSTANCE == 3
-    HardwareSerial Serial3(USART3, digitalPinToPinName(PIN_SERIAL_RX), digitalPinToPinName(PIN_SERIAL_TX));
+    HardwareSerial Serial3(USART3, PIN_SERIAL_TX, PIN_SERIAL_RX);
 #else
-    HardwareSerial Serial3(USART3, digitalPinToPinName(PIN_SERIAL3_RX), digitalPinToPinName(PIN_SERIAL3_TX));
+    HardwareSerial Serial3(USART3, PIN_SERIAL3_TX, PIN_SERIAL3_RX);
 #endif
 
 #if ENABLE_RX_BUFFER

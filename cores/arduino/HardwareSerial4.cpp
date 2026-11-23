@@ -28,9 +28,9 @@
 #if defined(HAVE_HWSERIAL4) && defined(SERIAL4_PERIPH)
 
 #if defined(SERIAL_UART_INSTANCE) && SERIAL_UART_INSTANCE == 4
-    HardwareSerial Serial4(SERIAL4_PERIPH, digitalPinToPinName(PIN_SERIAL_RX), digitalPinToPinName(PIN_SERIAL_TX));
+    HardwareSerial Serial4(SERIAL4_PERIPH, PIN_SERIAL_TX, PIN_SERIAL_RX);
 #else
-    HardwareSerial Serial4(SERIAL4_PERIPH, digitalPinToPinName(PIN_SERIAL4_RX), digitalPinToPinName(PIN_SERIAL4_TX));
+    HardwareSerial Serial4(SERIAL4_PERIPH, PIN_SERIAL4_TX, PIN_SERIAL4_RX);
 #endif
 
 #if ENABLE_RX_BUFFER

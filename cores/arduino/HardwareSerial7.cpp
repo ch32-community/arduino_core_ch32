@@ -19,9 +19,9 @@
 #if defined(HAVE_HWSERIAL7) && defined(UART7)
 
 #if defined(SERIAL_UART_INSTANCE) && SERIAL_UART_INSTANCE == 7
-    HardwareSerial Serial7(UART7, digitalPinToPinName(PIN_SERIAL_RX), digitalPinToPinName(PIN_SERIAL_TX));
+    HardwareSerial Serial7(UART7, PIN_SERIAL_TX, PIN_SERIAL_RX);
 #else
-    HardwareSerial Serial7(UART7, digitalPinToPinName(PIN_SERIAL7_RX), digitalPinToPinName(PIN_SERIAL7_TX));
+    HardwareSerial Serial7(UART7, PIN_SERIAL7_TX, PIN_SERIAL7_RX);
 #endif
 
 #if ENABLE_RX_BUFFER
