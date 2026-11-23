@@ -80,7 +80,12 @@ class TwoWire : public Stream {
 
   public:
     TwoWire();
-    TwoWire(uint32_t sda, uint32_t scl);
+    // Arduino pin numbers. Inline so that constant pins, such as Wire1's
+    // PIN_WIRE1_SDA/SCL, convert to PinName at compile time
+    // (see pins_arduino_constexpr.h).
+    __attribute__((always_inline)) TwoWire(uint32_t sda, uint32_t scl)
+      : TwoWire(ch32::pinToPinName(sda), ch32::pinToPinName(scl)) {}
+    TwoWire(PinName sda, PinName scl);
 #if defined(WIRE_I3C)
     ~TwoWire();
     // Each hardware peripheral and its dynamically allocated buffers have one
@@ -91,11 +96,11 @@ class TwoWire : public Stream {
     // setSCL/SDA have to be called before begin()
     void setSCL(uint32_t scl)
     {
-      _i2c.scl = digitalPinToPinName(scl);
+      _i2c.scl = ch32::pinToPinName(scl);
     };
     void setSDA(uint32_t sda)
     {
-      _i2c.sda = digitalPinToPinName(sda);
+      _i2c.sda = ch32::pinToPinName(sda);
     };
     void setSCL(PinName scl)
     {
@@ -106,7 +111,12 @@ class TwoWire : public Stream {
       _i2c.sda = sda;
     };
     void begin(bool generalCall = false);
-    void begin(uint32_t, uint32_t);
+    __attribute__((always_inline)) void begin(uint32_t sda, uint32_t scl)
+    {
+      _i2c.sda = ch32::pinToPinName(sda);
+      _i2c.scl = ch32::pinToPinName(scl);
+      begin();
+    }
     void begin(uint8_t, bool generalCall = false, bool NoStretchMode = false);
     void begin(int, bool generalCall = false, bool NoStretchMode = false);
     void end();
