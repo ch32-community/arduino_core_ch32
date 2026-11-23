@@ -70,6 +70,33 @@
 
 #define NUM_DIGITAL_PINS        13
 #define NUM_ANALOG_INPUTS       4
+
+// Pin tables. The variant .cpp defines the runtime digitalPin[] and
+// analogInputPin[] from these, and pins_arduino_constexpr.h builds
+// compile-time copies so constant pin numbers convert to PinName without
+// a runtime lookup. Use /* */ comments: these are continued macro lines.
+#define VARIANT_DIGITAL_PIN_MAP { \
+  PB_1,  /* D0/A0 */              \
+  PB_0,  /* D1/A1 */              \
+  PA_1,  /* D2/A2 */              \
+  PA_0,  /* D3/A3 */              \
+  PA_2,  /* D4/TX */              \
+  PA_3,  /* D5/RX */              \
+  PA_4,  /* D6/Neopixel */        \
+  PA_5,  /* D7/SCK */             \
+  PA_6,  /* D8/MISO */            \
+  PA_7,  /* D9/MOSI */            \
+  PB_6,  /* D10/SCL */            \
+  PB_7,  /* D11/SDA */            \
+  PB_8,  /* D12/BOOT0 Button */   \
+}
+
+#define VARIANT_ANALOG_PIN_MAP { \
+  0,  /* A0,  PB1 */             \
+  1,  /* A1,  PB0 */             \
+  2,  /* A2,  PA1 */             \
+  3,  /* A3,  PA0 */             \
+}
 // #define ADC_CTLR_ADCAL          
 #define ADC_RESOLUTION          12
 
@@ -139,13 +166,7 @@
 #endif
 
 // Default pins for each hardware serial port.
-#ifndef PIN_SERIAL1_RX
-  #define PIN_SERIAL1_RX     PA10  /* UART1 default RX pin */
-#endif
-#ifndef PIN_SERIAL1_TX
-  #define PIN_SERIAL1_TX     PA9  /* UART1 default TX pin */
-#endif
-
+// UART1 has no default pins on this board.
 #ifndef PIN_SERIAL2_RX
   #define PIN_SERIAL2_RX     PA3  /* UART2 default RX pin */
 #endif

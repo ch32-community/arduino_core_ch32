@@ -3,6 +3,20 @@
 #include "Arduino.h"
 #include "debug.h"
 
+// The core archive is not linked with --whole-archive (see platform.txt), and
+// libc's free()/realloc() -- which reach psram.cpp's --wrap targets -- can be
+// pulled in by libraries searched after it. Referencing the wrappers from
+// this always-linked file extracts psram.cpp from the archive while it is
+// still being searched. The reference is in its own section, which
+// --gc-sections discards, so a sketch that never frees memory pays nothing.
+extern "C" void __wrap__free_r(struct _reent *, void *);
+extern "C" void *__wrap__realloc_r(struct _reent *, void *, size_t);
+__attribute__((used, section(".rodata.psram_wrap_anchor")))
+static const void *const psram_wrap_anchor[] = {
+    (const void *)__wrap__free_r,
+    (const void *)__wrap__realloc_r,
+};
+
 
 /*
  * \brief Main entry point of Arduino application

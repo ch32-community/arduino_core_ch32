@@ -29,7 +29,9 @@
 
 // A variant exposes a hardware port by supplying both of its default pins.
 // Keep all exposed ports available independently of the Serial alias.
-#if !defined(HWSERIAL_NONE) && defined(SERIAL_UART_ENABLE_ALL)
+// Enabling a port only declares SerialX; each lives in its own
+// HardwareSerialX.cpp and is linked only if the sketch references it.
+#if !defined(HWSERIAL_NONE)
     #if !defined(ENABLE_HWSERIAL1) && (defined(PIN_SERIAL1_RX) && defined(PIN_SERIAL1_TX))
         #define ENABLE_HWSERIAL1
     #endif

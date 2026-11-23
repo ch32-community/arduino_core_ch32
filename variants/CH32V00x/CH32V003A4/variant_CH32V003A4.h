@@ -76,6 +76,38 @@
 #define NUM_DIGITAL_PINS        14
 #define NUM_ANALOG_INPUTS       8
 
+// Pin tables. The variant .cpp defines the runtime digitalPin[] and
+// analogInputPin[] from these, and pins_arduino_constexpr.h builds
+// compile-time copies so constant pin numbers convert to PinName without
+// a runtime lookup. Use /* */ comments: these are continued macro lines.
+#define VARIANT_DIGITAL_PIN_MAP { \
+  PA_1,   /* D0/A1 */             \
+  PA_2,   /* D1/A0 */             \
+  PC_0,   /* D2 */                \
+  PC_1,   /* D3 */                \
+  PC_2,   /* D4 */                \
+  PC_3,   /* D5 */                \
+  PC_4,   /* D6/A2 */             \
+  PC_6,   /* D7 */                \
+  PC_7,   /* D8 */                \
+  PD_1,   /* D9 */                \
+  PD_4,   /* D10/A7 */            \
+  PD_5,   /* D11/A5 */            \
+  PD_6,   /* D12/A6 */            \
+  PD_7    /* D13 */               \
+}
+
+#define VARIANT_ANALOG_PIN_MAP { \
+  1,    /* A0/PA2 */             \
+  0,    /* A1/PA1 */             \
+  6,    /* A2/PC4 */             \
+  NC,    /* A3 NC */             \
+  NC,    /* A4 NC */             \
+  11,   /* A5/PD5 */             \
+  12,   /* A6/PD6 */             \
+  10    /* A7/PD4 */             \
+}
+
 // #define ADC_CTLR_ADCAL          
 #define ADC_RESOLUTION          10
 

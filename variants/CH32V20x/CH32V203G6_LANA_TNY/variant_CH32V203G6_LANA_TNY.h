@@ -72,6 +72,48 @@
 
 #define NUM_DIGITAL_PINS        22
 #define NUM_ANALOG_INPUTS       10
+
+// Pin tables. The variant .cpp defines the runtime digitalPin[] and
+// analogInputPin[] from these, and pins_arduino_constexpr.h builds
+// compile-time copies so constant pin numbers convert to PinName without
+// a runtime lookup. Use /* */ comments: these are continued macro lines.
+#define VARIANT_DIGITAL_PIN_MAP { \
+  PA_0,   /* D0/A0 */             \
+  PA_1,   /* D1/A1 */             \
+  PA_2,   /* D2/A2 */             \
+  PA_3,   /* D3/A3 */             \
+  PA_4,   /* D4/A4 */             \
+  PA_5,   /* D5/A5 */             \
+  PA_6,   /* D6/A6 */             \
+  PA_7,   /* D7/A7 */             \
+  PA_9,   /* D8 */                \
+  PA_13,  /* D9 */                \
+  PA_14,  /* D10 */               \
+  PA_15,  /* D11 */               \
+  PB_0,   /* D12/A8 */            \
+  PB_1,   /* D13/A9 */            \
+  PB_3,   /* D14 */               \
+  PB_4,   /* D15 */               \
+  PB_5,   /* D16 */               \
+  PB_6,   /* D17 */               \
+  PB_7,   /* D18 */               \
+  PB_8,   /* D19/BOOT0 */         \
+  PD_0,   /* D20/NEOPIXEL_PIN */  \
+  PD_1,   /* D21 */               \
+}
+
+#define VARIANT_ANALOG_PIN_MAP { \
+  0,  /* A0, PA0 */              \
+  1,  /* A1, PA1 */              \
+  2,  /* A2, PA2 */              \
+  3,  /* A3, PA3 */              \
+  4,  /* A4, PA4 */              \
+  5,  /* A5, PA5 */              \
+  6,  /* A6, PA6 */              \
+  7,  /* A7, PA7 */              \
+  12, /* A8, PB0 */              \
+  13, /* A9, PB1 */              \
+}
 // #define ADC_CTLR_ADCAL          
 #define ADC_RESOLUTION          12
 
@@ -148,7 +190,7 @@
 
 // Default pins for each hardware serial port.
 #ifndef PIN_SERIAL1_RX
-  #define PIN_SERIAL1_RX     PA10  /* UART1 default RX pin */
+  #define PIN_SERIAL1_RX     NC    /* UART1 RX not exposed; TX only */
 #endif
 #ifndef PIN_SERIAL1_TX
   #define PIN_SERIAL1_TX     PA9  /* UART1 default TX pin */

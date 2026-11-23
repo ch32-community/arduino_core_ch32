@@ -30,6 +30,7 @@
 #include <inttypes.h>
 #include "Stream.h"
 #include "uart.h"
+#include "pins_arduino_constexpr.h"   // ch32::pinToPinName() for the pin-number constructor
 
 // Define constants and variables for buffering incoming serial data.  We're
 // using a ring buffer (I think), in which head is the index of the location
@@ -106,9 +107,16 @@ typedef enum {
 
 class HardwareSerial : public Stream {
 
-  serial_t _serial;  
+  serial_t _serial;
 public:
-    HardwareSerial(void *peripheral); 
+    // Arduino pin numbers (PA9, D1, ...). Always inlined so that constant pins,
+    // such as each SerialX's PIN_SERIALx_TX/RX, convert to PinName at compile
+    // time (see pins_arduino_constexpr.h) instead of by a startup table lookup.
+    __attribute__((always_inline)) HardwareSerial(void *peripheral, uint32_t tx, uint32_t rx)
+      : HardwareSerial(peripheral, ch32::pinToPinName(tx), ch32::pinToPinName(rx)) {}
+    // Pin names (PA_9, ...). Pass NC as rx for a TX-only port.
+    HardwareSerial(void *peripheral, PinName tx, PinName rx);
+    HardwareSerial(void *peripheral);
     
     void begin(unsigned long baud)
     {
@@ -162,15 +170,38 @@ public:
 #if ENABLE_RX_BUFFER
 public:
     // RX Buffer variables - for all CH32 series MCUs
-    volatile rx_buffer_index_t _rx_buffer_head;
-    volatile rx_buffer_index_t _rx_buffer_tail;
+    volatile rx_buffer_index_t _rx_buffer_head = 0;
+    volatile rx_buffer_index_t _rx_buffer_tail = 0;
     unsigned char _rx_buffer[SERIAL_RX_BUFFER_SIZE];
+
+    // Receive interrupt body. Called from the U(S)ARTx_IRQHandler defined
+    // next to its SerialX object in HardwareSerialX.cpp; public because the
+    // handler is extern "C". Takes the peripheral as a constant so each
+    // handler compiles to direct register accesses.
+    inline __attribute__((always_inline)) void _rx_irq(USART_TypeDef *uart)
+    {
+      if (USART_GetITStatus(uart, USART_IT_RXNE) != RESET) {
+        USART_ClearITPendingBit(uart, USART_IT_RXNE);
+
+        unsigned char c = USART_ReceiveData(uart);
+        rx_buffer_index_t next_head = (_rx_buffer_head + 1) % SERIAL_RX_BUFFER_SIZE;
+
+        if (next_head != _rx_buffer_tail) {
+          _rx_buffer[_rx_buffer_head] = c;
+          _rx_buffer_head = next_head;
+        }
+      }
+    }
 #endif
 
   private:
     void init(PinName _rx, PinName _tx, PinName _rts = NC, PinName _cts = NC);
 };
 
+// Each SerialX is defined, together with its receive buffer and interrupt
+// handler, in its own HardwareSerialX.cpp. The core archive is linked without
+// --whole-archive, so a port is linked into a sketch only when something
+// references it; declaring every port here costs nothing for unused ones.
 #if defined(HAVE_HWSERIAL1) && defined(USART1)
   extern HardwareSerial Serial1;
 #endif

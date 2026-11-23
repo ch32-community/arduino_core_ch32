@@ -81,6 +81,38 @@
 #define NUM_DIGITAL_PINS        14
 #define NUM_ANALOG_INPUTS       8
 
+// Pin tables. The variant .cpp defines the runtime digitalPin[] and
+// analogInputPin[] from these, and pins_arduino_constexpr.h builds
+// compile-time copies so constant pin numbers convert to PinName without
+// a runtime lookup. Use /* */ comments: these are continued macro lines.
+#define VARIANT_DIGITAL_PIN_MAP {               \
+  PA_1,   /* D0/A1 */                           \
+  PA_2,   /* D1/A0 */                           \
+  PC_0,   /* D2 */                              \
+  PC_1,   /* D3 */                              \
+  PC_2,   /* D4 */                              \
+  PC_3,   /* D5 */                              \
+  PC_4,   /* D6/A2 */                           \
+  PC_6,   /* D7 */                              \
+  PC_7,   /* D8 (recommended software CS/SS) */ \
+  PD_1,   /* D9 */                              \
+  PD_4,   /* D10/A7/SCK */                      \
+  PD_5,   /* D11/A5/TX/MISO */                  \
+  PD_6,   /* D12/A6/RX/MOSI */                  \
+  PD_7    /* D13/RST */                         \
+}
+
+#define VARIANT_ANALOG_PIN_MAP { \
+  1,    /* A0/PA2 */             \
+  0,    /* A1/PA1 */             \
+  6,    /* A2/PC4 */             \
+  NC,   /* A3 NC */              \
+  NC,   /* A4 NC */              \
+  11,   /* A5/PD5 */             \
+  12,   /* A6/PD6 */             \
+  10    /* A7/PD4 */             \
+}
+
 
 // #define ADC_CTLR_ADCAL          
 #define ADC_RESOLUTION          12
@@ -121,9 +153,6 @@
 // CH32V002A4M6 SOP16 has RX1/TX1, but it is shared with SPI. 
 // When SPI is enabled alternative pins UART_3 (RX'/TX') are used, but these conflict with I2C
 // If I2C is enabled the default UART pins are used as board default, but user can override this. 
-#if defined(SERIAL_UART_ENABLE_ALL)
-  #error "CH32V002A4 only supports Serial1; Dual Serial is unavailable"
-#endif
 #if (defined(SERIAL_UART_INSTANCE) && SERIAL_UART_INSTANCE>1)
   #error "CH32V002A4 only supports Serial1; Serial2 cannot be selected"
 #endif
