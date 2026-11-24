@@ -1,1 +1,4 @@
-ci/** export-ignore
++# Exclude ci from release archives.
++ci/** export-ignore
++# Disable line-ending normalization.
++* -text
