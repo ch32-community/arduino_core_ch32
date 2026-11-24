@@ -10,6 +10,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      CH32_WARNINGS_AS_ERRORS: "1"
     steps:
       - name: Checkout Custom Core
         uses: actions/checkout@v7
@@ -24,7 +26,7 @@ jobs:
       # The installed package only supplies compiler tools and dependencies.
       - name: Install CH32 compiler tools and dependencies
         run: |
-          arduino-cli core install ch32-community:ch32v --additional-urls https://github.com/ch32-community/board_manager_files/raw/main/package_ch32-commmunity_index.json
+          arduino-cli core install ch32-community:ch32v --additional-urls https://github.com/ch32-community/board_manager_files/raw/main/package_ch32-community_index.json
 
       - name: CH32L10x - Compile Sketches
         if: '!cancelled()'
@@ -45,6 +47,10 @@ jobs:
       - name: CH32V30x - Compile Sketches
         if: '!cancelled()'
         run: python3 ./arduino_core_ch32/tools/build_examples.py CH32V30x
+
+      - name: CH32V4x7 - Compile Sketches
+        if: '!cancelled()'
+        run: python3 ./arduino_core_ch32/tools/build_examples.py CH32V4x7
 
       - name: CH32VM00X - Compile Sketches
         if: '!cancelled()'

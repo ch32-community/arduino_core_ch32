@@ -8,12 +8,12 @@ name=CH32 Community Core
 version=1.2
 
 # OpenOCD & Compiler Path (Update version when updated)
-toolchain_dir={runtime.tools.riscv-none-embed-gcc-8.2.0.path}
+toolchain_dir={runtime.tools.riscv-gcc-15.0.0.path}
 openocd_dir={runtime.tools.openocd-2.12.path}
 
 # Compile variables
 # ----------------------
-compiler.ch.extra_include="-I{build.source.path}" "-I{build.core.path}" "-I{build.core.path}/avr/" "-I{build.core.path}/ch32/" "-I{build.core.path}/ch32/lib/" "-I{build.system.path}/{build.series}/USER/" "-I{build.system.path}/{build.series}/SRC/Core/" "-I{build.system.path}/{build.series}/SRC/Debug/" "-I{build.system.path}/{build.series}/SRC/Startup/" "-I{build.system.path}/{build.series}/SRC/Peripheral/inc/" "-I{build.system.path}/{build.series}/SRC/Peripheral/src/"
+compiler.ch.extra_include="-I{build.source.path}" "-I{build.core.path}" "-I{build.core.path}/avr/" "-I{build.core.path}/ch32/" "-I{build.core.path}/ch32/lib/" "-I{build.system.path}/{build.series}/USER/" "-I{build.system.path}/{build.series}/SRC/Core/" "-I{build.system.path}/{build.series}/SRC/Debug/" "-I{build.system.path}/{build.series}/SRC/Startup/" "-I{build.system.path}/{build.series}/SRC/Peripheral/inc/" "-I{build.system.path}/{build.series}/SRC/Peripheral/src/" "-I{runtime.platform.path}/libraries/Network/lwip/src/include"
 
 #---warning flags
 compiler.warning_flags=-Wunused -Wuninitialized
@@ -25,14 +25,14 @@ compiler.warning_flags.all=-Wall -Wextra -Wno-comment
 #---compiler.cmd
 compiler.path={toolchain_dir}/bin/
 
-compiler.S.cmd=riscv-none-embed-gcc
-compiler.c.cmd=riscv-none-embed-gcc
-compiler.cpp.cmd=riscv-none-embed-g++
-compiler.ar.cmd=riscv-none-embed-ar
-compiler.c.elf.cmd=riscv-none-embed-g++
-compiler.objcopy.cmd=riscv-none-embed-objcopy
-compiler.elf2hex.cmd=riscv-none-embed-objcopy
-compiler.objdump.cmd=riscv-none-embed-objdump
+compiler.S.cmd=riscv32-wch-elf-gcc
+compiler.c.cmd=riscv32-wch-elf-gcc
+compiler.cpp.cmd=riscv32-wch-elf-g++
+compiler.ar.cmd=riscv32-wch-elf-gcc-ar
+compiler.c.elf.cmd=riscv32-wch-elf-g++
+compiler.objcopy.cmd=riscv32-wch-elf-objcopy
+compiler.elf2hex.cmd=riscv32-wch-elf-objcopy
+compiler.objdump.cmd=riscv32-wch-elf-objdump
 
 compiler.libraries.ldflags=
 
@@ -58,7 +58,8 @@ compiler.S.flags={compiler.extra_flags} -x assembler-with-cpp {build.flags.clock
 
 compiler.c.flags={build.flags.clock} {compiler.extra_flags} {compiler.peripheral_flags} -c {build.flags.optimize} {build.flags.debug} {compiler.warning_flags} -std=gnu99 -MMD {compiler.ch.extra_include}
 
-compiler.cpp.flags={build.flags.clock} {compiler.extra_flags} {compiler.peripheral_flags} -c {build.flags.optimize} {build.flags.debug} {compiler.warning_flags} -std={compiler.cpp.std}  -fno-threadsafe-statics  -fno-rtti -fno-exceptions -fno-use-cxa-atexit -MMD {compiler.ch.extra_include} -fpermissive 
+compiler.cpp.flags={build.flags.clock} {compiler.extra_flags} {compiler.peripheral_flags} -c {build.flags.optimize} {build.flags.debug} {compiler.warning_flags} -std={compiler.cpp.std}  -fno-threadsafe-statics  -fno-rtti -fno-exceptions -fno-use-cxa-atexit -MMD {compiler.ch.extra_include} -fpermissive -DCH32_LIB_DISCOVERY_PHASE={build.library_discovery_phase}
+build.library_discovery_phase=0
 
 compiler.ar.flags=rcs
 
@@ -72,7 +73,7 @@ compiler.objdump.flags=--all-headers --demangle --disassemble -M xw
 
 
 compiler.ldflags=
-compiler.size.cmd=riscv-none-embed-size
+compiler.size.cmd=riscv32-wch-elf-size
 compiler.define=-DARDUINO=
 
 
@@ -86,7 +87,7 @@ build.variant_h=
 compiler.c.extra_flags=-Wno-comment
 compiler.c.elf.extra_flags=-Wl,--defsym=__FLASH_SIZE={upload.maximum_size} -Wl,--defsym=__RAM_SIZE={upload.maximum_data_size}
 compiler.cpp.extra_flags=-Wno-comment
-compiler.cpp.std=gnu++14
+compiler.cpp.std=gnu++17
 compiler.S.extra_flags=
 ##{build.startup_file}   {build.peripheral_pins}
 compiler.ar.extra_flags=
@@ -156,7 +157,7 @@ recipe.S.o.pattern="{compiler.path}{compiler.S.cmd}" {compiler.S.flags} {build.i
 recipe.ar.pattern="{compiler.path}{compiler.ar.cmd}" {compiler.ar.flags} {compiler.ar.extra_flags} "{archive_file_path}" "{object_file}"
 
 ## Combine gc-sections, archives, and objects
-recipe.c.combine.pattern="{compiler.path}{compiler.c.elf.cmd}" {compiler.extra_flags} -T "{build.system.path}/{build.series}/SRC/Ld/{build.ldscript}" -nostartfiles -Xlinker --gc-sections "-Wl,-Map,{build.path}/{build.project_name}.map" {compiler.c.elf.extra_flags} {build.flags.ldflags} -o "{build.path}/{build.project_name}.elf" "-L{build.path}" -Wl,--start-group {object_files} {build.ch_extra_lib} -Wl,--whole-archive "{archive_file_path}" -Wl,--no-whole-archive -lc -Wl,--end-group 
+recipe.c.combine.pattern="{compiler.path}{compiler.c.elf.cmd}" {compiler.extra_flags} -T "{build.system.path}/{build.series}/SRC/Ld/{build.ldscript}" -nostartfiles -Xlinker --gc-sections "-Wl,-Map,{build.path}/{build.project_name}.map" -Wl,--wrap=_free_r,--wrap=_realloc_r {compiler.c.elf.extra_flags} {build.flags.ldflags} -o "{build.path}/{build.project_name}.elf" "-L{build.path}" -Wl,--start-group {object_files} {build.ch_extra_lib} -Wl,--whole-archive "{archive_file_path}" -Wl,--no-whole-archive -lc -Wl,--end-group
 
 ## Create output (.bin file)
 recipe.objcopy.bin.pattern="{compiler.path}{compiler.objcopy.cmd}" {compiler.elf2bin.flags} {compiler.elf2bin.extra_flags} "{build.path}/{build.project_name}.elf" "{build.path}/{build.project_name}.bin"
@@ -203,6 +204,16 @@ tools.wchisp.upload.params.verbose=
 tools.wchisp.upload.params.quiet=
 tools.wchisp.upload.pattern="{path}{cmd}" {upload.verbose} flash "{build.path}/{build.project_name}.elf"
 
+# UF2 is opt-in: boards supply the family ID and application flash offset.
+# Enter the bootloader first and select its mounted volume as the upload port.
+# Conversion-only mode avoids broadcasting firmware to every mounted UF2 drive.
+# Installed by Boards Manager; local checkouts may override tools.uf2.python.
+tools.uf2.python={runtime.tools.pqt-python3-1.0.1-base-3a57aed-1.path}/python3
+tools.uf2.convert.pattern="{tools.uf2.python}" -I "{runtime.platform.path}/tools/uf2/uf2conv.py" -c -f {build.uf2_family} -b {build.flash_offset} -o "{build.path}/{build.project_name}.uf2" "{build.path}/{build.project_name}.bin"
+tools.uf2.upload.params.verbose=
+tools.uf2.upload.params.quiet=
+tools.uf2.upload.pattern="{tools.uf2.python}" -I "{runtime.platform.path}/tools/uf2/upload.py" --volume "{serial.port}" --family {build.uf2_family} --base {build.flash_offset} "{build.path}/{build.project_name}.bin"
+
 
 # Debugger configuration (general options)
 # ----------------------------------------
@@ -210,7 +221,7 @@ tools.wchisp.upload.pattern="{path}{cmd}" {upload.verbose} flash "{build.path}/{
 #  - this is alpha and may be subject to change without notice
 debug.executable={build.path}/{build.project_name}.elf
 debug.toolchain=gcc
-debug.toolchain.prefix=riscv-none-embed
+debug.toolchain.prefix=riscv32-wch-elf
 debug.toolchain.path={compiler.path}
 
 debug.server=openocd

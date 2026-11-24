@@ -45,6 +45,38 @@
 #define PD5_ALT1                (PD5  | ALT1)
 #define PD6_ALT1                (PD6  | ALT1)
 
+// Alternate pin numbers
+#define PC0_ALT1                (PC0  | ALT1)
+#define PC1_ALT1                (PC1  | ALT1)
+#define PC2_ALT1                (PC2  | ALT1)
+#define PC3_ALT1                (PC3  | ALT1)
+#define PC4_ALT1                (PC4  | ALT1)
+#define PC6_ALT1                (PC6  | ALT1)
+#define PC7_ALT1                (PC7  | ALT1)
+#define PD1_ALT1                (PD1  | ALT1)
+
+#define PA1_ALT2                (PA1  | ALT2)
+#define PA2_ALT2                (PA2  | ALT2)
+#define PC0_ALT2                (PC0  | ALT2)
+#define PC1_ALT2                (PC1  | ALT2)
+#define PC3_ALT2                (PC3  | ALT2)
+#define PC4_ALT2                (PC4  | ALT2)
+#define PD1_ALT2                (PD1  | ALT2)
+#define PD7_ALT2                (PD7  | ALT2)
+
+#define PC1_ALT3                (PC1  | ALT3)
+#define PC3_ALT3                (PC3  | ALT3)
+#define PC4_ALT3                (PC4  | ALT3)
+#define PC6_ALT3                (PC6  | ALT3)
+#define PC7_ALT3                (PC7  | ALT3)
+#define PD4_ALT3                (PD4  | ALT3)
+#define PD5_ALT3                (PD5  | ALT3)
+#define PD6_ALT3                (PD6  | ALT3)
+
+#define PC7_ALT4                (PC7  | ALT4)
+
+
+
 
 #define NUM_DIGITAL_PINS        18
 #define NUM_ANALOG_INPUTS       8
@@ -73,6 +105,10 @@
   #define BOARD_DEFAULT_SERIAL 1
 #endif
 
+#if defined(I2C_MODULE_ENABLED) && defined(SERIAL_UART_PINMAP) && SERIAL_UART_PINMAP==3
+  #error "CH32V003F4 Serial1_3 requires I2C to be disabled"
+#endif
+
 // Default pins for hardware serial port 1.
 #ifndef PIN_SERIAL1_RX
   #define PIN_SERIAL1_RX         PD6
@@ -86,7 +122,14 @@
   #define PIN_SERIAL1_2_RX     PD5  /* UART1_2 pinmap RX pin */
 #endif
 #ifndef PIN_SERIAL1_2_TX
-  #define PIN_SERIAL1_2_TX     PD6  /* UART1_3 pinmap TX pin */
+  #define PIN_SERIAL1_2_TX     PD6  /* UART1_2 pinmap TX pin */
+#endif
+
+#ifndef PIN_SERIAL1_3_RX
+  #define PIN_SERIAL1_3_RX     PC1  /* UART1_3 pinmap RX pin */
+#endif
+#ifndef PIN_SERIAL1_3_TX
+  #define PIN_SERIAL1_3_TX     PC0  /* UART1_3 pinmap TX pin */
 #endif
 
 
@@ -149,5 +192,4 @@
     #define SERIAL_PORT_HARDWARE  Serial
   #endif
 #endif
-
 

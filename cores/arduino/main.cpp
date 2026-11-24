@@ -10,6 +10,9 @@
 int main( void )
 {
     pre_init( );
+#if defined(CH32V467)
+    psramInit();
+#endif
 #if defined(USE_TINYUSB)
     if (TinyUSB_Device_Init) {
         TinyUSB_Device_Init(0);

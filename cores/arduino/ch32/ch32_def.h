@@ -28,6 +28,9 @@
   #include "ch32v20x.h"
 #elif defined(CH32V30x) || defined(CH32V30x_C)
   #include "ch32v30x.h"
+#elif defined(CH32V4x7)
+  #include "ch32v4x7.h"
+  #include "ch32v4x7_compat.h"
 #elif defined(CH32V10x)
   #include "ch32v10x.h"
 #elif defined(CH32V00x)

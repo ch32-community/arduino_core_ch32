@@ -37,11 +37,11 @@ Shared pinout for CH32V003F4P6 / CH32V002F4P6 / CH32V006F8P6.
 - Note ': PC4 is the default software chip-select pin (PIN_SPI_SS). Control this pin as a GPIO. Hardware SPI NSS/SSEL uses PC1, which is also the default I2C SDA pin. These two peripheral functions cannot use PC1 at the same time. Do not pass PC4 as the hardware SSEL argument to SPIClass. Using alternative pin mappings now requires changing PeripheralPins.c, but may get core API support in a future release. See issue #61.
 
 #### More pinout diagrams
-|  |  |  |
-| -- | -- | -- |
-| V002 | [A4M6 SOP16](./CH32V002A4#pinout) | [D4U6 QFN12->DIP14](./CH32V002D4#pinout) |
-| V006 | [E8R6 QSOP24](./CH32V006E8#ch32v006e8r6-qsop24-pinout) | [F8P6 TSSOP20](./CH32V006F8#ch32v006f8p6-tssop20-pinout) |
-| VM007 | [M007E8R6 QSOP24](./CH32M007E8) | |
+|  |  |  |  |
+| -- | -- | -- | -- |
+| V002 | [A4M6 SOP16](./CH32V002A4/README.md#pinout) | [D4U6 QFN12->DIP14](./CH32V002D4/README.md#pinout) | [J4M6 SOP8](./CH32V002J4/README.md#pinout)  |
+| V006 | [E8R6 QSOP24](./CH32V006E8/README.md#ch32v006e8r6-qsop24-pinout) | [F8P6 TSSOP20](./CH32V006F8/README.md#ch32v006f8p6-tssop20-pinout) | |
+| VM007 | [M007E8R6 QSOP24](./CH32M007E8/README.md#qsop24-pinout) | | |
 
 ### Feature comparison with V003 (TSSOP20) ###
 
@@ -74,8 +74,8 @@ Shared pinout for CH32V003F4P6 / CH32V002F4P6 / CH32V006F8P6.
 
 1. Install [latest WCH Link Utility](https://www.wch.cn/downloads/WCH-LinkUtility_ZIP.html), update LinkE device when prompted. Test connection to Link Utility and CH32 chip using Query Chip Info. (This step installs drivers and support for CH32V006 and other newer chips).
 2. Install latest Arduino IDE (v2.3.10).
-3. Run Arduino IDE as administrator, Add [board json](https://github.com/ch32-community/board_manager_files/raw/main/package_ch32-commmunity_index.json) to preferences:
-    `https://github.com/ch32-community/board_manager_files/raw/main/package_ch32-commmunity_index.json`
+3. Run Arduino IDE as administrator, Add [board json](https://github.com/ch32-community/board_manager_files/raw/main/package_ch32-community_index.json) to preferences:
+    `https://github.com/ch32-community/board_manager_files/raw/main/package_ch32-community_index.json`
 Open Tools → Board → Boards Manager, search for wch, and click Install. Exit IDE.
 5. Optional: For latest sources download [zip of latest master branch](https://github.com/ch32-community/arduino_core_ch32/archive/refs/heads/main.zip). Unzip and copy/overwrite all contents to this location: 
    - `C:\Users\<username>\AppData\Local\Arduino15\packages\ch32-community\hardware\ch32v\[release number]`

@@ -34,6 +34,7 @@
 #endif
 
 #include "wiring.h"
+#include "psram.h"
 
 /* sketch */
 #ifdef __cplusplus
