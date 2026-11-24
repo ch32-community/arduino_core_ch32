@@ -80,6 +80,8 @@ void GPIO_AFIODeInit(void)
  *
  * @return  none
  */
+
+/*
 void GPIO_Init(GPIO_TypeDef *GPIOx, GPIO_InitTypeDef *GPIO_InitStruct)
 {
     uint32_t currentmode = 0x00, currentpin = 0x00, pinpos = 0x00, pos = 0x00;
@@ -124,6 +126,39 @@ void GPIO_Init(GPIO_TypeDef *GPIOx, GPIO_InitTypeDef *GPIO_InitStruct)
         GPIOx->CFGLR = tmpreg;
     }
 }
+*/
+
+// Flash usage optimized by Gemini - saves only about 20 bytes
+//void GPIO_Init(GPIO_TypeDef *GPIOx, const GPIO_InitTypeDef *GPIO_InitStruct)
+void GPIO_Init(GPIO_TypeDef *GPIOx, GPIO_InitTypeDef *GPIO_InitStruct)
+{
+    uint32_t mode = GPIO_InitStruct->GPIO_Mode;
+    uint32_t currentmode = mode & 0x0FU;
+
+    if (mode & 0x10U) {
+        currentmode |= GPIO_InitStruct->GPIO_Speed;
+    }
+
+    uint32_t pins = GPIO_InitStruct->GPIO_Pin & 0xFFU;
+    if (pins) {
+        uint32_t tmpreg = GPIOx->CFGLR;
+
+        for (uint32_t pinpos = 0; pinpos < 8U; pinpos++) {
+            if (pins & (1U << pinpos)) {
+                uint32_t shift = pinpos << 2;
+                tmpreg = (tmpreg & ~(0x0FU << shift)) | (currentmode << shift);
+            }
+        }
+        GPIOx->CFGLR = tmpreg;
+
+        if (mode == GPIO_Mode_IPD) {
+            GPIOx->BCR = pins;
+        } else if (mode == GPIO_Mode_IPU) {
+            GPIOx->BSHR = pins;
+        }
+    }
+}
+
 
 /*********************************************************************
  * @fn      GPIO_StructInit
