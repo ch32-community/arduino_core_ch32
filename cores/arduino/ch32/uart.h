@@ -47,7 +47,7 @@
 extern "C" {
 #endif
 
-#if defined(UART_MODULE_ENABLED) 
+#if defined(UART_MODULE_ENABLED)
 
 typedef struct __UART_HandleTypeDef
 {

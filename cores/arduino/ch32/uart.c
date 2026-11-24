@@ -20,6 +20,10 @@
 extern "C" {
 #endif
 
+#if defined(UART_MODULE_ENABLED) && defined(SYSCLK_FREQ_1_5MHz_HSI)
+#pragma message "Only 74880 baud and slower works with a 1.5MHz clock."
+#endif
+
 #if defined(UART_MODULE_ENABLED) && !defined(UART_MODULE_ONLY)
 
 /* If DEBUG_UART is not defined assume this is the one linked to PIN_SERIAL_TX */
