@@ -201,8 +201,8 @@ void HardwareTimer::pause()
 void HardwareTimer::pauseChannel(uint32_t channel)
 {
   int timAssociatedInputChannel;
-  int LLChannel = getLLChannel(channel);
-  if (LLChannel == -1) {
+  int Channel = getChannel(channel);
+  if (Channel == -1) {
     Error_Handler();
   }
 
@@ -213,7 +213,16 @@ void HardwareTimer::pauseChannel(uint32_t channel)
 
   // Disable channel and corresponding interrupt
   TIM_ITConfig(_timerObj.handle.Instance, interrupt, DISABLE);
-  TIM_CCxCmd(_timerObj.handle.Instance,LLChannel,TIM_CCx_Disable);
+#if defined(TIM_CHANNEL_N_STATE_SET)
+  if (isComplementaryChannel[channel - 1]) 
+  {
+    TIM_CCxNCmd(_timerObj.handle.Instance,Channel,TIM_CCx_NDisable);
+  } 
+  else
+#endif
+  {
+    TIM_CCxCmd(_timerObj.handle.Instance,Channel,TIM_CCx_Disable);
+  }
 
 #if defined(TIM_CHANNEL_STATE_SET)
   /* Starting from G4, new Channel state implementation prevents to restart a channel,
