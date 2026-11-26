@@ -213,13 +213,11 @@ void HardwareTimer::pauseChannel(uint32_t channel)
 
   // Disable channel and corresponding interrupt
   TIM_ITConfig(_timerObj.handle.Instance, interrupt, DISABLE);
-#if defined(TIM_CHANNEL_N_STATE_SET)
   if (isComplementaryChannel[channel - 1]) 
   {
-    TIM_CCxNCmd(_timerObj.handle.Instance,Channel,TIM_CCx_NDisable);
+    TIM_CCxNCmd(_timerObj.handle.Instance,Channel,TIM_CCxN_Disable);
   } 
   else
-#endif
   {
     TIM_CCxCmd(_timerObj.handle.Instance,Channel,TIM_CCx_Disable);
   }
